@@ -31,8 +31,18 @@ sign-in for now. If Lighthouse can't be reached, the last password Lighthouse ac
 
 ## Files
 
-`server.mjs` (HTTP + app proxies) · `auth.mjs` (one login) · `chat.mjs` (chats) · `public/` (UI) ·
+`server.mjs` (startup, login check, router) · `server/` (one file per area, see below) · `auth.mjs` (one login) ·
+`chat.mjs` (chats) · `activity.mjs` / `overtime.mjs` / `salary.mjs` (work time, OT, pay - stores, kept at the top) · `public/` (UI) ·
 `Data/` (users, sessions, chats, chat files, video requests — private; `secret.key` encrypts saved Lighthouse tokens).
+
+`server/`: `config.mjs` (config.json, port, folders) · `core.mjs` (send / read body / serve files, cache rules, OPEN =
+paths without login, https redirect) · `app-list.mjs` (the apps and which PC answers) · `state.mjs` (auth + the Data
+stores, owner / admin) · `hr.mjs` (HR server as the person, staff, photos) · `apps-proxy.mjs` (ports 3341-3345).
+`server/areas/`: `account` (/api/me) · `ai` (AI password, AI key) · `profile` (punch, profile, team, photos, work time,
+Time board) · `home` (today, dashboard) · `chats` · `office` (/api/hr, overtime, salary, Office key) · `library`
+(/api/renders) · `share` · `apps` (list, status, Start) · `create` (AI video) · `design` (Studio pass-through) ·
+`edit` (Edit sign-in and project sharing, no routes). Each area's `route()` answers its own paths or returns NEXT;
+server.mjs asks them in order.
 
 ## Online (limelightcorp.net) and office LAN
 
