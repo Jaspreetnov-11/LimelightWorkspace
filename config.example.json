@@ -7,5 +7,23 @@
   "aiPassword": "<set on the server PC>",
   "editNames": {
     "amits@limelight.in": "amit"
-  }
+  },
+  "editorStandbyUrl": "http://192.168.0.205:3100",
+  "aiLocalUrl": "http://127.0.0.1:8800",
+  "publicDomain": "limelightcorp.net",
+  "publicHost": "limelightcorp.net",
+  "appHosts": {
+    "editor": "lh-edit.limelightcorp.net",
+    "office": "lh-office.limelightcorp.net",
+    "lighthouse": "lh-team.limelightcorp.net",
+    "ai": "lh-ai.limelightcorp.net",
+    "design": "lh-design.limelightcorp.net"
+  },
+  "owners": [
+    "jaspreet",
+    "gurpreet"
+  ],
+  "keepSignedIn": [
+    "gurpreet"
+  ]
 }

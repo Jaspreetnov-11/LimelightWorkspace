@@ -8,8 +8,8 @@ browser/bin/
 browser/obj/
 browser/app/
 dist/
-editor-app-backup/
-originals/
+archive/editor-app-backup/
+archive/originals/
 # large files: the guide PDFs / PPTX and screenshots stay on disk, outside git
 docs/shots/
 docs/*.pdf

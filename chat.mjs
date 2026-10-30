@@ -89,7 +89,7 @@ export function createChat({ root }) {
       await system(c, `${who} left the group`);
     } else {
       if (!admin) throw err(403, 'Only a group admin can change this');
-      if (b.name && b.name.trim() !== c.name) { c.name = b.name.trim().slice(0, 80); await system(c, `${who} ne naam badla: "${c.name}"`); }
+      if (b.name && b.name.trim() !== c.name) { c.name = b.name.trim().slice(0, 80); await system(c, `${who} renamed the group to "${c.name}"`); }
       if (typeof b.about === 'string') c.about = b.about.slice(0, 300);
       for (const e of (b.add || []).map((x) => String(x).toLowerCase())) if (!c.members.includes(e)) { c.members.push(e); await system(c, `${who} added ${names[e] || e}`); }
       for (const e of (b.remove || []).map((x) => String(x).toLowerCase())) if (e !== me && c.members.includes(e)) {
@@ -132,7 +132,7 @@ export function createChat({ root }) {
     // a Share card: something open in one of the workspace's apps (Edit project, design, Office file…)
     const share = b.share && typeof b.share === 'object' && /^[a-z]+$/.test(b.share.app || '')
       ? { app: b.share.app, path: String(b.share.path || '/').slice(0, 600), title: String(b.share.title || '').slice(0, 140) } : null;
-    if (!text.trim() && !file && !share) throw err(400, 'Khaali message');
+    if (!text.trim() && !file && !share) throw err(400, 'Empty message');
     const reply = b.reply ? msgs(cid).find((m) => m.id === b.reply) : null;
     const msg = { id: id(), chat: cid, from: me, text, file, share, forwarded: !!b.forwarded, at: Date.now(), readBy: [me],
       reply: reply ? { id: reply.id, from: reply.from, text: reply.deleted ? '' : (reply.text || reply.file?.name || '').slice(0, 140) } : null };

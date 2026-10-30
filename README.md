@@ -1,56 +1,41 @@
-# Lighthouse (Limelight's workspace)
+# Limelight Workspace ("Lighthouse")
 
-Every Limelight app in one window, behind one login. Look: "Glass Aurora" (aurora background, frosted glass, Limelight logo).
+Every Limelight app in one window, behind one login: Home, Chats, Create, Library, Profile, plus **Edit**, **Design**, **Office** and **Limelight AI**. People sign in once with their HR (Lighthouse) email and password. Local: http://localhost:3350 · Online: https://limelightcorp.net
+
+**The handbook is in [docs/README.md](docs/README.md)** - what each area does, how it works, servers, how to rebuild it, what is pending and the owner's rules.
 
 ## Start
 
-Double-click **Start Lighthouse.bat** (or `node server.mjs --open`) → http://localhost:3350
-Limelight Studio (Design, port 3330) should also be running: designs, the picture Library and AI images come from it.
+- Double-click **Start Lighthouse.bat** (or `node server.mjs --open`) → http://localhost:3350
+- Normal way (hidden, office network too): **Lighthouse Server (no window).vbs** (`node server.mjs --lan`, log in `server.log`). Copy it into `shell:startup` to start at sign-in.
+- Office (port 3300) and Design (Limelight Studio, port 3330) should also be running; the workspace's Start button can start them.
+- Node.js only; no `npm install`.
 
-## One login
+## File layout
 
-Log in with your **Lighthouse** email and password. The Workspace then opens Lighthouse already signed in, and signs in to
-Limelight AI with the office password in `config.json` → `aiPassword`. **Edit** (the video editor) still asks for its own
-sign-in for now. If Lighthouse can't be reached, the last password Lighthouse accepted on this PC still works.
+| Path | What |
+|---|---|
+| `server.mjs` | Startup, login/logout, login check, router |
+| `server/config.mjs` | `config.json` + defaults, port, `--open` / `--lan`, folders |
+| `server/core.mjs` | Replies, bodies, pages and files (cache rules, `?v=` stamps), https redirect, `OPEN` (no-login paths) |
+| `server/app-list.mjs` | The apps and which PC answers for each (checked every 20 s) |
+| `server/state.mjs` | The stores (auth, chat, activity, salary, overtime); owner / admin checks |
+| `server/hr.mjs` | HR server as the signed-in person; staff (safe fields); photos |
+| `server/apps-proxy.mjs` | App proxies 3341 Edit · 3342 Office · 3343 HR pages · 3344 AI · 3345 Design |
+| `server/areas/` | One file per area: `account`, `ai`, `apps`, `chats`, `create`, `design`, `edit`, `home`, `library`, `office`, `profile`, `share`. Each `route()` answers its own paths or returns NEXT |
+| `auth.mjs` | One login (via the HR server), sessions, encrypted HR token |
+| `chat.mjs`, `activity.mjs`, `overtime.mjs`, `salary.mjs` | Stores: chats, work time, OT register, salary |
+| `public/` | UI: `index.html`, `login.html`, `offline.html`, `sw.js`, `manifest.webmanifest`, `js/`, `css/`, `img/`, `fonts/` |
+| `embed/` | Look put into Office and HR pages inside the workspace |
+| `browser/` | Lighthouse.exe source (WebView2); `build.cmd` builds `browser\app` |
+| `publish/` | `Publish Lighthouse online.bat` (Cloudflare tunnel hostnames) |
+| `archive/` | Old mockups, editor app backup, original files (not used) |
+| `docs/` | Handbook; `docs/_notes/` = raw notes from the build chats |
+| `Data/` | Private: users, sessions, keys, chats, photos, work time, OT, salary (not in git) |
+| `config.json` | Settings incl. secrets (not in git); template `config.example.json` |
 
-## What's inside
+## Online
 
-- **Home** – Limelight logo, one prompt (Image / Video / Design), app tiles with live status, recent chats, today's
-  Lighthouse tasks, recent work.
-- **Chats** – office chat: 1-to-1 and groups (admins, add/remove members, rename, leave), photos and files (drag, paste or
-  📎, up to 35 MB), reply, delete for everyone, read ticks, typing, online status, unread badges, desktop notifications.
-  People = Lighthouse staff + anyone who has logged in here.
-- **Create** – AI Image (Limelight AI on NAYA B) and AI Video (UI only; requests are saved until a video engine is installed).
-- **Library** – everything in Studio's Library.
-- **Office** – ONE menu over two apps, each feature once: Mail, Calendar, Meetings, Files, Document/Grid/Deck, News,
-  AI Agent/Assistance and Office setup come from Limelight Office; Home, Tasks, Projects, Attendance, Leaves, Staff,
-  Departments, Events, Notifications, Settings and the admin pages (Payroll, Payments, Clients, Reports, Performance)
-  come from the Lighthouse web app. Their own sidebars are hidden inside the frame (`embedCss` in server.mjs).
-- **Apps** – Edit, Design, Office, Limelight AI open inside the window (top-right dock), each kept loaded.
-  They are served again on localhost ports 3341 Edit · 3342 Office · 3343 Lighthouse · 3344 AI · 3345 Design.
+`publish\Publish Lighthouse online.bat` (run by the owner) adds limelightcorp.net, www and the app hosts lh-edit / lh-office / lh-team / lh-ai / lh-design to the Cloudflare tunnel on this PC. The login cookie is shared across *.limelightcorp.net, so one login opens every app. Plain http is sent to https. Each person opens Office, Edit and Limelight AI as themselves (no second sign-in).
 
-## Files
-
-`server.mjs` (startup, login check, router) · `server/` (one file per area, see below) · `auth.mjs` (one login) ·
-`chat.mjs` (chats) · `activity.mjs` / `overtime.mjs` / `salary.mjs` (work time, OT, pay - stores, kept at the top) · `public/` (UI) ·
-`Data/` (users, sessions, chats, chat files, video requests — private; `secret.key` encrypts saved Lighthouse tokens).
-
-`server/`: `config.mjs` (config.json, port, folders) · `core.mjs` (send / read body / serve files, cache rules, OPEN =
-paths without login, https redirect) · `app-list.mjs` (the apps and which PC answers) · `state.mjs` (auth + the Data
-stores, owner / admin) · `hr.mjs` (HR server as the person, staff, photos) · `apps-proxy.mjs` (ports 3341-3345).
-`server/areas/`: `account` (/api/me) · `ai` (AI password, AI key) · `profile` (punch, profile, team, photos, work time,
-Time board) · `home` (today, dashboard) · `chats` · `office` (/api/hr, overtime, salary, Office key) · `library`
-(/api/renders) · `share` · `apps` (list, status, Start) · `create` (AI video) · `design` (Studio pass-through) ·
-`edit` (Edit sign-in and project sharing, no routes). Each area's `route()` answers its own paths or returns NEXT;
-server.mjs asks them in order.
-
-## Online (limelightcorp.net) and office LAN
-
-- **Online:** double-click `publish\Publish Lighthouse online.bat` once (adds limelightcorp.net + www and the app hosts
-  lh-edit / lh-office / lh-team / lh-ai / lh-design to the Cloudflare tunnel on this PC, creates their DNS, restarts the tunnel).
-  The login cookie is shared across *.limelightcorp.net so one login opens every app. From outside, Office is admins only
-  (it runs as this PC's owner).
-- **Keep the server running:** `Lighthouse Server (no window).vbs` (copy it into shell:startup to start at sign-in).
-- **Office LAN directly:** start with `node server.mjs --lan` and allow ports 3341-3345 and 3350 in Windows Firewall for
-  192.168.0.0/24 — or simply use the online link from office PCs too.
-- Edit and Limelight AI follow their PCs: Edit = NAYA A, else NAYA B's standby (:3100); AI = NAYA B, else this PC (:8800).
+Edit and Limelight AI follow their PCs: Edit = NAYA A, else NAYA B's standby (:3100); AI = NAYA B, else this PC (:8800). Details: [docs/servers.md](docs/servers.md).

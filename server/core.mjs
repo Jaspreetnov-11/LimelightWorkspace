@@ -67,7 +67,7 @@ export function toHttps(req, res) {
   return true;
 }
 
-export const OPEN = /^\/(login|login\.html|options\.html|home-options\.html|bento-options\.html|dash-concepts\.html|header-options\.html|api\/login|api\/health|css\/|fonts\/|img\/|js\/theme-boot\.js$|js\/frame\.js$|manifest\.webmanifest$|sw\.js$|offline\.html$)/;
+export const OPEN = /^\/(login|login\.html|api\/login|api\/health|css\/|fonts\/|img\/|js\/theme-boot\.js$|js\/frame\.js$|manifest\.webmanifest$|sw\.js$|offline\.html$)/;
 // a file with ?v= in its link changes name when it changes (index.html), so a phone keeps it a year without asking;
 // fonts and pictures for 30 days. (Behind the login only the phone keeps it - "private" - not Cloudflare.)
 export const fileCache = (u, p) => (u.searchParams.has('v') ? `${OPEN.test(p) ? 'public' : 'private'}, max-age=31536000, immutable`
