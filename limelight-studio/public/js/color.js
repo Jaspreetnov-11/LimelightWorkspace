@@ -620,7 +620,7 @@ window.addEventListener('keydown', (e) => {
 ED.inspHooks.push((el, objs) => {
   const o = objs.length === 1 ? objs[0] : null;
   if (!o || o.type !== 'image' || o.genfill || ED.mode !== 'design' || ED.stack) return;
-  el.insertAdjacentHTML('afterbegin', sec('Color', `<p class="muted small">${o.develop ? 'Developed in Color — the original is kept; Reset in Color brings it back.' : 'Lightroom-style develop: light, colour, curves, grading, detail, effects.'}</p>
+  el.insertAdjacentHTML('afterbegin', sec('Color', `<p class="muted small">${o.develop ? 'Developed in Color — the original is kept; Reset in Color brings it back.' : 'Photo develop: light, colour, curves, grading, detail, effects.'}</p>
     <button class="btn ${o.develop ? '' : 'primary'} full" data-cw="open">${icon('develop', 'width="16" height="16"')}Edit in Color</button>`));
   $('[data-cw=open]', el).onclick = () => setStudioMode('color', { layer: o });
 });

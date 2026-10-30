@@ -51,7 +51,7 @@ ED.overlays = [];    // (ctx, v) => drawn over the canvas after every render (sc
 
 function renderModeTabs() {
   const bar = $('#modeTabs'); if (!bar) return;
-  const tip = { design: 'the design itself', vector: 'opens the selected vector layer (or makes one from the selected shapes)', book: 'opens the selected book layer (or a new book)', '3d': 'opens the selected 3D layer (or a new scene)', color: 'develops the selected photo, Lightroom-style' };
+  const tip = { design: 'the design itself', vector: 'opens the selected vector layer (or makes one from the selected shapes)', book: 'opens the selected book layer (or a new book)', '3d': 'opens the selected 3D layer (or a new scene)', color: 'develops the selected photo: light, colour, curves' };
   const where = ED.stack ? `<span class="mb-ctx">${esc(ED.stack.project.name)} ›<b>${esc(ED.project?.name || '')}</b></span>` : '';
   bar.innerHTML = where + Object.entries(MODES).map(([k, m]) => `<button class="mtab ${ED.mode === k ? 'on' : ''}" data-mode="${k}" title="${m.name} — ${tip[k]}">${m.name}</button>`).join('');
   $$('[data-mode]', bar).forEach((b) => b.onclick = () => setStudioMode(b.dataset.mode));

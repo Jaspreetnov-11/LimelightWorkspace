@@ -402,7 +402,7 @@ function applyTextStyle(k) {
 }
 function bookForm(body) {
   const name = ED.project?.name && ED.project.pages.length > 1 ? ED.project.name : 'Untitled book';
-  body.innerHTML = `<h4>New book</h4><p class="note">InDesign / QuarkXPress style: pages with margins and columns, master pages with page numbers, text that flows from box to box. The book is a layer of the design: Design (below) shows its first page.</p>
+  body.innerHTML = `<h4>New book</h4><p class="note">Magazine and book layout: pages with margins and columns, master pages with page numbers, text that flows from box to box. The book is a layer of the design: Design (below) shows its first page.</p>
     <div class="f"><label>Name</label><input id="bkName" value="${esc(name)}"></div>
     <div class="f"><label>Page size</label><select id="bkSize">${BOOK_SIZES.map(([n, w, h], i) => `<option value="${i}">${n} · ${w}×${h} mm</option>`).join('')}</select></div>
     <div class="pair"><div class="num"><b>Pages</b><input type="number" id="bkPages" value="8" min="1" max="500"></div><div class="num"><b>Start #</b><input type="number" id="bkStart" value="1" min="1"></div></div>

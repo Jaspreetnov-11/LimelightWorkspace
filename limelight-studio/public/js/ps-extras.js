@@ -286,7 +286,7 @@ const PS_KEYS = {
 function psShowKeys() {
   $('#psKeys')?.remove();
   const m = document.createElement('div'); m.id = 'psKeys'; m.className = 'modal';
-  m.innerHTML = `<div class="dialog ps-keys"><h3>Keyboard Shortcuts <span class="muted small">— Design tab (Photoshop)</span></h3><div class="ps-keys-grid">${Object.entries(PS_KEYS).map(([g, list]) => `<section><h4>${g}</h4>${list.map(([n, k]) => `<div><span>${esc(n)}</span><kbd>${esc(k)}</kbd></div>`).join('')}</section>`).join('')}</div>
+  m.innerHTML = `<div class="dialog ps-keys"><h3>Keyboard Shortcuts <span class="muted small">— Design tab</span></h3><div class="ps-keys-grid">${Object.entries(PS_KEYS).map(([g, list]) => `<section><h4>${g}</h4>${list.map(([n, k]) => `<div><span>${esc(n)}</span><kbd>${esc(k)}</kbd></div>`).join('')}</section>`).join('')}</div>
     <div class="dialog-actions"><div class="grow"></div><button class="btn primary" data-x>Close</button></div></div>`;
   document.body.appendChild(m);
   m.onclick = (e) => { if (e.target === m || e.target.closest('[data-x]')) m.remove(); };
@@ -364,7 +364,7 @@ MENUS.view.push(['-', , , PS_D], ['Rulers', () => { PS.ext.rulers = !PS.ext.rule
 MENUS.file.push(['-', , , PS_D], ['Save As…', psSaveAs, 'Shift+Ctrl+S', PS_D], ['Revert', psRevert, 'F12', PS_D], ['Print…', psPrint, 'Ctrl+P', PS_D], ['Close', () => psCloseDoc(false), 'Ctrl+W', PS_D]);
 MENUS.edit.push(['Cut', () => { if (!psCopyPixels(true)) { copySel(); deleteSel(); } }, 'Ctrl+X', PS_D], ['Paste in Place', () => psPaste(true), 'Shift+Ctrl+V', PS_D]);
 MENUS.window = [['Brush Settings', psBrushPanel, 'F5'], ['Properties', () => { ED.canvas.discardActiveObject(); renderInspector(); }], ['Layers', () => showTab('layers')], ['Keyboard Shortcuts', psShowKeys, 'Alt+Shift+Ctrl+K']];
-MENUS.help = [['Keyboard Shortcuts', psShowKeys, 'Alt+Shift+Ctrl+K'], ['Photoshop tools in the Design tab', () => toast('Right-click a tool for its group · Shift+its key cycles · the bar on top shows its options')]];
+MENUS.help = [['Keyboard Shortcuts', psShowKeys, 'Alt+Shift+Ctrl+K'], ['Tools in the Design tab', () => toast('Right-click a tool for its group · Shift+its key cycles · the bar on top shows its options')]];
 window.addEventListener('keydown', (e) => { if ((e.ctrlKey || e.metaKey) && e.altKey && e.shiftKey && e.code === 'KeyK' && !$('#editor').classList.contains('hidden')) { e.preventDefault(); e.stopImmediatePropagation(); psShowKeys(); } }, true);
 (() => {
   const wrap = $('.menu-wrap');

@@ -12,7 +12,7 @@ const TOOLS = [
   ['select', 'select', 'V', 'Select (V)'], ['hand', 'hand', 'H', 'Hand / pan (H, or hold Space)'], '-',
   ['rect', 'rect', 'R', 'Rectangle (R)'], ['ellipse', 'ellipse', 'O', 'Ellipse (O)'], ['triangle', 'triangle', '', 'Triangle'],
   ['polygon', 'polygon', '', 'Polygon'], ['star', 'star', '', 'Star'], ['line', 'line', 'L', 'Line (L)'], ['arrow', 'arrow', 'A', 'Arrow (A)'], '-',
-  ['pen', 'pen', 'P', 'Pen – bezier paths like Illustrator (P)'], ['brush', 'brush', 'B', 'Brush – paint like Photoshop (B)'],
+  ['pen', 'pen', 'P', 'Pen – bezier paths (P)'], ['brush', 'brush', 'B', 'Brush – paint freely (B)'],
   ['text', 'text', 'T', 'Text (T)'], ['pipette', 'pipette', 'I', 'Eyedropper (I)'],
 ];
 function buildRail() {
