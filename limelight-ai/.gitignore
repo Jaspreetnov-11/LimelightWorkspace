@@ -1,0 +1,8 @@
+# Python install, chats/pictures/uploads database, logs (never in git)
+.venv/
+data/
+workspace/
+__pycache__/
+*.log
+*.err
+deploy-naya-b/deploy-log.txt

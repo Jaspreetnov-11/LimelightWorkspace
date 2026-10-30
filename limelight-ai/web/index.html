@@ -1,0 +1,210 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0a0c1c">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Limelight AI">
+<link rel="apple-touch-icon" href="logo-mark.png">
+<title>Limelight AI</title>
+<link rel="icon" href="icon.svg">
+<link rel="stylesheet" href="style.css?v=20261029-image">
+<link rel="stylesheet" href="themes.css?v=20261029-image">
+<script>try { document.documentElement.dataset.ui = "limelight";  document.documentElement.dataset.bg = "4"; document.documentElement.dataset.logo = "29"; } catch (e) { document.documentElement.dataset.ui = "limelight"; }</script>
+</head>
+<body>
+<div id="login" class="login hidden">
+  <form id="loginForm" class="login-card">
+    <div class="brand logo-brand login-brand"><span class="brand-mark big"><img class="logo" src="logo-mark.png" alt="Limelight"><span class="ai">AI</span></span></div>
+    <p class="login-sub">Private AI for the Limelight team</p>
+    <label class="login-field">
+      <i data-ic="lock"></i>
+      <input id="loginPw" type="password" placeholder="Enter password" autocomplete="current-password" autofocus>
+      <button id="loginEye" class="login-eye" type="button" aria-label="Show password"><i data-ic="eye"></i></button>
+    </label>
+    <button class="btn primary login-btn">Unlock <i data-ic="arrowright"></i></button>
+    <div id="loginErr" class="login-err" role="alert"></div>
+    <div class="login-foot"><span class="dot ok-dot"></span>Runs on the office network, nothing leaves it</div>
+  </form>
+</div>
+
+<div class="app">
+  <aside class="sidebar">
+    <div class="brand logo-brand"><span class="brand-mark"><img class="logo" src="logo-mark.png" alt="Limelight"><span class="ai">AI</span></span></div>
+    <button id="newBtn" class="nav-item"><i data-ic="newchat"></i>New chat</button>
+    <nav class="modes">
+      <button data-mode="chat" class="mode nav-item active"><i data-ic="chat"></i>Ask</button>
+      <button data-mode="cowork" class="mode nav-item"><i data-ic="cowork"></i>Work</button>
+      <button data-mode="code" class="mode nav-item"><i data-ic="code"></i>Build</button>
+      <button data-mode="images" class="mode nav-item"><i data-ic="image"></i>Images</button>
+      <button data-mode="video" class="mode nav-item"><i data-ic="film"></i>Video</button>
+    </nav>
+    <div class="side-scroll">
+      <div class="sec-head">Projects</div>
+      <div id="projList" class="proj-list"></div>
+      <button id="recentsToggle" class="sec-head toggle">Recents <i data-ic="chev"></i></button>
+      <div id="convList" class="conv-list"></div>
+    </div>
+    <div class="profile-wrap">
+      <div id="profileMenu" class="menu hidden">
+        <button id="editNameBtn">Edit name</button>
+        <button id="settingsBtn">Settings</button>
+        <button id="logoutBtn" class="menu-danger hidden">Log out</button>
+      </div>
+      <button id="profileBtn" class="profile">
+        <span id="avatar" class="avatar">JS</span>
+        <span class="pinfo"><span class="pname-row"><span id="pname" class="pname">Jaspreet Singh</span><span id="statusLine" class="status-light"></span></span></span>
+      </button>
+    </div>
+  </aside>
+  <div id="sideScrim" class="side-scrim"></div>
+
+  <main class="main">
+    <!-- chat / cowork / code -->
+    <section id="chatView" class="view">
+      <header class="topbar">
+        <button class="menu-btn" data-side-open type="button" title="Menu" aria-label="Open menu"><i data-ic="menu"></i></button>
+        <div class="title" id="convTitle">New chat</div>
+        <button class="menu-btn mobile-new" type="button" title="New chat" aria-label="New chat"><i data-ic="newchat"></i></button>
+        <div class="controls">
+          <div class="mpick" id="mpick">
+            <button id="mpickBtn" class="mpick-btn" type="button" aria-haspopup="listbox" aria-expanded="false">
+              <span id="mpickLabel">Auto</span><i data-ic="chev"></i>
+            </button>
+            <div id="mpickMenu" class="mpick-menu hidden" role="listbox"></div>
+            <select id="modelSel" hidden></select>
+          </div>
+          <label class="agent-only ws-label" title="Workspace folder the agent can read and change"><i data-ic="folder"></i>
+            <input id="wsInput" class="ws" placeholder="Workspace folder">
+          </label>
+          <select id="permSel" class="agent-only" title="Permission mode">
+            <option value="ask">Ask before edits</option>
+            <option value="auto-edit">Auto-accept edits</option>
+            <option value="auto">Full auto</option>
+          </select>
+          <button id="filesBtn" class="btn ghost agent-only" title="Show workspace files">Files</button>
+        </div>
+      </header>
+      <div class="body">
+        <div id="messages" class="messages"></div>
+        <aside id="sidePanel" class="side-panel hidden">
+          <div class="panel-head">Tasks</div>
+          <div id="todoList" class="todos muted small">No tasks yet</div>
+          <div class="panel-head">Files <button class="link small" id="refreshFiles" title="Refresh"><i data-ic="refresh"></i></button> <button class="link small" id="openFolder">open</button></div>
+          <div id="fileTree" class="tree small"></div>
+        </aside>
+      </div>
+      <footer class="composer">
+        <div id="attachRow" class="attach-row"></div>
+        <div class="box">
+          <button id="attachBtn" class="cbtn" title="Add files or images"><i data-ic="plus"></i></button>
+          <input id="fileInput" type="file" multiple hidden>
+          <textarea id="input" rows="1" placeholder="Ask Limelight"></textarea>
+          <label id="thinkPill" class="cpill" title="Think harder before answering (slower, smarter)"><input type="checkbox" id="thinkChk" hidden><i data-ic="bulb"></i><span>Think</span></label>
+          <button id="micBtn" class="cbtn" title="Voice typing (offline)"><i data-ic="mic"></i></button>
+          <button id="sendBtn" class="send" title="Send"><i data-ic="arrowup"></i></button>
+          <button id="stopBtn" class="send stop hidden" title="Stop"><i data-ic="stop"></i></button>
+        </div>
+        <div id="slashMenu" class="slash hidden"></div>
+      </footer>
+    </section>
+
+    <!-- images -->
+    <section id="imagesView" class="view hidden">
+      <header class="topbar"><button class="menu-btn" data-side-open type="button" title="Menu" aria-label="Open menu"><i data-ic="menu"></i></button><div class="title">Image Studio</div><div id="imgStatus" class="muted small"></div></header>
+      <div class="img-wrap">
+        <form id="imgForm" class="img-form">
+          <label>Prompt<textarea id="imgPrompt" rows="4" placeholder="A cinematic poster of a youth festival in Delhi, golden hour, vibrant crowd"></textarea></label>
+          <label>Negative prompt<input id="imgNeg" placeholder="blurry, low quality, text, watermark"></label>
+          <div class="row">
+            <label>Quality<select id="imgPreset"><option value="fast">Fast (SDXL Turbo)</option><option value="quality">High quality (SDXL)</option></select></label>
+            <label>Size<select id="imgSize">
+              <option value="">Default</option><option value="512x512">512 x 512</option><option value="768x768">768 x 768</option>
+              <option value="1024x1024">1024 x 1024</option><option value="1216x832">Landscape 1216 x 832</option>
+              <option value="832x1216">Portrait 832 x 1216</option><option value="768x1344">Story 768 x 1344</option></select></label>
+          </div>
+          <div class="row">
+            <label>Steps<input id="imgSteps" type="number" min="1" max="80" placeholder="auto"></label>
+            <label>Seed<input id="imgSeed" type="number" placeholder="random"></label>
+            <label>Count<input id="imgCount" type="number" min="1" max="4" value="1"></label>
+          </div>
+          <button id="imgBtn" class="btn primary">Generate</button>
+          <div id="imgMsg" class="muted small"></div>
+        </form>
+        <div id="gallery" class="gallery"></div>
+      </div>
+    </section>
+
+    <!-- video -->
+    <section id="videoView" class="view hidden">
+      <header class="topbar"><button class="menu-btn" data-side-open type="button" title="Menu" aria-label="Open menu"><i data-ic="menu"></i></button><div class="title">Video Studio</div><div id="vidStatus" class="muted small"></div></header>
+      <div class="img-wrap">
+        <form id="vidForm" class="img-form">
+          <label>Describe the clip<textarea id="vidPrompt" rows="4" placeholder="Youth cycling rally at India Gate, Sunday morning, drone shot moving forward"></textarea></label>
+          <label class="vid-photo">Start from a photo (optional)
+            <input id="vidImage" type="file" accept="image/*">
+            <span id="vidImageName" class="muted small"></span>
+          </label>
+          <div class="row">
+            <label>Shape<select id="vidAspect"><option value="landscape">Landscape 16:9</option><option value="portrait">Reel 9:16</option><option value="square">Square</option></select></label>
+            <label>Length<select id="vidSeconds"><option value="2">2 sec</option><option value="3" selected>3 sec</option><option value="5">5 sec</option></select></label>
+          </div>
+          <div class="row">
+            <label>Quality<select id="vidPreset"><option value="draft">Draft (faster)</option><option value="standard">Standard 720p</option></select></label>
+            <label>Seed<input id="vidSeed" type="number" placeholder="random"></label>
+          </div>
+          <label class="vid-check"><input type="checkbox" id="vidEnhance" checked> Improve my prompt automatically</label>
+          <button id="vidBtn" class="btn primary">Generate video</button>
+          <div id="vidJob" class="vid-job hidden">
+            <div class="vid-bar"><span id="vidBar"></span></div>
+            <div class="vid-job-row"><span id="vidNote" class="muted small"></span><button type="button" id="vidCancel" class="link small">Cancel</button></div>
+          </div>
+          <div id="vidMsg" class="muted small"></div>
+        </form>
+        <div id="vidGallery" class="gallery vid-gallery"></div>
+      </div>
+    </section>
+  </main>
+</div>
+
+<dialog id="settingsDlg" class="dlg set-dlg">
+  <h3>Settings</h3>
+  <section class="set-sec">
+    <div class="set-head">Default model for new chats</div>
+    <div id="setModel" class="set-list" role="listbox"></div>
+  </section>
+  <section class="set-sec">
+    <label class="set-row"><span class="set-txt"><b>Think harder by default</b><small>Slower, more careful answers</small></span>
+      <input type="checkbox" id="setThink" class="switch"></label>
+  </section>
+  <section class="set-sec">
+    <div class="set-head">Work &amp; Build</div>
+    <div class="set-txt"><b>Edits</b><small>What the agent may change without asking you</small></div>
+    <div id="setPerm" class="seg">
+      <button type="button" data-v="ask">Ask first</button>
+      <button type="button" data-v="auto-edit">Auto-accept edits</button>
+      <button type="button" data-v="auto">Full auto</button>
+    </div>
+    <label class="set-field"><span class="set-txt"><b>Default workspace folder</b></span><input id="setWs" placeholder="Folder the agent works in"></label>
+  </section>
+  <section id="setInfo" class="set-sec set-info small muted"></section>
+  <form method="dialog" class="set-foot"><button class="btn primary">Done</button></form>
+</dialog>
+
+<dialog id="themeDlg" class="dlg" style="width:min(640px,94vw)">
+  <h3>Choose a look</h3>
+  <p class="muted small">Each theme changes colours and layout. Click one to try it, it applies instantly.</p>
+  <div class="dlg-sec">Background</div>
+  <div id="bgGrid" class="bg-grid"></div>
+  <div class="dlg-sec">Theme</div>
+  <div id="themeGrid" class="theme-grid"></div>
+  <form method="dialog"><button class="btn primary">Done</button></form>
+</dialog>
+
+<script src="markdown.js?v=20261029-image"></script>
+<script src="app.js?v=20261029-image"></script>
+</body>
+</html>

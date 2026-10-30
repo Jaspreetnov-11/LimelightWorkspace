@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Limelight Office</title>
+<link rel="icon" href="/img/limelight-triangle.svg">
+<link rel="stylesheet" href="/app.css?v=20261030m">
+<link rel="stylesheet" href="/editors.css?v=20261030m">
+<link rel="stylesheet" href="/team.css?v=20261030m">
+<link rel="stylesheet" href="/looks.css?v=20261030m">
+<script>try { const t = localStorage.getItem('llo-theme'), l = localStorage.getItem('llo-look'); if (t) document.documentElement.dataset.theme = t; if (l) document.documentElement.dataset.look = l; } catch {}</script>
+</head>
+<body>
+<div class="shell">
+  <aside class="side">
+    <a class="brand" href="#home"><img src="/img/limelight-triangle.svg" alt=""><span>Limelight <b>Office</b></span></a>
+    <nav id="nav"></nav>
+    <div class="side-foot">
+      <div id="account" class="account"></div>
+      <button id="theme" class="icon-btn" title="Light / dark"></button>
+    </div>
+  </aside>
+  <main id="view" class="view"></main>
+</div>
+<div id="modal" class="modal" hidden></div>
+<div id="toasts" class="toasts"></div>
+<script src="/app.js" type="module"></script>
+</body>
+</html>

@@ -1,0 +1,358 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Studio Home Options</title>
+<link rel="icon" href="img/favicon.png">
+<style>
+@font-face { font-family: 'Inter'; src: url(fonts/inter-latin-wght-normal.woff2) format('woff2'); font-weight: 100 900; }
+@font-face { font-family: 'Rozha One'; src: url(fonts/RozhaOne-Regular.ttf); }
+@font-face { font-family: 'Mukta'; src: url(fonts/Mukta-Medium.ttf); font-weight: 500; }
+@font-face { font-family: 'Mukta'; src: url(fonts/Mukta-ExtraBold.ttf); font-weight: 800; }
+:root { --bg: #0b0c0f; --side: #101217; --card: #14161b; --card2: #1b1d23; --field: #202229; --line: #ffffff0f; --line2: #ffffff1a;
+  --text: #ececf0; --muted: #85858f; --faint: #5a5a63; --acc: #ffc21a; --acc2: #ffd24d; }
+* { box-sizing: border-box; }
+html, body { margin: 0; background: var(--bg); color: var(--text); font: 13px/1.45 Inter, 'Segoe UI', sans-serif; -webkit-font-smoothing: antialiased; }
+button, input { font: inherit; color: inherit; }
+button { cursor: pointer; border: 0; background: none; }
+svg { display: block; }
+.ic { width: 18px; height: 18px; display: inline-flex; flex: none; } .ic svg { width: 100%; height: 100%; }
+.muted { color: var(--muted); } .faint { color: var(--faint); }
+.th { background: #08090b center/contain no-repeat; }
+.shape-ph { background: linear-gradient(135deg, #24262d, #18191e); border: 1px solid #ffffff12; border-radius: 4px; }
+
+/* switcher */
+.switch { position: sticky; top: 0; z-index: 50; display: flex; align-items: center; gap: 6px; padding: 10px 16px; background: #07080acc; backdrop-filter: blur(14px); border-bottom: 1px solid var(--line); }
+.switch b { margin-right: 10px; font-size: 13px; }
+.switch button { padding: 7px 13px; border-radius: 9px; color: var(--muted); font-weight: 500; }
+.switch button:hover { color: var(--text); background: #ffffff0a; }
+.switch button.on { background: var(--acc); color: #141000; font-weight: 600; }
+.switch .desc { margin-left: auto; color: var(--faint); font-size: 12px; }
+.opt { display: none; min-height: calc(100vh - 53px); }
+.opt.on { display: block; }
+.opt.on.o2, .opt.on.o6 { display: grid; }
+.opt.on.o5 { display: flex; }
+
+/* ===== 1 · Spotlight ===== */
+.o1 { padding: 0 48px 60px; background: radial-gradient(60% 40% at 50% 0%, #ffc21a12, transparent 70%), var(--bg); }
+.o1 .top { display: flex; align-items: center; height: 64px; gap: 14px; }
+.o1 .top img { height: 20px; }
+.o1 .top .sp { flex: 1; }
+.o1 .avatar { width: 30px; height: 30px; border-radius: 50%; background: linear-gradient(135deg, var(--acc), #ff6a00); color: #141000; display: grid; place-content: center; font-weight: 700; font-size: 12px; }
+.o1 h1 { text-align: center; font-size: 46px; letter-spacing: -.04em; margin: 70px 0 10px; font-weight: 700; }
+.o1 h1 span { color: var(--acc); }
+.o1 .sub { text-align: center; color: var(--muted); font-size: 15px; margin-bottom: 30px; }
+.o1 .prompt { max-width: 760px; margin: 0 auto; display: flex; align-items: center; gap: 10px; padding: 8px 8px 8px 18px; background: var(--card); border: 1px solid var(--line2); border-radius: 18px; box-shadow: 0 20px 60px -20px #000, 0 0 0 6px #ffc21a08; }
+.o1 .prompt input { flex: 1; background: none; border: 0; outline: 0; font-size: 15px; height: 44px; }
+.o1 .prompt .go { height: 42px; padding: 0 18px; border-radius: 12px; background: var(--acc); color: #141000; font-weight: 600; display: flex; align-items: center; gap: 8px; }
+.o1 .chips { display: flex; justify-content: center; flex-wrap: wrap; gap: 8px; margin: 18px auto 0; max-width: 900px; }
+.o1 .chip { display: flex; align-items: center; gap: 8px; padding: 8px 14px 8px 10px; border-radius: 999px; background: #ffffff07; border: 1px solid var(--line); color: #c8c8cf; }
+.o1 .chip:hover { border-color: var(--line2); background: #ffffff0d; }
+.o1 .chip i { width: 14px; height: 18px; border-radius: 3px; background: #ffffff20; display: block; }
+.o1 .row { max-width: 1240px; margin: 56px auto 0; }
+.o1 .row h3 { display: flex; align-items: center; font-size: 15px; margin: 0 0 14px; font-weight: 600; }
+.o1 .row h3 a { margin-left: auto; font-size: 12px; color: var(--muted); font-weight: 500; }
+.o1 .strip { display: grid; grid-template-columns: repeat(6, 1fr); gap: 14px; }
+.o1 .card .th { aspect-ratio: 1; border-radius: 14px; border: 1px solid var(--line); transition: transform .15s; }
+.o1 .card:hover .th { transform: translateY(-3px); border-color: var(--line2); }
+.o1 .card b { display: block; margin-top: 9px; font-weight: 500; }
+.o1 .card span { color: var(--faint); font-size: 11.5px; }
+
+/* ===== 2 · Dock (sidebar app) ===== */
+.o2 { grid-template-columns: 232px 1fr; min-height: calc(100vh - 53px); }
+.o2 aside { background: var(--side); border-right: 1px solid var(--line); padding: 18px 12px; display: flex; flex-direction: column; gap: 2px; }
+.o2 aside img { height: 18px; margin: 4px 10px 22px; align-self: flex-start; }
+.o2 .new { display: flex; align-items: center; justify-content: center; gap: 8px; height: 40px; border-radius: 11px; background: var(--acc); color: #141000; font-weight: 600; margin-bottom: 16px; }
+.o2 .nav { display: flex; align-items: center; gap: 11px; padding: 9px 10px; border-radius: 9px; color: #a8a8b2; }
+.o2 .nav:hover { background: #ffffff08; color: var(--text); }
+.o2 .nav.on { background: #ffffff0d; color: var(--text); }
+.o2 .nav.on .ic { color: var(--acc); }
+.o2 .nav-h { font-size: 11px; color: var(--faint); margin: 18px 10px 6px; }
+.o2 .brand-dots { display: flex; gap: 6px; padding: 4px 10px; } .o2 .brand-dots i { width: 16px; height: 16px; border-radius: 50%; display: block; box-shadow: inset 0 0 0 1px #ffffff20; }
+.o2 aside .foot { margin-top: auto; padding: 12px 10px 4px; border-top: 1px solid var(--line); display: flex; align-items: center; gap: 10px; color: var(--muted); font-size: 12px; }
+.o2 aside .foot .dot { width: 7px; height: 7px; border-radius: 50%; background: #3ddc84; }
+.o2 main { padding: 22px 36px 50px; }
+.o2 .bar { display: flex; align-items: center; gap: 12px; margin-bottom: 30px; }
+.o2 .search { flex: 1; max-width: 520px; display: flex; align-items: center; gap: 10px; height: 40px; padding: 0 14px; background: var(--field); border-radius: 11px; color: var(--muted); }
+.o2 .bar .kbd { margin-left: auto; font-size: 11px; color: var(--faint); border: 1px solid var(--line2); border-radius: 5px; padding: 1px 6px; }
+.o2 h2 { font-size: 26px; letter-spacing: -.03em; margin: 0 0 4px; font-weight: 700; }
+.o2 .lead { color: var(--muted); margin: 0 0 22px; }
+.o2 .formats { display: grid; grid-template-columns: repeat(7, 1fr); gap: 10px; margin-bottom: 36px; }
+.o2 .fmt { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 14px 12px 12px; text-align: left; height: 118px; display: flex; flex-direction: column; }
+.o2 .fmt:hover { border-color: var(--line2); background: var(--card2); }
+.o2 .fmt .ph { flex: 1; display: flex; align-items: center; justify-content: center; }
+.o2 .fmt b { font-weight: 500; font-size: 12.5px; } .o2 .fmt span { color: var(--faint); font-size: 11px; }
+.o2 h3 { font-size: 14px; margin: 0 0 14px; font-weight: 600; display: flex; } .o2 h3 a { margin-left: auto; color: var(--muted); font-weight: 500; font-size: 12px; }
+.o2 .recent { display: grid; grid-template-columns: 1.6fr 1fr 1fr 1fr; gap: 14px; margin-bottom: 36px; }
+.o2 .rc { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 8px; }
+.o2 .rc .th { aspect-ratio: 4/3; border-radius: 9px; background-size: contain; background-color: #08090b; }
+.o2 .rc.big .th { aspect-ratio: auto; height: calc(100% - 46px); min-height: 180px; }
+.o2 .rc b { display: block; margin: 9px 4px 0; font-weight: 500; } .o2 .rc span { margin: 0 4px; color: var(--faint); font-size: 11px; }
+.o2 .tpls { display: grid; grid-template-columns: repeat(8, 1fr); gap: 12px; }
+.o2 .tpls .th { aspect-ratio: 1; border-radius: 12px; border: 1px solid var(--line); }
+
+/* ===== 3 · Bento ===== */
+.o3 { padding: 26px 40px 50px; }
+.o3 .top { display: flex; align-items: center; gap: 12px; margin-bottom: 20px; } .o3 .top img { height: 20px; } .o3 .top .sp { flex: 1; }
+.o3 .pill { padding: 7px 13px; border-radius: 999px; border: 1px solid var(--line2); color: #c8c8cf; display: flex; gap: 8px; align-items: center; }
+.o3 .bento { display: grid; grid-template-columns: repeat(12, 1fr); grid-auto-rows: 120px; gap: 14px; }
+.o3 .t { background: var(--card); border: 1px solid var(--line); border-radius: 22px; padding: 22px; position: relative; overflow: hidden; display: flex; flex-direction: column; }
+.o3 .t:hover { border-color: var(--line2); }
+.o3 .t h4 { margin: 0; font-size: 13px; font-weight: 600; color: #d6d6dc; display: flex; align-items: center; gap: 8px; }
+.o3 .t p { margin: 4px 0 0; color: var(--muted); font-size: 12px; }
+.o3 .hero { grid-column: span 7; grid-row: span 3; background: radial-gradient(90% 90% at 100% 0%, #3a2c00, #16140c 55%, var(--card)); }
+.o3 .hero h1 { font-size: 44px; line-height: 1.02; letter-spacing: -.045em; margin: auto 0 18px; font-weight: 700; max-width: 520px; }
+.o3 .hero .tri { position: absolute; right: -40px; top: -30px; width: 300px; height: 300px; background: url(img/limelight-triangle.svg) center/contain no-repeat; filter: drop-shadow(0 0 60px #ffc21a55); }
+.o3 .hero .in { display: flex; gap: 8px; background: #0b0c0fcc; border: 1px solid var(--line2); border-radius: 14px; padding: 6px 6px 6px 14px; align-items: center; color: var(--muted); }
+.o3 .hero .in span:not(.ic) { flex: 1; }
+.o3 .hero .in button { background: var(--acc); color: #141000; border-radius: 10px; padding: 9px 16px; font-weight: 600; }
+.o3 .recentT { grid-column: span 5; grid-row: span 3; }
+.o3 .recentT .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 14px; flex: 1; }
+.o3 .recentT .th { border-radius: 12px; background-size: contain; background-color: #08090b; border: 1px solid var(--line); }
+.o3 .sizes { grid-column: span 4; grid-row: span 2; }
+.o3 .sizes .list { margin-top: 12px; display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+.o3 .sizes .list button { display: flex; align-items: center; gap: 9px; padding: 7px 8px; border-radius: 9px; text-align: left; color: #c8c8cf; font-size: 12px; }
+.o3 .sizes .list button:hover { background: #ffffff08; }
+.o3 .sizes .list i { width: 18px; display: flex; justify-content: center; } .o3 .sizes .list i em { display: block; background: #ffffff26; border-radius: 2px; }
+.o3 .ai { grid-column: span 4; grid-row: span 2; background: radial-gradient(100% 100% at 0% 100%, #2a1b5a, var(--card) 70%); }
+.o3 .ai .big { margin-top: auto; font-size: 22px; font-weight: 700; letter-spacing: -.03em; }
+.o3 .brand { grid-column: span 4; grid-row: span 2; }
+.o3 .brand .sw { display: flex; gap: 8px; margin: 14px 0; } .o3 .brand .sw i { width: 30px; height: 30px; border-radius: 50%; display: block; box-shadow: inset 0 0 0 1px #ffffff22; }
+.o3 .brand img { height: 22px; margin-top: auto; align-self: flex-start; }
+.o3 .tplT { grid-column: span 8; grid-row: span 2; }
+.o3 .tplT .row { display: grid; grid-template-columns: repeat(6, 1fr); gap: 10px; margin-top: 14px; flex: 1; }
+.o3 .tplT .th { border-radius: 12px; border: 1px solid var(--line); }
+.o3 .three { grid-column: span 4; grid-row: span 2; background: radial-gradient(100% 100% at 100% 100%, #0e3a3a, var(--card) 70%); }
+.o3 .three .cube { margin: auto; width: 86px; height: 86px; color: #5ee0d0; }
+
+/* ===== 4 · Editorial ===== */
+.o4 { padding: 0 56px 60px; }
+.o4 .top { display: flex; align-items: center; height: 70px; gap: 22px; border-bottom: 1px solid var(--line); }
+.o4 .top img { height: 20px; } .o4 .top a { color: var(--muted); font-size: 12.5px; } .o4 .top a.on { color: var(--text); } .o4 .top .sp { flex: 1; }
+.o4 .head { display: grid; grid-template-columns: 1.1fr 1fr; gap: 60px; padding: 64px 0 48px; align-items: end; }
+.o4 .head h1 { font-size: 84px; line-height: .92; letter-spacing: -.06em; margin: 0; font-weight: 800; }
+.o4 .head h1 em { font-style: normal; color: var(--acc); }
+.o4 .head p { color: var(--muted); font-size: 15px; max-width: 420px; margin: 0 0 22px; }
+.o4 .head .cta { display: flex; gap: 10px; }
+.o4 .head .cta button { height: 44px; padding: 0 20px; border-radius: 12px; font-weight: 600; }
+.o4 .b1 { background: var(--acc); color: #141000; } .o4 .b2 { border: 1px solid var(--line2) !important; color: #d6d6dc; }
+.o4 .sizes { display: grid; grid-template-columns: repeat(6, 1fr); border-top: 1px solid var(--line); border-left: 1px solid var(--line); }
+.o4 .sizes button { border-right: 1px solid var(--line); border-bottom: 1px solid var(--line); padding: 16px 16px 14px; text-align: left; height: 92px; display: flex; flex-direction: column; justify-content: space-between; }
+.o4 .sizes button:hover { background: #ffffff05; }
+.o4 .sizes .r { display: flex; justify-content: space-between; align-items: flex-start; }
+.o4 .sizes .r em { display: block; border: 1px solid #ffffff3a; border-radius: 2px; }
+.o4 .sizes b { font-weight: 500; } .o4 .sizes span { color: var(--faint); font-size: 11px; font-variant-numeric: tabular-nums; }
+.o4 h3 { font-size: 13px; text-transform: uppercase; letter-spacing: .14em; color: var(--muted); font-weight: 600; margin: 56px 0 20px; display: flex; } .o4 h3 a { margin-left: auto; letter-spacing: 0; text-transform: none; }
+.o4 .masonry { columns: 4; column-gap: 18px; }
+.o4 .masonry .it { break-inside: avoid; margin-bottom: 18px; }
+.o4 .masonry .th { border-radius: 4px; width: 100%; }
+.o4 .masonry b { display: block; margin-top: 8px; font-weight: 500; } .o4 .masonry span { color: var(--faint); font-size: 11.5px; }
+
+/* ===== 5 · Command ===== */
+.o5 { flex-direction: column; align-items: center; padding: 0 40px 60px; background: radial-gradient(50% 30% at 50% 22%, #ffffff08, transparent), var(--bg); }
+.o5 .top { width: 100%; display: flex; align-items: center; height: 60px; } .o5 .top img { height: 18px; opacity: .9; } .o5 .top .sp { flex: 1; }
+.o5 .mark { width: 54px; height: 54px; margin: 70px 0 18px; }
+.o5 h2 { font-size: 22px; font-weight: 600; letter-spacing: -.02em; margin: 0 0 22px; color: #d6d6dc; }
+.o5 .pal { width: 640px; background: var(--card); border: 1px solid var(--line2); border-radius: 16px; box-shadow: 0 40px 80px -30px #000; overflow: hidden; }
+.o5 .pal .in { display: flex; align-items: center; gap: 12px; padding: 0 16px; height: 56px; border-bottom: 1px solid var(--line); font-size: 15px; color: var(--muted); }
+.o5 .pal .in .kbd { margin-left: auto; }
+.o5 .kbd { font-size: 11px; color: var(--faint); border: 1px solid var(--line2); border-radius: 5px; padding: 1px 6px; }
+.o5 .pal .grp { padding: 8px; } .o5 .pal .grp h6 { margin: 4px 10px 6px; font-size: 11px; color: var(--faint); font-weight: 500; }
+.o5 .pal .it { display: flex; align-items: center; gap: 12px; padding: 9px 10px; border-radius: 10px; color: #d6d6dc; width: 100%; text-align: left; }
+.o5 .pal .it.sel { background: #ffffff0b; } .o5 .pal .it .ic { color: var(--muted); } .o5 .pal .it.sel .ic { color: var(--acc); }
+.o5 .pal .it .r { margin-left: auto; color: var(--faint); font-size: 11.5px; }
+.o5 .table { width: 900px; margin-top: 56px; }
+.o5 .table h4 { font-size: 12px; color: var(--faint); font-weight: 500; margin: 0 0 8px; }
+.o5 .tr { display: grid; grid-template-columns: 54px 1fr 140px 120px 140px; align-items: center; gap: 14px; padding: 8px 10px; border-radius: 10px; color: #c8c8cf; }
+.o5 .tr:hover { background: #ffffff06; }
+.o5 .tr .th { width: 54px; height: 40px; border-radius: 7px; background-size: contain; background-color: #08090b; border: 1px solid var(--line); }
+.o5 .tr span { color: var(--faint); font-size: 12px; }
+
+/* ===== 6 · Split create ===== */
+.o6 { grid-template-columns: 420px 1fr; min-height: calc(100vh - 53px); }
+.o6 .l { background: var(--side); border-right: 1px solid var(--line); padding: 28px 30px; display: flex; flex-direction: column; }
+.o6 .l img.logo { height: 20px; align-self: flex-start; margin-bottom: 40px; }
+.o6 .l h2 { font-size: 28px; letter-spacing: -.035em; margin: 0 0 6px; font-weight: 700; }
+.o6 .l .lead { color: var(--muted); margin: 0 0 26px; }
+.o6 .lbl { font-size: 11.5px; color: var(--muted); margin: 18px 0 8px; }
+.o6 .fmts { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+.o6 .fmts button { height: 78px; border-radius: 12px; background: var(--card); border: 1px solid var(--line); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 7px; font-size: 11px; color: #a8a8b2; }
+.o6 .fmts button.on { border-color: var(--acc); background: #ffc21a10; color: var(--text); }
+.o6 .fmts em { display: block; border: 1.5px solid currentColor; border-radius: 3px; opacity: .8; }
+.o6 .preview { margin: 22px 0; height: 210px; border-radius: 16px; background: radial-gradient(circle at 1px 1px, #ffffff0a 1px, transparent 0) 0 0/16px 16px, #0b0c0f; display: grid; place-content: center; border: 1px solid var(--line); }
+.o6 .preview div { width: 150px; height: 150px; background: #fff; border-radius: 4px; box-shadow: 0 20px 40px -10px #000; display: grid; place-content: center; color: #999; font-size: 11px; }
+.o6 .start { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
+.o6 .start button { padding: 12px 10px; border-radius: 12px; background: var(--card); border: 1px solid var(--line); text-align: left; }
+.o6 .start button.on { border-color: var(--line2); background: var(--card2); }
+.o6 .start b { display: block; font-weight: 500; margin-top: 8px; } .o6 .start span { font-size: 11px; color: var(--faint); }
+.o6 .create { margin-top: auto; height: 46px; border-radius: 13px; background: var(--acc); color: #141000; font-weight: 600; font-size: 14px; }
+.o6 .r { padding: 28px 40px; }
+.o6 .r .bar { display: flex; align-items: center; gap: 10px; margin-bottom: 26px; }
+.o6 .r .tabs { display: flex; gap: 4px; background: var(--card); border-radius: 11px; padding: 4px; }
+.o6 .r .tabs button { padding: 7px 14px; border-radius: 8px; color: var(--muted); } .o6 .r .tabs button.on { background: var(--field); color: var(--text); }
+.o6 .r .sp { flex: 1; }
+.o6 .r .search { width: 280px; height: 38px; border-radius: 10px; background: var(--card); display: flex; align-items: center; gap: 8px; padding: 0 12px; color: var(--faint); }
+.o6 .grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 18px; }
+.o6 .grid .th { aspect-ratio: 4/3; border-radius: 14px; background-size: contain; background-color: #08090b; border: 1px solid var(--line); }
+.o6 .grid b { display: block; margin-top: 10px; font-weight: 500; } .o6 .grid span { color: var(--faint); font-size: 11.5px; }
+</style>
+</head>
+<body>
+<div class="switch">
+  <b>Studio home · options</b>
+  <button data-o="1" class="on">1 · Spotlight</button><button data-o="2">2 · Dock</button><button data-o="3">3 · Bento</button>
+  <button data-o="4">4 · Editorial</button><button data-o="5">5 · Command</button><button data-o="6">6 · Split create</button>
+  <span class="desc" id="desc"></span>
+</div>
+
+<!-- 1 Spotlight -->
+<section class="opt o1 on" id="o1">
+  <div class="top"><img src="img/limelight-logo-white.png" alt=""><span class="sp"></span><span class="muted">Open file</span><div class="avatar">J</div></div>
+  <h1>Aaj kya <span>design</span> karna hai?</h1>
+  <div class="sub">Likho, size chuno, ya template se shuru karo.</div>
+  <div class="prompt"><span class="ic" data-i="sparkles"></span><input placeholder="“Diwali post Hindi mein, gold aur black…”"><button class="go"><span class="ic" data-i="sparkles"></span>Create</button></div>
+  <div class="chips" data-fill="chips"></div>
+  <div class="row"><h3>Continue where you left <a>All designs →</a></h3><div class="strip" data-fill="recent6"></div></div>
+  <div class="row"><h3>Limelight templates <a>See all →</a></h3><div class="strip" data-fill="tpl6"></div></div>
+</section>
+
+<!-- 2 Dock -->
+<section class="opt o2" id="o2">
+  <aside>
+    <img src="img/limelight-logo-white.png" alt="">
+    <button class="new"><span class="ic" data-i="plus"></span>New design</button>
+    <a class="nav on"><span class="ic" data-i="home"></span>Home</a><a class="nav"><span class="ic" data-i="layout"></span>Templates</a>
+    <a class="nav"><span class="ic" data-i="grid"></span>All designs</a><a class="nav"><span class="ic" data-i="upload"></span>Library</a>
+    <a class="nav"><span class="ic" data-i="sparkles"></span>AI Image</a><a class="nav"><span class="ic" data-i="cube"></span>3D Studio</a>
+    <div class="nav-h">Brand kit</div>
+    <div class="brand-dots"><i style="background:#ffc21a"></i><i style="background:#0b0c0f"></i><i style="background:#fff"></i><i style="background:#ff8a00"></i><i style="background:#5b8cff"></i></div>
+    <a class="nav"><span class="ic" data-i="palette"></span>Logos & fonts</a>
+    <div class="foot"><span class="dot"></span>AI server online</div>
+  </aside>
+  <main>
+    <div class="bar"><div class="search"><span class="ic" data-i="search"></span>Search designs, templates…<span class="kbd">Ctrl K</span></div><span style="flex:1"></span><span class="muted">Open file</span></div>
+    <h2>Good morning, Jaspreet</h2><p class="lead">Kya banana hai aaj? Format chuno ya pichhla kaam kholo.</p>
+    <div class="formats" data-fill="fmt7"></div>
+    <h3>Recent <a>View all</a></h3>
+    <div class="recent" data-fill="recent4"></div>
+    <h3>Templates <a>View all</a></h3>
+    <div class="tpls" data-fill="tpl8"></div>
+  </main>
+</section>
+
+<!-- 3 Bento -->
+<section class="opt o3" id="o3">
+  <div class="top"><img src="img/limelight-logo-white.png" alt=""><span class="sp"></span><span class="pill"><span class="ic" data-i="search"></span>Search <span class="faint">Ctrl K</span></span><span class="pill">Open file</span></div>
+  <div class="bento">
+    <div class="t hero"><div class="tri"></div><h4 style="color:var(--acc)">Limelight Studio</h4><h1>Design anything.<br>Right here.</h1>
+      <div class="in"><span class="ic" data-i="sparkles"></span><span>Describe a design or pick a size…</span><button>Create</button></div></div>
+    <div class="t recentT"><h4><span class="ic" data-i="grid"></span>Recent</h4><div class="grid" data-fill="recent4b"></div></div>
+    <div class="t sizes"><h4><span class="ic" data-i="frame"></span>New size</h4><div class="list" data-fill="sizes8"></div></div>
+    <div class="t ai"><h4><span class="ic" data-i="sparkles"></span>AI Image</h4><p>Local SDXL on NAYA B</p><div class="big">Prompt se photo →</div></div>
+    <div class="t brand"><h4><span class="ic" data-i="palette"></span>Brand kit</h4><div class="sw"><i style="background:#ffc21a"></i><i style="background:#0b0c0f"></i><i style="background:#fff"></i><i style="background:#ff8a00"></i><i style="background:#5b8cff"></i></div><img src="img/limelight-logo-white.png" alt=""></div>
+    <div class="t tplT"><h4><span class="ic" data-i="layout"></span>Templates</h4><div class="row" data-fill="tpl6b"></div></div>
+    <div class="t three"><h4><span class="ic" data-i="cube"></span>3D Studio</h4><p>Gold logo, chrome shapes, podiums</p><span class="cube ic" data-i="cube"></span></div>
+  </div>
+</section>
+
+<!-- 4 Editorial -->
+<section class="opt o4" id="o4">
+  <div class="top"><img src="img/limelight-logo-white.png" alt=""><a class="on">Create</a><a>Designs</a><a>Templates</a><a>Library</a><span class="sp"></span><a>Open file</a></div>
+  <div class="head">
+    <h1>Make it<br><em>shine.</em></h1>
+    <div><p>Posts, posters, decks, backdrops aur 3D — Limelight ke brand mein, isi PC par.</p>
+      <div class="cta"><button class="b1">New design</button><button class="b2">Start from template</button></div></div>
+  </div>
+  <div class="sizes" data-fill="sizes12"></div>
+  <h3>Templates <a class="muted">View all →</a></h3>
+  <div class="masonry" data-fill="masonry"></div>
+</section>
+
+<!-- 5 Command -->
+<section class="opt o5" id="o5">
+  <div class="top"><img src="img/limelight-logo-white.png" alt=""><span class="sp"></span><span class="faint">Studio</span></div>
+  <img class="mark" src="img/limelight-mark.svg" alt="">
+  <h2>What are we making?</h2>
+  <div class="pal">
+    <div class="in"><span class="ic" data-i="search"></span>Type a size, template or file…<span class="kbd">Esc</span></div>
+    <div class="grp"><h6>Quick create</h6><div data-fill="cmdSizes"></div></div>
+    <div class="grp" style="border-top:1px solid var(--line)"><h6>Actions</h6>
+      <button class="it"><span class="ic" data-i="sparkles"></span>Generate image with AI<span class="r">A</span></button>
+      <button class="it"><span class="ic" data-i="cube"></span>Open 3D Studio<span class="r">3</span></button>
+      <button class="it"><span class="ic" data-i="upload"></span>Open PSD / SVG / image…<span class="r">Ctrl O</span></button></div>
+  </div>
+  <div class="table"><h4>Recent files</h4><div data-fill="rows"></div></div>
+</section>
+
+<!-- 6 Split create -->
+<section class="opt o6" id="o6">
+  <div class="l">
+    <img class="logo" src="img/limelight-logo-white.png" alt="">
+    <h2>New design</h2><p class="lead">Format chuno, dekho, aur shuru karo.</p>
+    <div class="lbl">Format</div><div class="fmts" data-fill="fmt8"></div>
+    <div class="preview"><div>1080 × 1080</div></div>
+    <div class="lbl">Start from</div>
+    <div class="start"><button class="on"><span class="ic" data-i="page"></span><b>Blank</b><span>empty artboard</span></button>
+      <button><span class="ic" data-i="layout"></span><b>Template</b><span>Limelight brand</span></button>
+      <button><span class="ic" data-i="sparkles"></span><b>AI</b><span>from a prompt</span></button></div>
+    <button class="create">Create design</button>
+  </div>
+  <div class="r">
+    <div class="bar"><div class="tabs"><button class="on">Recent</button><button>Templates</button><button>Library</button></div><span class="sp"></span><div class="search"><span class="ic" data-i="search"></span>Search</div></div>
+    <div class="grid" data-fill="grid8"></div>
+  </div>
+</section>
+
+<script src="vendor/fabric.min.js"></script>
+<script src="js/icons.js"></script>
+<script src="js/templates.js"></script>
+<script src="js/exporter.js"></script>
+<script>
+const DESC = { 1: 'Canva-style: one big prompt in the centre, chips, rows', 2: 'Adobe/Figma-style app with a left sidebar', 3: 'Bento grid of tiles — playful, everything visible',
+  4: 'Big editorial type, grid of sizes, masonry templates', 5: 'Raycast-style command palette + recent table', 6: 'Create panel with live preview + file browser' };
+const $ = (s, r = document) => r.querySelector(s), $$ = (s, r = document) => [...r.querySelectorAll(s)];
+const show = (n) => { $$('.opt').forEach((o) => o.classList.toggle('on', o.id === 'o' + n)); $$('.switch button').forEach((b) => b.classList.toggle('on', b.dataset.o == n)); $('#desc').textContent = DESC[n]; try { localStorage.setItem('ll-home-opt', n); } catch {} };
+$$('.switch button').forEach((b) => b.onclick = () => show(b.dataset.o));
+const ratio = (w, h, m) => { const r = w / h; return r >= 1 ? [m, m / r] : [m * r, m]; };
+const phBox = (w, h, m, cls = 'shape-ph') => { const [a, b] = ratio(w, h, m); return `<i class="${cls}" style="display:block;width:${a}px;height:${b}px"></i>`; };
+const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+
+async function boot() {
+  hydrateIcons();
+  show(+(localStorage.getItem('ll-home-opt') || 1));
+  const thumbs = {};
+  await Promise.all(TEMPLATES.map(async (t) => {
+    const sc = await renderPageCanvas({ version: '5.3.0', objects: t.build(t.w, t.h) }, t.w, t.h);
+    thumbs[t.id] = sc.toDataURL({ format: 'jpeg', quality: .85, multiplier: 420 / Math.max(t.w, t.h) }); sc.dispose();
+  }));
+  let projects = await fetch('/api/projects').then((r) => r.json()).catch(() => []);
+  // real designs first, then template-based examples so the mock rows never repeat
+  const recent = [...projects, ...TEMPLATES.map((t, i) => ({ name: t.name, width: t.w, height: t.h, pages: 1, thumb: thumbs[t.id], updated: Date.now() - (i + 2) * 5400e3 }))];
+  const rec = (i) => recent[i % recent.length];
+  const ago = (t) => { const m = Math.round((Date.now() - t) / 60000); return m < 60 ? `${m} min ago` : m < 1440 ? `${Math.round(m / 60)} h ago` : `${Math.round(m / 1440)} d ago`; };
+  const tpl = (i) => TEMPLATES[i % TEMPLATES.length];
+  const F = {
+    chips: () => SIZES.slice(0, 8).map((s) => { const [a, b] = ratio(s.w, s.h, 16); return `<button class="chip"><i style="width:${a}px;height:${b}px"></i>${s.name}</button>`; }).join('') + '<button class="chip">+ Custom</button>',
+    recent6: () => Array.from({ length: 6 }, (_, i) => { const p = rec(i); return `<div class="card"><div class="th" style="background-image:url('${p.thumb}');background-size:contain;background-color:#08090b"></div><b>${esc(p.name)}</b><span>${p.width}×${p.height} · ${ago(p.updated)}</span></div>`; }).join(''),
+    tpl6: () => Array.from({ length: 6 }, (_, i) => { const t = tpl(i); return `<div class="card"><div class="th" style="background-image:url('${thumbs[t.id]}')"></div><b>${t.name}</b><span>${t.cat}</span></div>`; }).join(''),
+    fmt7: () => SIZES.slice(0, 7).map((s) => `<button class="fmt"><div class="ph">${phBox(s.w, s.h, 40)}</div><b>${s.name}</b><span>${s.w}×${s.h}</span></button>`).join(''),
+    recent4: () => Array.from({ length: 4 }, (_, i) => { const p = rec(i); return `<div class="rc ${i ? '' : 'big'}"><div class="th" style="background-image:url('${p.thumb}')"></div><b>${esc(p.name)}</b><span>${ago(p.updated)} · ${p.pages} artboard${p.pages > 1 ? 's' : ''}</span></div>`; }).join(''),
+    tpl8: () => TEMPLATES.map((t) => `<div class="th" title="${t.name}" style="background-image:url('${thumbs[t.id]}')"></div>`).join(''),
+    recent4b: () => Array.from({ length: 4 }, (_, i) => `<div class="th" style="background-image:url('${rec(i).thumb}')"></div>`).join(''),
+    sizes8: () => SIZES.slice(0, 8).map((s) => { const [a, b] = ratio(s.w, s.h, 14); return `<button><i><em style="width:${a}px;height:${b}px"></em></i>${s.name}</button>`; }).join(''),
+    tpl6b: () => Array.from({ length: 6 }, (_, i) => `<div class="th" style="background-image:url('${thumbs[tpl(i).id]}')"></div>`).join(''),
+    sizes12: () => SIZES.map((s) => { const [a, b] = ratio(s.w, s.h, 22); return `<button><div class="r"><b>${s.name}</b><em style="width:${a}px;height:${b}px"></em></div><span>${s.w} × ${s.h} · ${s.cat}</span></button>`; }).join(''),
+    masonry: () => TEMPLATES.map((t) => `<div class="it"><img class="th" src="${thumbs[t.id]}" alt=""><b>${t.name}</b><span>${t.cat} · ${t.w}×${t.h}</span></div>`).join(''),
+    cmdSizes: () => SIZES.slice(0, 5).map((s, i) => `<button class="it ${i ? '' : 'sel'}"><span class="ic">${icon('frame')}</span>New ${s.name}<span class="r">${s.w} × ${s.h}</span></button>`).join(''),
+    rows: () => Array.from({ length: 5 }, (_, i) => { const p = rec(i); return `<div class="tr"><div class="th" style="background-image:url('${p.thumb}')"></div><b style="font-weight:500">${esc(p.name)}</b><span>${p.width} × ${p.height}</span><span>${p.pages} artboard${p.pages > 1 ? 's' : ''}</span><span>${ago(p.updated)}</span></div>`; }).join(''),
+    fmt8: () => SIZES.slice(0, 8).map((s, i) => { const [a, b] = ratio(s.w, s.h, 22); return `<button class="${i ? '' : 'on'}"><em style="width:${a}px;height:${b}px"></em>${s.name.split(' ')[0]}</button>`; }).join(''),
+    grid8: () => Array.from({ length: 8 }, (_, i) => { const p = i < recent.length ? recent[i] : { name: tpl(i).name, thumb: thumbs[tpl(i).id], width: tpl(i).w, height: tpl(i).h, updated: Date.now() - i * 3600e3 }; return `<div><div class="th" style="background-image:url('${p.thumb}')"></div><b>${esc(p.name)}</b><span>${p.width}×${p.height} · ${ago(p.updated)}</span></div>`; }).join(''),
+  };
+  $$('[data-fill]').forEach((el) => { el.innerHTML = F[el.dataset.fill](); });
+  hydrateIcons();
+}
+document.fonts.ready.then(boot);
+</script>
+</body>
+</html>

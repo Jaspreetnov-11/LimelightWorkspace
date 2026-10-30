@@ -1,0 +1,218 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Limelight Studio</title>
+<link rel="icon" href="img/favicon.png">
+<link rel="stylesheet" href="css/studio.css">
+<link rel="stylesheet" href="css/premium.css">
+<link rel="stylesheet" href="css/modes.css">
+<link rel="stylesheet" href="css/color.css">
+<link rel="stylesheet" href="css/ps.css">
+</head>
+<body>
+
+<!-- ================= HOME (editorial) ================= -->
+<section id="home" class="screen ed-home">
+  <header class="ed-top">
+    <img src="img/limelight-logo-white.png" class="ed-logo" alt="Limelight">
+    <nav class="ed-nav">
+      <button class="on" data-jump="edCreate">Create</button>
+      <button data-jump="edDesigns">Designs</button>
+      <button data-jump="edTemplates">Design gallery</button>
+    </nav>
+    <div class="grow"></div>
+    <a class="ed-link" href="http://localhost:3350/" target="_top">← Workspace</a>
+    <button class="ed-link" id="btnSettings">AI settings</button>
+    <button class="ed-link" id="btnOpenFile" title="Open .json project, SVG, PSD or image">Open file</button>
+  </header>
+
+  <div class="ed-head" id="edCreate">
+    <h1>Make it<br><em>shine.</em></h1>
+    <div class="ed-intro">
+      <p>Posts, posters, decks, backdrops and 3D — in the Limelight brand, made on this PC.</p>
+      <div class="ed-cta">
+        <button class="ed-b1" id="btnNewDesign">New design</button>
+        <button class="ed-b2" data-jump="edTemplates">Start from the gallery</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="sizeGrid" class="ed-sizes"></div>
+
+  <h3 class="ed-h" id="edDesigns">Your designs <span id="projCount"></span></h3>
+  <div id="projGrid" class="ed-designs"></div>
+
+  <h3 class="ed-h" id="edTemplates">Design gallery <span>Limelight brand · click to start</span></h3>
+  <div id="tplGrid" class="ed-masonry"></div>
+
+  <footer class="ed-foot"><span>Limelight Studio</span><span>Files live in <code>Projects</code>, <code>Library</code> and <code>Exports</code> on this PC.</span></footer>
+</section>
+
+<!-- ================= EDITOR ================= -->
+<section id="editor" class="screen hidden">
+  <header class="topbar">
+    <button class="logo-btn" id="btnHome" title="Home"><img src="img/limelight-mark.svg" alt=""></button>
+    <div class="menu-wrap">
+      <button class="tb" data-menu="file">File</button>
+      <button class="tb" data-menu="edit">Edit</button>
+      <button class="tb" data-menu="object">Object</button>
+      <button class="tb" data-menu="view">View</button>
+    </div>
+    <input id="docName" class="doc-name" value="Untitled design" spellcheck="false">
+    <span id="saveState" class="save-state">Saved</span>
+    <div class="grow"></div>
+    <button class="icon-btn" id="btnUndo" title="Undo (Ctrl+Z)"></button>
+    <button class="icon-btn" id="btnRedo" title="Redo (Ctrl+Y)"></button>
+    <div class="zoom">
+      <button class="icon-btn" id="zoomOut" title="Zoom out"></button>
+      <button class="zoom-val" id="zoomVal" title="Fit to screen">100%</button>
+      <button class="icon-btn" id="zoomIn" title="Zoom in"></button>
+    </div>
+    <button class="btn ghost" id="btn3d"><span class="ic" data-i="cube"></span>3D Studio</button>
+    <button class="btn primary" id="btnExport"><span class="ic" data-i="download"></span>Export</button>
+  </header>
+  <nav class="doctabs" id="docTabs"></nav>
+  <div class="artbar" id="artbar"></div>
+
+  <div class="workbench">
+    <!-- tool rail -->
+    <nav class="rail" id="rail"></nav>
+
+    <!-- left panel -->
+    <aside class="side">
+      <div class="side-tabs" id="sideTabs"></div>
+      <div class="side-title" id="sideTitle">Templates</div>
+      <div class="side-body" id="sideBody"></div>
+    </aside>
+
+    <!-- canvas -->
+    <main class="stage" id="stage">
+      <canvas id="c"></canvas>
+      <div class="tool-hint" id="toolHint"></div>
+      <div class="ctx-bar hidden" id="ctxBar"></div>
+    </main>
+
+    <!-- inspector -->
+    <aside class="inspector" id="inspector"></aside>
+  </div>
+
+  <!-- the four workspaces, at the bottom like Edit: Design is the file, the others open one of its layers -->
+  <nav class="modebar" id="modeTabs" aria-label="Workspace"></nav>
+
+  <footer class="pagebar hidden">
+    <div class="pages" id="pages"></div>
+    <button class="add-page" id="addPage" title="Add page"><span class="ic" data-i="plus"></span></button>
+    <div class="grow"></div>
+    <span class="muted" id="docSize"></span>
+  </footer>
+</section>
+
+<!-- dropdown menu host -->
+<div class="dropdown hidden" id="dropdown"></div>
+
+<!-- ================= MODALS ================= -->
+<div class="modal hidden" id="exportModal">
+  <div class="dialog">
+    <h3>Export</h3>
+    <div class="seg" id="exFormat">
+      <button data-v="png" class="on">PNG</button><button data-v="jpg">JPG</button><button data-v="svg">SVG</button>
+      <button data-v="pdf">PDF</button><button data-v="psd">PSD</button><button data-v="ai">AI</button><button data-v="cdr">CDR</button>
+      <button data-v="all" class="ex-all">All formats</button>
+    </div>
+    <label class="row">Artboards
+      <select id="exPages"><option value="current">Current artboard</option><option value="all">All artboards</option></select></label>
+    <label class="row" id="exScaleRow">Size
+      <select id="exScale"><option value="1">1× (original)</option><option value="2" selected>2× (sharp)</option><option value="3">3×</option><option value="0.5">0.5× (preview)</option></select></label>
+    <label class="row" id="exQualRow">JPG quality <input type="range" id="exQual" min="0.5" max="1" step="0.01" value="0.92"></label>
+    <label class="check"><input type="checkbox" id="exTransparent"> Transparent background (PNG)</label>
+    <p class="muted small" id="exNote">Saved into the <b>Exports</b> folder and downloaded.</p>
+    <div class="dialog-actions">
+      <button class="btn ghost" id="exOpenFolder">Open Exports folder</button>
+      <div class="grow"></div>
+      <button class="btn ghost" data-close>Cancel</button>
+      <button class="btn primary" id="exGo">Export</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal hidden" id="customModal">
+  <div class="dialog small">
+    <h3>Custom size</h3>
+    <div class="two">
+      <label>Width <input type="number" id="cuW" value="1080" min="16"></label>
+      <label>Height <input type="number" id="cuH" value="1080" min="16"></label>
+    </div>
+    <label class="row">Unit <select id="cuUnit"><option value="px">px</option><option value="mm">mm (300 dpi)</option><option value="in">inch (300 dpi)</option><option value="ft">feet (hoarding, 30 dpi)</option></select></label>
+    <div class="dialog-actions"><div class="grow"></div>
+      <button class="btn ghost" data-close>Cancel</button><button class="btn primary" id="cuGo">Create</button></div>
+  </div>
+</div>
+
+<div class="modal hidden" id="settingsModal">
+  <div class="dialog small">
+    <h3>AI settings</h3>
+    <p class="muted small">AI images come from your Limelight AI server (NAYA B). Nothing goes to the cloud.</p>
+    <label class="row">AI server URL <input id="aiUrl" placeholder="http://192.168.0.205:8800"></label>
+    <label class="row">Password (if set) <input id="aiPass" type="password" placeholder="leave empty if none"></label>
+    <p class="small" id="aiState"></p>
+    <div class="dialog-actions"><button class="btn ghost" id="aiTest">Test</button><div class="grow"></div>
+      <button class="btn ghost" data-close>Close</button><button class="btn primary" id="aiSave">Save</button></div>
+  </div>
+</div>
+
+<!-- 3D studio -->
+<div class="studio3d hidden" id="studio3d">
+  <header class="topbar">
+    <img src="img/limelight-mark.svg" class="mini-mark" alt="">
+    <b class="title3d">3D Studio</b>
+    <div class="seg small" id="gizmoMode">
+      <button data-v="translate" class="on" title="Move (W)">Move</button>
+      <button data-v="rotate" title="Rotate (E)">Rotate</button>
+      <button data-v="scale" title="Scale (R)">Scale</button>
+    </div>
+    <div class="grow"></div>
+    <button class="btn ghost" id="s3Cancel">Cancel</button>
+    <button class="btn primary" id="s3Insert">Insert into design</button>
+  </header>
+  <div class="s3-body">
+    <aside class="s3-left">
+      <h4>Add object</h4>
+      <div class="s3-add" id="s3Add"></div>
+      <h4>Scene</h4>
+      <div class="s3-list" id="s3List"></div>
+    </aside>
+    <div class="s3-view" id="s3View"></div>
+    <aside class="s3-right" id="s3Props"></aside>
+  </div>
+</div>
+
+<div class="toast hidden" id="toast"></div>
+<input type="file" id="filePick" hidden multiple>
+
+<script src="vendor/fabric.min.js"></script>
+<script src="vendor/ag-psd.js"></script>
+<script src="js/icons.js"></script>
+<script src="js/templates.js"></script>
+<script src="js/exporter.js"></script>
+<script src="js/editor.js"></script>
+<script src="js/panels.js"></script>
+<script src="js/layers.js"></script>
+<script src="js/doctabs.js"></script>
+<script src="js/app.js"></script>
+<script src="vendor/polygon-clipping.min.js"></script>
+<script src="vendor/imagetracer.js"></script>
+<script src="js/modes.js"></script>
+<script src="js/genfill.js"></script>
+<script src="js/vector.js"></script>
+<script src="js/book.js"></script>
+<script src="js/live.js"></script>
+<script src="js/ps-core.js"></script>
+<script src="js/ps-menus.js"></script>
+<script src="js/ps-extras.js"></script>
+<script src="js/ps-mask.js"></script>
+<script src="js/color.js"></script>
+<script type="module" src="js/studio3d.js"></script>
+</body>
+</html>

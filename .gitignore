@@ -1,0 +1,9 @@
+# This repo is the Limelight Workspace: only these four app folders are in it.
+# Everything else in E:\Limelight Ai (other projects, media, packages) stays out.
+/*
+!/.gitignore
+!/README.md
+!/limelight-workspace/
+!/limelight-office/
+!/limelight-studio/
+!/limelight-ai/

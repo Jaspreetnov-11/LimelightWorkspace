@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="en" data-ui="limelight" data-bg="4">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Model Comparison</title>
+<link rel="icon" href="icon.svg">
+<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="themes.css">
+<style>
+  body { padding: 28px 16px 80px; overflow-y: auto; height: auto; min-height: 100%; background-attachment: fixed; }
+  .wrap { max-width: 1280px; margin: 0 auto; }
+  header.top { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; margin-bottom: 18px; }
+  header.top h1 { font-size: 22px; font-weight: 600; margin: 0; flex: 1; }
+  .toggle { display: flex; align-items: center; gap: 8px; font-size: 14px; color: var(--text2); cursor: pointer; }
+  .score { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 10px; margin-bottom: 26px; }
+  .score .s { background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 12px 14px; }
+  .score .s b { display: block; font-size: 13px; color: var(--text2); font-weight: 500; }
+  .score .s span { font-size: 26px; font-weight: 700; }
+  .score .s small { color: var(--muted); font-size: 12px; }
+  .q { margin-bottom: 30px; }
+  .q h2 { font-size: 15px; font-weight: 600; margin: 0 0 4px; }
+  .q .skill { color: var(--accent); font-size: 12px; font-weight: 600; letter-spacing: .04em; text-transform: uppercase; }
+  .q .prompt { color: var(--text2); font-size: 14px; white-space: pre-wrap; margin: 6px 0 12px; max-height: 120px; overflow: auto; }
+  .cols { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 12px; }
+  .ans { background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 14px; display: flex; flex-direction: column; min-width: 0; }
+  .ans .hd { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
+  .ans .nm { font-weight: 600; font-size: 14px; flex: 1; }
+  .ans .meta { color: var(--muted); font-size: 12px; }
+  .ans .txt { font-size: 14px; line-height: 1.6; flex: 1; overflow-wrap: anywhere; }
+  .ans .txt pre { white-space: pre-wrap; position: relative; background: var(--code); border: 1px solid var(--line); border-radius: 10px; padding: 10px; font-size: 12.5px; }
+  .ans .txt :not(pre) > code { background: var(--panel2); padding: 1px 5px; border-radius: 5px; }
+  .ans .txt table { font-size: 12.5px; }
+  .stars { display: flex; gap: 2px; margin-top: 10px; border-top: 1px solid var(--line); padding-top: 8px; align-items: center; }
+  .stars button { background: none; border: none; font-size: 20px; cursor: pointer; color: var(--line); padding: 0 2px; line-height: 1; }
+  .stars button.on { color: var(--accent); }
+  .stars small { color: var(--muted); margin-left: 6px; font-size: 12px; }
+  .pending { color: var(--muted); font-style: italic; }
+  a { color: var(--accent); }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <h1>Model comparison <small class="muted" style="font-size:14px;font-weight:400">10 non-confidential prompts</small></h1>
+    <label class="toggle"><input type="checkbox" id="blind" checked> Blind mode (hide names, shuffle)</label>
+    <button class="btn" id="reveal">Reveal names</button>
+    <a href="/">Back to Limelight AI</a>
+  </header>
+  <div class="score" id="score"></div>
+  <div id="list"></div>
+</div>
+<script src="markdown.js"></script>
+<script>
+const $ = s => document.querySelector(s);
+let DATA = null;
+const store = (() => { try { return JSON.parse(localStorage.getItem("ll_cmp") || "{}"); } catch { return {}; } })();
+const save = () => { try { localStorage.setItem("ll_cmp", JSON.stringify(store)); } catch {} };
+let blind = true;
+
+// Stable shuffle per prompt so the order doesn't jump around between reloads.
+function order(models, seed) {
+  return [...models].map((m, i) => [m, Math.sin(seed * 9301 + i * 49297) * 1e4 % 1]).sort((a, b) => a[1] - b[1]).map(x => x[0]);
+}
+
+function render() {
+  const models = Object.keys(DATA.answers);
+  // Scoreboard: average stars per model over rated prompts.
+  $("#score").innerHTML = models.map(m => {
+    const rs = DATA.prompts.map(p => store[`${p.id}|${m}`]).filter(Boolean);
+    const avg = rs.length ? (rs.reduce((a, b) => a + b, 0) / rs.length).toFixed(1) : "–";
+    const sp = DATA.prompts.map(p => DATA.answers[m][p.id]?.tok_per_s).filter(Boolean);
+    const speed = sp.length ? `${(sp.reduce((a, b) => a + b, 0) / sp.length).toFixed(0)} tok/s` : "cloud";
+    return `<div class="s"><b>${blind ? "Hidden until reveal" : md.esc(m)}</b><span>${avg}</span> <small>/ 5 · ${rs.length} rated${blind ? "" : " · " + speed}</small></div>`;
+  }).join("");
+
+  $("#list").innerHTML = DATA.prompts.map(p => {
+    const ms = blind ? order(models, p.id) : models;
+    return `<section class="q"><div class="skill">${p.id}. ${md.esc(p.skill)}</div>
+      <div class="prompt">${md.esc(p.prompt)}</div>
+      <div class="cols">${ms.map((m, i) => {
+        const a = DATA.answers[m][p.id];
+        const label = blind ? `Answer ${"ABCDEFG"[i]}` : m;
+        const meta = !blind && a?.seconds ? `${a.seconds}s · ${a.tok_per_s} tok/s` : "";
+        const r = store[`${p.id}|${m}`] || 0;
+        return `<div class="ans"><div class="hd"><span class="nm">${md.esc(label)}</span><span class="meta">${meta}</span></div>
+          <div class="txt">${a?.answer ? md.render(a.answer) : '<span class="pending">Still running…</span>'}</div>
+          <div class="stars" data-k="${p.id}|${md.esc(m)}">${[1,2,3,4,5].map(n => `<button data-n="${n}" class="${n <= r ? "on" : ""}">★</button>`).join("")}<small>${r ? r + "/5" : "rate"}</small></div></div>`;
+      }).join("")}</div></section>`;
+  }).join("");
+  document.querySelectorAll(".stars button").forEach(b => b.onclick = () => {
+    store[b.parentElement.dataset.k] = +b.dataset.n; save(); render();
+  });
+}
+
+$("#blind").onchange = () => { blind = $("#blind").checked; render(); };
+$("#reveal").onclick = () => { $("#blind").checked = false; blind = false; render(); };
+fetch("/api/compare").then(r => r.json()).then(d => { DATA = d; render(); });
+</script>
+</body>
+</html>

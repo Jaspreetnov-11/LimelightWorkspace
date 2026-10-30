@@ -1,0 +1,194 @@
+/* Limelight AI interface themes. Chosen in the Theme picker; stored as <html data-ui="...">.
+   "noir" is the base in style.css; each block below changes colours AND layout. */
+
+/* 0. Limelight (default): Midnight glass layout with a greyer, slate gradient; Inter; original logo */
+html[data-ui="limelight"] {
+  --bg: #0b0c0f; --panel: rgba(255,255,255,.04); --panel2: rgba(255,255,255,.075); --line: rgba(255,255,255,.085);
+  --hover: rgba(255,255,255,.22); --text: #eceef3; --text2: #bcc0cb; --muted: #858a97; --accent: #FFD21F;
+  --accent-ink: #0A0A0B; --accent-soft: rgba(255,210,31,.10); --accent-line: rgba(255,210,31,.40);
+  --code: rgba(0,0,0,.40); --radius: 14px; --col: 760px;
+  --font: "Inter", "Segoe UI", system-ui, "Nirmala UI", "Noto Sans Devanagari", sans-serif; --serif: var(--font);
+  font-size: 15px;
+}
+html[data-ui="limelight"] body {
+  background: radial-gradient(1100px 650px at 8% -15%, #2a3142 0%, transparent 62%),
+              radial-gradient(900px 620px at 108% 112%, #2e2a38 0%, transparent 58%),
+              linear-gradient(180deg, #111216 0%, #0b0c0f 100%);
+  -webkit-font-smoothing: antialiased;
+}
+/* Five midnight-blue backgrounds for the Limelight theme, chosen in the Theme dialog (<html data-bg="1-5">) */
+html[data-ui="limelight"][data-bg="1"] body { /* Midnight: the original navy + violet glow */
+  background: radial-gradient(1100px 650px at 10% -15%, #1e2a63 0%, transparent 60%),
+              radial-gradient(900px 600px at 110% 115%, #33195a 0%, transparent 55%), #07080f; }
+html[data-ui="limelight"][data-bg="2"] body { /* Slate Night: midnight blue, softened with grey */
+  background: radial-gradient(1100px 650px at 10% -15%, #26335e 0%, transparent 62%),
+              radial-gradient(900px 620px at 108% 112%, #2c2f45 0%, transparent 58%), linear-gradient(180deg, #0f1118, #0a0b10); }
+html[data-ui="limelight"][data-bg="3"] body { /* Deep Ocean: navy into teal */
+  background: radial-gradient(1100px 650px at 5% -10%, #15306a 0%, transparent 60%),
+              radial-gradient(1000px 650px at 105% 110%, #0b3d4f 0%, transparent 58%), #060a12; }
+html[data-ui="limelight"][data-bg="4"] body { /* Aurora: blue top, faint magenta bottom */
+  background: radial-gradient(1200px 700px at 50% -25%, #22337a 0%, transparent 62%),
+              radial-gradient(800px 500px at 90% 115%, #4a1f5c 0%, transparent 55%),
+              radial-gradient(700px 500px at 0% 110%, #142c55 0%, transparent 55%), #06070e; }
+html[data-ui="limelight"][data-bg="5"] body { /* Night Sky: calm vertical fade, small centre glow */
+  background: radial-gradient(900px 500px at 50% 0%, rgba(58,82,170,.35) 0%, transparent 70%),
+              linear-gradient(180deg, #121a3a 0%, #0a0e1f 45%, #06070c 100%); }
+
+html[data-ui="limelight"][data-bg="6"] body { /* Midnight Violet: midnight navy top-left, deep purple sweep right and bottom */
+  background: radial-gradient(1100px 700px at 0% -10%, #1f2c6b 0%, transparent 60%),
+              radial-gradient(1000px 800px at 100% 30%, #3a1d6e 0%, transparent 60%),
+              radial-gradient(900px 600px at 40% 120%, #2a1650 0%, transparent 60%),
+              linear-gradient(160deg, #0a0c1c 0%, #0b0818 55%, #07060f 100%);
+  background-attachment: fixed; }
+
+html[data-ui="limelight"] .sidebar { margin: 12px; height: calc(100vh - 24px); border-radius: 20px; border: 1px solid var(--line);
+  background: rgba(255,255,255,.035); backdrop-filter: blur(18px); }
+html[data-ui="limelight"] .side-panel { margin: 12px 12px 12px 0; border-radius: 20px; border: 1px solid var(--line);
+  background: rgba(255,255,255,.035); backdrop-filter: blur(18px); }
+html[data-ui="limelight"] .menu { background: #1c1e24; }
+html[data-ui="limelight"] .topbar { border-bottom: none; padding: 14px 22px; }
+html[data-ui="limelight"] .topbar .title { font-weight: 500; font-size: 14px; color: var(--muted); }
+html[data-ui="limelight"] .btn, html[data-ui="limelight"] select, html[data-ui="limelight"] input { border-radius: 10px; }
+html[data-ui="limelight"] .msg { margin-bottom: 26px; }
+html[data-ui="limelight"] .msg.assistant .bubble { font-size: 15.5px; line-height: 1.75; }
+html[data-ui="limelight"] .msg.user .bubble { border: none; border-radius: 18px; background: rgba(255,255,255,.08); }
+html[data-ui="limelight"] .bubble h1, html[data-ui="limelight"] .bubble h2, html[data-ui="limelight"] .bubble h3 { font-weight: 600; letter-spacing: -.2px; }
+html[data-ui="limelight"] .composer .box { background: rgba(255,255,255,.05); backdrop-filter: blur(18px); box-shadow: 0 12px 40px rgba(0,0,0,.45); }
+html[data-ui="limelight"] .tool, html[data-ui="limelight"] .suggest button, html[data-ui="limelight"] .card { backdrop-filter: blur(12px); }
+html[data-ui="limelight"] .empty { margin-top: 20vh; }
+html[data-ui="limelight"] .empty .sub { font-size: 15px; margin: 14px 0 0; }
+html[data-ui="limelight"] .suggest { max-width: 640px; }
+html[data-ui="limelight"] .suggest button { font-size: 13.5px; border-radius: 12px; background: rgba(255,255,255,.03); }
+html[data-ui="limelight"] .dlg { background: #15171c; }
+
+/* 1. Noir Gold: black + gold, classic serif headings (base, small refinements) */
+html[data-ui="noir"] .dot { box-shadow: none; }
+html[data-ui="noir"] .sidebar { background: #0d0d0d; }
+
+/* 2. Studio: warm charcoal, serif reading column, no bubbles (calm, document-like) */
+html[data-ui="studio"] {
+  --bg: #1d1c1a; --panel: #23221f; --panel2: #2c2a26; --line: #36332e; --hover: #4a463f;
+  --text: #ece6da; --text2: #c9c1b3; --muted: #958c7d; --accent: #e3a548; --accent-ink: #1d1c1a;
+  --accent-soft: #3a2e1a; --accent-line: #7a5a2a; --code: #171614; --col: 740px; --radius: 14px;
+}
+html[data-ui="studio"] .sidebar { background: #191816; }
+html[data-ui="studio"] .dot { box-shadow: none; }
+html[data-ui="studio"] .modes { grid-template-columns: 1fr; gap: 2px; }
+html[data-ui="studio"] .mode { background: transparent; border-color: transparent; }
+html[data-ui="studio"] .mode.active { background: var(--panel2); border-color: transparent; }
+html[data-ui="studio"] .topbar { border-bottom-color: transparent; }
+html[data-ui="studio"] .msg.assistant .bubble { font-family: var(--serif); font-size: 16.5px; line-height: 1.75; }
+html[data-ui="studio"] .msg.user .bubble { border: none; border-radius: 14px; background: var(--panel2); }
+html[data-ui="studio"] .box { border-radius: 20px; padding: 10px; box-shadow: 0 6px 30px #0006; }
+
+/* 3. Terminal: monospace everything, square corners, amber on black (for Code work) */
+html[data-ui="terminal"] {
+  --bg: #000; --panel: #070707; --panel2: #0e0e0e; --line: #262014; --hover: #4d3c10;
+  --text: #ffd27a; --text2: #e0b964; --muted: #8a7344; --accent: #ffb000; --accent-ink: #000;
+  --accent-soft: #1d1500; --accent-line: #6b4a00; --code: #050400; --radius: 0px; --col: 900px;
+  --font: "Cascadia Code", Consolas, "Courier New", monospace; --serif: var(--font);
+  font-size: 14px;
+}
+html[data-ui="terminal"] * { border-radius: 0 !important; }
+html[data-ui="terminal"] .dot { box-shadow: none; border-radius: 0 !important; width: 10px; height: 14px; animation: blink 1.2s infinite; }
+html[data-ui="terminal"] .modes { grid-template-columns: 1fr; gap: 0; }
+html[data-ui="terminal"] .mode { background: transparent; border: none; border-left: 2px solid transparent; }
+html[data-ui="terminal"] .mode.active { border-left-color: var(--accent); background: var(--accent-soft); }
+html[data-ui="terminal"] .msg.user { justify-content: flex-start; }
+html[data-ui="terminal"] .msg.user .bubble { background: none; border: none; padding: 0; max-width: 100%; color: var(--accent); }
+html[data-ui="terminal"] .msg.user .bubble::before { content: "> "; }
+html[data-ui="terminal"] .msg.assistant { border-left: 1px solid var(--line); padding-left: 14px; }
+html[data-ui="terminal"] .box { border-style: dashed; }
+html[data-ui="terminal"] .empty h1::after { content: "_"; animation: blink 1s infinite; }
+
+/* 4. Paper: light cream paper, ink text, highlighter yellow (daytime, print feel) */
+html[data-ui="paper"] {
+  --bg: #f5f0e4; --panel: #fbf8f0; --panel2: #efe8d8; --line: #ddd4c0; --hover: #bdb29a;
+  --text: #1b1a17; --text2: #3b3830; --muted: #776f60; --accent: #1b1a17; --accent-ink: #f5f0e4;
+  --accent-soft: #fff1a8; --accent-line: #c9b25a; --code: #ece4d2; --danger: #c23b2b; --ok: #2e8b4a; --warn: #a77b00;
+  --col: 720px;
+}
+html[data-ui="paper"] .brand { color: var(--text); }
+html[data-ui="paper"] .logo { filter: brightness(0); } /* white wordmark would vanish on paper */
+html[data-ui="paper"] .dot { background: #ffd23f; box-shadow: none; border: 1.5px solid #1b1a17; }
+html[data-ui="paper"] .private { border-color: var(--text); color: var(--text); }
+html[data-ui="paper"] .btn.primary { background: #ffd23f; color: #1b1a17; border-color: #1b1a17; }
+html[data-ui="paper"] .link, html[data-ui="paper"] .tool .name, html[data-ui="paper"] .slash b { color: #8a6400; }
+html[data-ui="paper"] .mode.active { background: #fff1a8; border-color: #1b1a17; }
+html[data-ui="paper"] .msg.assistant .bubble, html[data-ui="paper"] .empty h1 { font-family: var(--serif); }
+html[data-ui="paper"] .msg.assistant .bubble { font-size: 16.5px; line-height: 1.75; }
+html[data-ui="paper"] .msg.user .bubble { background: #fff1a8; border-color: #e6cf6a; border-radius: 4px; }
+html[data-ui="paper"] .bubble pre { color: #1b1a17; }
+html[data-ui="paper"] .dlg::backdrop { background: #1b1a1755; }
+
+/* 5. Midnight Glass: deep blue gradient, frosted floating panels, pill shapes */
+html[data-ui="midnight"] {
+  --bg: #070912; --panel: rgba(255,255,255,.045); --panel2: rgba(255,255,255,.08); --line: rgba(255,255,255,.09);
+  --hover: rgba(255,255,255,.25); --text: #eef1ff; --text2: #c3c9e6; --muted: #8790b5; --accent: #ffd23f;
+  --accent-ink: #0b0d18; --accent-soft: rgba(255,210,63,.12); --accent-line: rgba(255,210,63,.45);
+  --code: rgba(0,0,0,.45); --radius: 18px;
+}
+html[data-ui="midnight"] body {
+  background: radial-gradient(1200px 700px at 15% -10%, #23306b 0%, transparent 60%),
+              radial-gradient(900px 600px at 110% 110%, #3b1f5e 0%, transparent 55%), #070912;
+}
+html[data-ui="midnight"] .sidebar { margin: 12px; border-radius: 22px; border: 1px solid var(--line); height: calc(100vh - 24px);
+  backdrop-filter: blur(18px); }
+html[data-ui="midnight"] .side-panel { margin: 12px 12px 12px 0; border-radius: 22px; border: 1px solid var(--line); backdrop-filter: blur(18px); }
+html[data-ui="midnight"] .topbar { border-bottom: none; }
+html[data-ui="midnight"] .mode, html[data-ui="midnight"] .btn, html[data-ui="midnight"] select,
+html[data-ui="midnight"] input { border-radius: 999px; }
+html[data-ui="midnight"] .msg.user .bubble { border-radius: 20px 20px 6px 20px; background: rgba(255,210,63,.12); border-color: rgba(255,210,63,.25); }
+html[data-ui="midnight"] .box { border-radius: 999px; padding: 6px 8px 6px 14px; backdrop-filter: blur(18px);
+  box-shadow: 0 10px 40px rgba(0,0,0,.5); align-items: center; }
+html[data-ui="midnight"] .box textarea { padding: 6px; }
+html[data-ui="midnight"] .tool, html[data-ui="midnight"] .suggest button, html[data-ui="midnight"] .card { backdrop-filter: blur(12px); border-radius: 16px; }
+
+/* 6. Minimal Rail: pure monochrome, icon-only sidebar that expands on hover */
+html[data-ui="rail"] {
+  --bg: #000; --panel: #0a0a0a; --panel2: #141414; --line: #1f1f1f; --hover: #444;
+  --text: #f5f5f5; --text2: #bdbdbd; --muted: #7a7a7a; --accent: #ffffff; --accent-ink: #000;
+  --accent-soft: #1a1a1a; --accent-line: #555; --code: #050505; --radius: 8px;
+  --serif: var(--font);
+}
+html[data-ui="rail"] .app { position: relative; }
+html[data-ui="rail"] .sidebar { width: 64px; padding: 14px 8px; overflow: hidden; transition: width .18s ease;
+  position: relative; z-index: 10; white-space: nowrap; }
+html[data-ui="rail"] .sidebar:hover { width: 260px; position: absolute; height: 100vh; box-shadow: 8px 0 30px #000c; }
+html[data-ui="rail"] .app > .main { margin-left: 0; }
+html[data-ui="rail"] .sidebar:hover ~ .main { margin-left: 64px; }
+html[data-ui="rail"] .modes { grid-template-columns: 1fr; }
+html[data-ui="rail"] .mode, html[data-ui="rail"] .btn.new { justify-content: flex-start; padding: 10px 14px; background: transparent; border-color: transparent; }
+html[data-ui="rail"] .mode.active { background: var(--panel2); border-color: var(--line); }
+html[data-ui="rail"] .mode .ic, html[data-ui="rail"] .btn.new .ic { width: 18px; height: 18px; }
+html[data-ui="rail"] .sidebar:not(:hover) .conv-list,
+html[data-ui="rail"] .sidebar:not(:hover) .side-foot,
+html[data-ui="rail"] .sidebar:not(:hover) .private { visibility: hidden; }
+html[data-ui="rail"] .brand { font-weight: 600; letter-spacing: .5px; }
+html[data-ui="rail"] .dot { box-shadow: none; width: 12px; height: 12px; margin: 0 6px; }
+html[data-ui="rail"] .topbar { border-bottom: none; }
+html[data-ui="rail"] .msg.user .bubble { border-radius: 8px; }
+html[data-ui="rail"] .empty h1 { font-weight: 500; letter-spacing: -.5px; }
+
+/* ---------- Background picker (Limelight theme) ---------- */
+.bg-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; margin: 8px 0 16px; }
+.bg-card { border: 1px solid var(--line); border-radius: 12px; padding: 0; overflow: hidden; cursor: pointer; background: none; color: var(--text); }
+.bg-card.sel { border-color: var(--accent); box-shadow: 0 0 0 1px var(--accent); }
+.bg-card .sw { height: 70px; }
+.bg-card .nm { font-size: 12px; padding: 6px 4px; text-align: center; }
+.dlg-sec { font-weight: 600; font-size: 13px; margin-top: 14px; }
+
+/* ---------- Theme picker ---------- */
+.theme-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 12px; margin: 12px 0; }
+.theme-card { border: 1px solid var(--line); border-radius: 12px; padding: 0; overflow: hidden; cursor: pointer; text-align: left;
+  background: var(--panel2); color: var(--text); }
+.theme-card.sel { border-color: var(--accent); box-shadow: 0 0 0 1px var(--accent); }
+.theme-card .pv { height: 92px; display: flex; gap: 6px; padding: 8px; }
+.theme-card .pv .sb { width: 30%; border-radius: 6px; }
+.theme-card .pv .mn { flex: 1; display: flex; flex-direction: column; gap: 5px; justify-content: flex-end; }
+.theme-card .pv .ln { height: 6px; border-radius: 3px; }
+.theme-card .pv .ub { align-self: flex-end; width: 55%; height: 12px; border-radius: 6px; }
+.theme-card .pv .cp { height: 14px; border-radius: 7px; margin-top: 4px; display: flex; justify-content: flex-end; padding: 2px; }
+.theme-card .pv .cp i { width: 18px; border-radius: 5px; }
+.theme-card .nm { padding: 8px 10px 2px; font-weight: 600; font-size: 13px; }
+.theme-card .ds { padding: 0 10px 10px; font-size: 11.5px; color: var(--muted); }

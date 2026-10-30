@@ -1,0 +1,7 @@
+# the AI password, everyone's designs, the picture library and exports (never in git)
+config.json
+Projects/
+Library/
+Exports/
+node_modules/
+*.log

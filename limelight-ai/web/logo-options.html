@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Logo Options</title>
+<link rel="icon" href="icon.svg">
+<link rel="stylesheet" href="style.css">
+<style>
+  body { color: #eceef3; font-family: "Inter", sans-serif; padding: 40px 16px 80px; background-attachment: fixed;
+    background: radial-gradient(1200px 700px at 50% -25%, #22337a 0%, transparent 62%), radial-gradient(800px 500px at 90% 115%, #4a1f5c 0%, transparent 55%), radial-gradient(700px 500px at 0% 110%, #142c55 0%, transparent 55%), #06070e; background-attachment: fixed; }
+  h1 { font-weight: 600; font-size: 22px; margin: 0 0 6px; text-align: center; }
+  h2 { font-weight: 600; font-size: 16px; max-width: 980px; margin: 40px auto 14px; color: #c9cde0; }
+  h2 small { color: #8d90a6; font-weight: 400; margin-left: 8px; font-size: 13px; }
+  .sub { color: #8d90a6; text-align: center; margin: 0 0 8px; font-size: 14px; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 14px; max-width: 980px; margin: 0 auto; }
+  .opt { background: rgba(255,255,255,.04); border: 1px solid rgba(255,255,255,.09);
+    border-radius: 14px; padding: 16px; display: flex; flex-direction: column; gap: 14px; }
+  .opt.sel { border-color: #FFD21F; box-shadow: 0 0 0 1px #FFD21F; }
+  .opt.pick .name::after { content: "Recommended"; margin-left: 8px; font-size: 10.5px; font-weight: 700; color: #0A0A0B; background: #FFD21F; padding: 2px 6px; border-radius: 6px; vertical-align: 1px; }
+  .stage { display: flex; justify-content: center; align-items: center; height: 96px; background: rgba(0,0,0,.28); border-radius: 10px; }
+  .small { display: flex; align-items: center; padding: 10px 12px; background: rgba(0,0,0,.28); border-radius: 10px; min-height: 46px; }
+  .row { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+  .name { font-weight: 600; font-size: 14px; } .desc { color: #8d90a6; font-size: 12px; margin-top: 2px; }
+  button { background: #FFD21F; color: #0A0A0B; border: none; border-radius: 9px; padding: 7px 13px; font-weight: 600; cursor: pointer; white-space: nowrap; }
+  .opt.sel button { background: transparent; color: #FFD21F; border: 1px solid #FFD21F; }
+  a { color: #FFD21F; }
+  .stage .brand-mark { --h: 40px; }
+</style>
+</head>
+<body>
+<h1>Logo options</h1>
+<p class="sub">Click "Use this" on the one you like, then go back to <a href="/">Limelight AI</a>. The app updates right away.</p>
+
+<h2>10 new, final candidates <small>my picks are marked</small></h2>
+<div class="grid" id="newGrid"></div>
+<h2>Logo-made AI <small>the logo's own triangle forms the "A"</small></h2>
+<div class="grid" id="markGrid"></div>
+<h2>All earlier options <small>1 to 20</small></h2>
+<div class="grid" id="oldGrid"></div>
+
+<script>
+const NEW = [
+  ["22", "Typeset", "Heavy yellow AI, sized to the wordmark, like it was typed with it", true],
+  ["21", "Lockup", "Tracked yellow A I tucked under the wordmark, like a tagline", true],
+  ["29", "Glass Dot", "Frosted pill, glowing yellow dot, white AI", true],
+  ["23", "Yellow Rule", "Short yellow divider, bold white AI"],
+  ["24", "Filled Seal", "Solid yellow circle, dark AI"],
+  ["25", "Ghost Pill", "White hairline pill, lets the arrow lead"],
+  ["26", "Gradient Ring", "Yellow-to-violet border chip"],
+  ["27", "Tagline", "ARTIFICIAL INTELLIGENCE under the wordmark"],
+  ["28", "Yellow Tile", "Rounded yellow square, app-icon feel"],
+  ["30", "Raised Mark", "White AI on the top line, yellow underline"],
+];
+const MARKS = [
+  ["m1", "Slanted I", "Triangle = A, slanted yellow I beside it"],
+  ["m2", "Small i", "Triangle = A, the wordmark's own i in yellow"],
+];
+const OLD = [
+  ["1", "Badge", "solid yellow block"], ["2", "Superscript", "raised, no box"], ["3", "Outline pill", "thin yellow outline"],
+  ["4", "Divider", "hairline + light AI"], ["5", "Gold Gradient", "no box, glowing gold"], ["6", "Pointer Bubble", "chat bubble"],
+  ["7", "Glass Glow", "frosted chip, soft glow"], ["8", "Seal", "AI inside a ring"], ["9", "Spark", "sparkle + AI"],
+  ["10", "Velocity", "slanted, moving forward"], ["11", "Monogram", "rounded tile, yellow edge"], ["12", "Neon", "outlined, glowing"],
+  ["13", "Split", "white A, yellow I"], ["14", "Pointer Underline", "bar with arrow tip"], ["15", "Corner Badge", "pinned top-right"],
+  ["16", "Violet Chip", "matches the background"], ["17", "Brackets", "[ AI ], code-like"], ["18", "Hairline Frame", "thin, minimal"],
+  ["19", "Dot Join", "yellow dot + heavy AI"], ["20", "Ember Pill", "warm gradient glow"],
+];
+const IMG = { m1: "logo-ai-slant.png", m2: "logo-ai-i.png" };
+const mark = (id, big) => IMG[id]
+  ? `<span class="brand-mark${big ? "" : ""}" style="--h:${big ? 40 : 22}px"><img class="logo" src="${IMG[id]}" alt="Limelight AI"></span>`
+  : `<span class="brand-mark" data-style="${id}" style="--h:${big ? 40 : 22}px"><img class="logo" src="logo-mark.png" alt="Limelight"><span class="ai">AI</span></span>`;
+let cur = "22";
+try { cur = localStorage.getItem("ll_logo") || "22"; } catch (e) {}
+function cards(list) {
+  return list.map(([id, name, d, pick]) => `
+    <div class="opt ${id === cur ? "sel" : ""} ${pick ? "pick" : ""}">
+      <div class="row"><div><div class="name">${/^m/.test(id) ? "" : id + ". "}${name}</div><div class="desc">${d}</div></div>
+        <button data-id="${id}">${id === cur ? "In use" : "Use this"}</button></div>
+      <div class="stage">${mark(id, true)}</div>
+      <div class="small">${mark(id, false)}</div>
+    </div>`).join("");
+}
+function render() {
+  document.getElementById("newGrid").innerHTML = cards(NEW);
+  document.getElementById("markGrid").innerHTML = cards(MARKS);
+  document.getElementById("oldGrid").innerHTML = cards(OLD);
+  document.querySelectorAll("button[data-id]").forEach(b => b.onclick = () => {
+    cur = b.dataset.id;
+    try { localStorage.setItem("ll_logo", cur); } catch (e) {}
+    render();
+  });
+}
+render();
+</script>
+</body>
+</html>

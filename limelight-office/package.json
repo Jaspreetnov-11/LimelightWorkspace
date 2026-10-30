@@ -1,0 +1,10 @@
+{
+  "name": "limelight-office",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "imapflow": "^2.9.1",
+    "mailparser": "^3.12.4",
+    "nodemailer": "^10.2.1"
+  }
+}

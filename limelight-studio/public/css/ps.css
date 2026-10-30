@@ -1,0 +1,123 @@
+/* Limelight Studio - Photoshop look for the Design tab: toolbox with flyouts, options bar, colours, task bar, panels. */
+body:not([data-mode="design"]) .ps-only, body:not([data-mode="design"]) #psBar { display: none !important; }
+
+/* options bar */
+.psbar { display: flex; align-items: center; gap: 10px; height: 38px; padding: 0 12px; background: var(--bg-2); border-bottom: 1px solid var(--line);
+  overflow-x: auto; overflow-y: hidden; white-space: nowrap; scrollbar-width: none; font-size: 12px; color: #c8c8cf; flex-shrink: 0; }
+.psbar::-webkit-scrollbar { display: none; }
+.psbar .grow { flex: 1; }
+.ps-tool { display: inline-flex; align-items: center; gap: 7px; padding-right: 12px; border-right: 1px solid var(--line-2); color: var(--text); }
+.ps-tool svg { width: 17px; height: 17px; color: var(--acc); }
+.pso { display: inline-flex; align-items: center; gap: 6px; }
+.pso > span { color: var(--muted); }
+.pso input[type=range] { width: 84px; accent-color: var(--acc); }
+.pso b { min-width: 34px; font-weight: 500; color: var(--text); font-variant-numeric: tabular-nums; }
+.pso select { height: 26px; font-size: 12px; padding: 0 24px 0 8px; }
+.pso input[type=number] { height: 26px; font-size: 12px; padding: 0 6px; }
+.pso.chk { gap: 5px; cursor: pointer; } .pso.chk span { color: #c8c8cf; }
+.psbar .psb { height: 26px; padding: 0 10px; font-size: 12px; }
+.ps-read { color: var(--muted); font-variant-numeric: tabular-nums; }
+.ps-layer { color: #a8a8b2; max-width: 220px; overflow: hidden; text-overflow: ellipsis; padding-left: 12px; border-left: 1px solid var(--line-2); }
+.ps-qm { color: #ff6b6b; font-weight: 600; }
+.ps-seg { display: inline-flex; gap: 2px; padding: 2px; border-radius: 8px; background: var(--panel-2); }
+.ps-seg .icon-btn { width: 26px; height: 24px; padding: 4px; }
+.ps-seg .icon-btn svg { width: 16px; height: 16px; }
+.ps-gt { width: 30px; height: 24px; border: 0; border-radius: 6px; background: transparent; padding: 3px; cursor: pointer; }
+.ps-gt.on { background: #ffc21a26; }
+.ps-gt i { display: block; width: 100%; height: 100%; border-radius: 3px; }
+.g-linear { background: linear-gradient(90deg, #000, #fff); } .g-radial { background: radial-gradient(#000, #fff 70%); }
+.g-angle { background: conic-gradient(#000, #fff); } .g-reflected { background: linear-gradient(90deg, #fff, #000, #fff); }
+.g-diamond { background: #fff; position: relative; overflow: hidden; } .g-diamond::after { content: ''; position: absolute; inset: 22%; background: #000; transform: rotate(45deg); }
+.ps-sw { width: 22px; height: 22px; border-radius: 6px; border: 1px solid #ffffff40; cursor: pointer; }
+.ps-samp { display: inline-flex; align-items: center; gap: 5px; font-variant-numeric: tabular-nums; }
+.ps-samp i { width: 12px; height: 12px; border-radius: 3px; border: 1px solid #ffffff30; }
+
+/* toolbox */
+body[data-mode="design"] .rail { overflow-y: auto; overflow-x: hidden; scrollbar-width: none; gap: 1px; padding: 6px 0; }
+body[data-mode="design"] .rail::-webkit-scrollbar { display: none; }
+body[data-mode="design"] .rail .icon-btn { width: 32px; height: 30px; padding: 6px; flex-shrink: 0; }
+body[data-mode="design"] .rail .sep { margin: 4px 0; flex-shrink: 0; }
+.ps-tb { position: relative; }
+.ps-more { position: absolute; right: 2px; bottom: 2px; width: 0; height: 0; border-left: 4px solid transparent; border-bottom: 4px solid #6c6c76; }
+.ps-tb.on .ps-more { border-bottom-color: var(--acc); }
+.ps-colors { position: relative; width: 36px; height: 40px; flex-shrink: 0; margin: 4px 0 2px; }
+.ps-colors .ps-fg, .ps-colors .ps-bg { position: absolute; width: 20px; height: 20px; border-radius: 4px; border: 1.5px solid #e8e8ee; box-shadow: 0 0 0 1px #000; cursor: pointer; padding: 0; }
+.ps-colors .ps-fg { left: 3px; top: 3px; z-index: 2; } .ps-colors .ps-bg { left: 13px; top: 13px; }
+.ps-colors .ps-swap { position: absolute; right: -2px; top: -4px; background: none; border: 0; color: #9a9aa5; font-size: 11px; cursor: pointer; padding: 0; }
+.ps-colors .ps-def { position: absolute; left: 0; bottom: -2px; width: 12px; height: 12px; background: none; border: 0; cursor: pointer; padding: 0; }
+.ps-colors .ps-def i { position: absolute; width: 7px; height: 7px; border: 1px solid #ccc; }
+.ps-colors .ps-def i:first-child { left: 0; top: 0; background: #000; z-index: 1; } .ps-colors .ps-def i:last-child { left: 4px; top: 4px; background: #fff; }
+.ps-fly { position: fixed; z-index: 1000; background: var(--glass); backdrop-filter: blur(18px); border: 1px solid var(--line-2); border-radius: 12px; box-shadow: var(--shadow); padding: 5px; min-width: 230px; }
+.ps-fly button { display: flex; align-items: center; gap: 10px; width: 100%; padding: 6px 9px; border: 0; background: none; color: #d6d6dc; border-radius: 8px; font-size: 12.5px; cursor: pointer; text-align: left; }
+.ps-fly button:hover { background: #ffffff0d; color: #fff; } .ps-fly button.on { color: var(--acc); }
+.ps-fly svg { width: 17px; height: 17px; flex-shrink: 0; } .ps-fly span { flex: 1; } .ps-fly kbd { color: var(--faint); font: inherit; font-size: 11px; }
+
+/* contextual task bar under a selection */
+.ps-task { position: absolute; z-index: 30; display: flex; gap: 2px; padding: 4px; border-radius: 12px; background: var(--glass); backdrop-filter: blur(16px); border: 1px solid var(--line-2); box-shadow: var(--shadow); }
+.ps-task button { height: 28px; padding: 0 10px; border: 0; border-radius: 8px; background: none; color: #d6d6dc; font-size: 12px; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; }
+.ps-task button:hover { background: #ffffff10; color: #fff; }
+.ps-task button.pri { background: var(--acc); color: #141000; font-weight: 600; } .ps-task button.pri:hover { background: var(--acc-2); }
+.ps-task svg { width: 14px; height: 14px; }
+
+/* floating adjustment / filter panel */
+.ps-dlg { position: absolute; z-index: 40; right: 16px; top: 16px; width: 300px; max-height: calc(100% - 32px); display: flex; flex-direction: column;
+  background: var(--panel); border: 1px solid var(--line-2); border-radius: 14px; box-shadow: var(--shadow); }
+.ps-dlg header { display: flex; align-items: center; gap: 6px; padding: 10px 10px 10px 14px; font-weight: 600; cursor: move; border-bottom: 1px solid var(--line); }
+.ps-dlg-body { padding: 12px 14px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; }
+.ps-dlg footer { display: flex; align-items: center; gap: 8px; padding: 10px 14px; border-top: 1px solid var(--line); }
+.ps-dlg footer .grow { flex: 1; }
+.psd { display: flex; flex-direction: column; gap: 5px; color: var(--muted); font-size: 12px; }
+.psd > span { display: flex; justify-content: space-between; } .psd b { color: var(--text); font-weight: 500; font-variant-numeric: tabular-nums; }
+.psd input[type=range] { width: 100%; accent-color: var(--acc); }
+.psd input[type=color] { width: 100%; height: 30px; padding: 2px; border-radius: 8px; background: var(--panel-2); border: 0; }
+.psd.chk { flex-direction: row; align-items: center; gap: 8px; color: #c8c8cf; }
+.ps-hist, .ps-curve { width: 100%; background: #0b0c0f; border-radius: 8px; border: 1px solid var(--line); }
+.ps-curve { aspect-ratio: 1; cursor: crosshair; }
+.ps-anchor { display: grid; grid-template-columns: repeat(3, 26px); gap: 3px; }
+.ps-anchor button { width: 26px; height: 26px; border-radius: 6px; border: 1px solid var(--line-2); background: var(--panel-2); cursor: pointer; }
+.ps-anchor button.on { background: var(--acc); }
+.ps-prompt { position: absolute; z-index: 45; width: 250px; padding: 10px; border-radius: 12px; background: var(--panel); border: 1px solid var(--line-2); box-shadow: var(--shadow); display: flex; flex-direction: column; gap: 8px; }
+.ps-prompt textarea { height: auto; padding: 6px 8px; resize: vertical; }
+.ps-prompt div { display: flex; justify-content: flex-end; gap: 6px; }
+#dropdown2 { position: fixed; z-index: 1001; min-width: 210px; }
+.dropdown button.sub kbd { color: var(--muted); }
+
+/* move tool bar, properties panel, context menu, shortcuts, screen modes */
+.ps-home { width: 28px; height: 28px; padding: 5px; } .ps-home svg { width: 17px; height: 17px; }
+.ps-sep { width: 1px; height: 20px; background: var(--line-2); }
+.ps-al { width: 26px; height: 26px; padding: 4px; } .ps-al svg { width: 17px; height: 17px; }
+.ps-props-h { display: flex; padding: 10px 14px 0; border-bottom: 1px solid var(--line); }
+.ps-props-h span { padding: 0 2px 8px; border-bottom: 2px solid var(--acc); font-weight: 600; color: var(--text); }
+.ps-kind { display: flex; align-items: center; gap: 8px; margin: 10px 14px 4px; padding: 7px 10px; border-radius: 8px; background: var(--panel-2); color: var(--text); font-weight: 500; }
+.ps-kind svg { width: 16px; height: 16px; color: var(--acc); }
+.ps-canvas { position: relative; padding-left: 30px; display: flex; flex-direction: column; gap: 6px; }
+.ps-canvas .ps-link { position: absolute; left: 0; top: 14px; width: 26px; height: 26px; padding: 4px; }
+.ps-canvas input[disabled] { opacity: .45; }
+.ps-orient { margin: 8px 0 4px 30px; } .ps-orient .icon-btn { width: 32px; height: 30px; padding: 5px; }
+.ps-res { margin: 6px 0 8px; } .ps-res select { height: 24px; width: 64px; font-size: 11.5px; padding: 0 18px 0 6px; }
+.ps-fillrow { display: flex; gap: 6px; width: 100%; } .ps-fillrow input[type=color] { width: 32px; height: 30px; padding: 2px; border-radius: 7px; } .ps-fillrow select { flex: 1; }
+.ps-pt { width: 32px; height: 30px; padding: 6px; }
+.ps-mini { display: flex; align-items: center; gap: 7px; margin-top: 7px; color: #c8c8cf; font-size: 12px; cursor: pointer; }
+.ps-qa { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; } .ps-qa .btn { height: 28px; font-size: 11.5px; }
+.ps-ctx { min-width: 240px; } .ps-ctx hr { border: 0; border-top: 1px solid var(--line); margin: 4px 6px; }
+.ps-keys { width: min(1100px, 94vw); max-height: 88vh; display: flex; flex-direction: column; }
+.ps-keys-grid { overflow-y: auto; columns: 3 300px; column-gap: 26px; margin-top: 12px; }
+.ps-keys-grid section { break-inside: avoid; margin-bottom: 16px; }
+.ps-keys-grid h4 { margin: 0 0 6px; color: var(--acc); font-size: 12px; letter-spacing: .04em; text-transform: uppercase; }
+.ps-keys-grid div { display: flex; justify-content: space-between; gap: 12px; padding: 4px 0; border-bottom: 1px solid var(--line); font-size: 12px; }
+.ps-keys-grid kbd { font: 11px/1.6 Inter, sans-serif; color: #d6d6dc; background: var(--panel-2); border-radius: 5px; padding: 0 6px; white-space: nowrap; }
+body[data-ps-screen="1"][data-mode="design"] .side, body[data-ps-screen="1"][data-mode="design"] .inspector { display: none !important; }
+body[data-ps-screen="2"][data-mode="design"] .side, body[data-ps-screen="2"][data-mode="design"] .inspector, body[data-ps-screen="2"][data-mode="design"] .rail,
+body[data-ps-screen="2"][data-mode="design"] .topbar, body[data-ps-screen="2"][data-mode="design"] .doctabs, body[data-ps-screen="2"][data-mode="design"] #psBar,
+body[data-ps-screen="2"][data-mode="design"] .modebar { display: none !important; }
+body[data-ps-screen="2"][data-mode="design"] .stage { background: #000; }
+
+/* layer masks & Select and Mask */
+.lp-mask { cursor: pointer; } .lp-mask.edit { outline: 2px solid #fff; outline-offset: 1px; }
+.lp-mask.off { position: relative; } .lp-mask.off::after { content: ''; position: absolute; inset: 0; background: linear-gradient(45deg, transparent 46%, #ff3b3b 46%, #ff3b3b 54%, transparent 54%), linear-gradient(-45deg, transparent 46%, #ff3b3b 46%, #ff3b3b 54%, transparent 54%); }
+.lp-bottom [data-lb=del].drop-hint { background: #ff3b3b22; color: #ff8080; } .lp-bottom [data-lb=del].drop-on { background: #ff3b3b; color: #fff; }
+.ps-badge { font-size: 10px; font-weight: 600; padding: 1px 6px; border-radius: 6px; background: #ffc21a26; color: var(--acc); margin-left: 6px; } .ps-badge.off { background: #ff3b3b26; color: #ff8080; }
+.ps-label { margin-top: 4px; color: var(--muted); font-size: 11px; text-transform: uppercase; letter-spacing: .05em; }
+.ps-mk-row { margin-top: 8px; } .ps-mk-row .icon-btn { width: 32px; height: 30px; padding: 6px; }
+.ps-sam { width: 320px; } .ps-sam-tools { display: flex; gap: 3px; padding: 3px; border-radius: 10px; background: var(--panel-2); }
+.ps-sam-tools .icon-btn { width: 36px; height: 32px; padding: 7px; } .ps-sam-row select { width: 100%; }

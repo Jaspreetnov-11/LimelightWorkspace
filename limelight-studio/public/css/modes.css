@@ -1,0 +1,70 @@
+/* Limelight Studio - the four workspace tabs (Design / Vector / Book / 3D), Generative fill bar, Vector + Book panels */
+
+/* ---------------- workspace tabs: a bar along the bottom, like Edit's Media · Edit · Motion · ... ---------------- */
+.modebar { height: 40px; flex: none; display: flex; align-items: stretch; justify-content: center; gap: 4px; background: #141416; border-top: 1px solid rgba(255,255,255,.06); position: relative; z-index: 31; }
+.mtab { background: none; border: 0; border-radius: 0; border-top: 2px solid transparent; padding: 0 22px; color: #8e8e95; font-size: 13px; font-weight: 600; letter-spacing: .02em; white-space: nowrap; }
+.mtab:hover { color: #e4e4e7; }
+.mtab.on { color: #fff; border-top-color: #ffc21a; }
+.modebar .mb-ctx { position: absolute; left: 14px; top: 0; bottom: 0; display: flex; align-items: center; font-size: 11.5px; color: var(--muted); max-width: 30%; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+.modebar .mb-ctx b { color: var(--text); font-weight: 600; margin: 0 4px; }
+@media (max-width: 1100px) { .modebar .mb-ctx { display: none; } }
+#btn3d { display: none; }
+
+/* the 3D tab sits under the top bar and the document tabs */
+.studio3d.as-tab { inset: auto 0 37px 0; z-index: 30; }
+.studio3d.as-tab .mini-mark, .studio3d.as-tab .title3d { display: none; }
+.studio3d.as-tab > .topbar { height: 44px; }
+.s3-view { overflow: hidden; }
+.s3-tex { width: 34px; height: 34px; object-fit: cover; border-radius: 6px; border: 1px solid var(--line-2); margin-right: 6px; vertical-align: middle; }
+
+/* book: pages live in the Pages panel, not the artboard strip */
+body[data-mode=book] .stage > .artbar { display: none; }
+
+/* ---------------- Generative fill bar ---------------- */
+.genbar { position: absolute; z-index: 6; display: flex; align-items: center; gap: 6px; padding: 5px 5px 5px 10px; width: min(560px, calc(100% - 24px));
+  background: #16181ef2; border: 1px solid var(--line-2); border-radius: 12px; box-shadow: var(--shadow); backdrop-filter: blur(8px); }
+.genbar input:not([type]) , .genbar #gbPrompt, .genbar #s3GenP { flex: 1; min-width: 0; height: 34px; background: var(--bg); }
+.genbar .btn { height: 34px; white-space: nowrap; }
+.gb-ic { width: 20px; height: 20px; color: var(--acc); flex: none; display: flex; }
+.gb-ic svg { width: 20px; height: 20px; }
+.gb-vec { display: flex; align-items: center; gap: 5px; font-size: 12px; color: var(--muted); white-space: nowrap; }
+.genbar.busy { border-color: var(--acc); }
+.genbar.busy .gb-ic { animation: gbPulse 1.2s ease-in-out infinite; }
+@keyframes gbPulse { 50% { opacity: .35; transform: scale(.85); } }
+.s3-genbar { left: 50%; bottom: 16px; transform: translateX(-50%); }
+.s3-genbar b { font-size: 12px; color: var(--muted); white-space: nowrap; max-width: 150px; overflow: hidden; text-overflow: ellipsis; }
+.ctx-bar .icon-btn.gen { color: var(--acc); }
+.gf-vars { display: grid; grid-template-columns: repeat(4, 1fr); gap: 5px; margin-bottom: 8px; }
+.gf-vars .tile { padding: 2px; }
+.gf-vars .tile.on { border-color: var(--acc); }
+
+/* ---------------- Vector ---------------- */
+.pf-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+.pf-grid .btn { justify-content: flex-start; gap: 7px; }
+
+/* ---------------- Book: masters, spreads ---------------- */
+.bk-masters { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 8px; }
+.bk-masters .text-preset { width: auto; margin: 0; padding: 7px 11px; font-weight: 600; }
+.bk-masters .text-preset.on, .bk-styles .text-preset.on { border-color: var(--acc); color: var(--acc); }
+.bk-spreads { display: flex; flex-direction: column; gap: 8px; max-height: 330px; overflow-y: auto; padding: 2px; }
+.bk-spread { display: flex; justify-content: center; gap: 1px; }
+.bk-pg { width: 62px; padding: 0; border: 1px solid var(--line-2); background: var(--panel); border-radius: 3px; position: relative; display: block; }
+.bk-pg.empty { visibility: hidden; border: 0; }
+.bk-pg i { display: block; aspect-ratio: 210 / 297; background: #f4f2ee center/cover no-repeat; border-radius: 2px; }
+.bk-pg b { position: absolute; left: 0; right: 0; bottom: -17px; font-size: 10.5px; font-weight: 600; color: var(--muted); text-align: center; }
+.bk-pg em { position: absolute; top: 3px; left: 4px; font: 700 10px Inter; color: #9aa0aa; font-style: normal; }
+.bk-pg.on { border-color: var(--acc); box-shadow: 0 0 0 2px var(--acc); }
+.bk-spread { margin-bottom: 14px; }
+.bk-styles .text-preset { padding: 8px 12px; margin-bottom: 5px; }
+.ed-cta .ed-b2 + .ed-b2 { margin-left: 0; }
+
+/* ---------------- live editing: who else has this design open ---------------- */
+.live-people { display: flex; align-items: center; gap: 0; margin-left: 10px; }
+.live-dot { font-size: 10.5px; font-weight: 700; color: #3ddc84; letter-spacing: .04em; text-transform: uppercase; margin-right: 8px; display: flex; align-items: center; gap: 5px; }
+.live-dot::before { content: ''; width: 7px; height: 7px; border-radius: 50%; background: #3ddc84; box-shadow: 0 0 0 3px #3ddc8433; }
+.live-av { width: 26px; height: 26px; border-radius: 50%; border: 2px solid var(--bg); background: var(--c); color: #fff; font: 700 10.5px Inter; margin-left: -6px; padding: 0; cursor: pointer; }
+.live-av:first-of-type { margin-left: 0; }
+.live-av:hover { transform: translateY(-1px); z-index: 1; }
+/* the workspace behind the artboard: a neutral grey in every tab (Photoshop-style pasteboard) */
+.stage { background: radial-gradient(circle at 1px 1px, #ffffff0c 1px, transparent 0) 0 0/24px 24px, #3c3c3c; }
+.s3-view { background: repeating-conic-gradient(#444 0 25%, #3a3a3a 0 50%) 0 0/24px 24px; }

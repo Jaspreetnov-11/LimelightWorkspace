@@ -1,0 +1,188 @@
+{
+ "gpt-oss:20b": {
+  "1": {
+   "answer": "**FOR IMMEDIATE RELEASE**\n\n**National Youth Festival 2027 Kicks Off in New Delhi: A Celebration of Creativity, Innovation, and Unity**\n\nNew Delhi, India – The Ministry of Youth Affairs and Sports proudly announces the launch of the National Youth Festival 2027, set to take place from 14 to 20 August 2027 at the Jawaharlal Nehru Stadium and the adjoining cultural precincts. The week‑long event will feature over 200 interactive workshops, live performances, and innovation showcases, bringing together more than 30,000 young participants from all 28 states and seven union territories.\n\n“Delhi will become a living classroom where young minds collide, collaborate, and create tomorrow’s solutions today,” said Asha Kumar, Minister of Youth Affairs. “The festival’s spirit of inclusivity and cultural exchange reaffirms our commitment to nurturing a vibrant, empowered youth generation.”\n\nRegistrations are open through the official portal **www.youthfest.gov.in**. For media inquiries, contact press@youthmin.gov.in.\n\n---",
+   "seconds": 23.1,
+   "first_token_s": 14.3,
+   "tok_per_s": 25.2
+  },
+  "2": {
+   "answer": "**स्वच्छ भारत अभियान – 30 सेकंड रेडियो विज्ञापन स्क्रिप्ट**  \n\n| समय  | विवरण | VO (आवाज़) | SFX (ध्वनि प्रभाव) |\n|------|--------|------------|--------------------|\n| 0‑3 से | उद्घाटन | “स्वच्छ भारत, स्वच्छ जीवन!” | हल्की हवा, पत्तों की सरसराहट |\n| 3‑6 से | समस्या | “क्या आप जानते हैं कि हमारे सड़कों पर 5 किलोग्राम से अधिक कचरा जमा हो रहा है?” | पवन द्रव्यमान, हल्का शोर |\n| 6‑12 से | समाधान | “स्वच्छ भारत अभियान से जुड़ें। कचरे को अलग करें, पुनर्चक्रण को बढ़ावा दें।” | बिन की खटखटाहट, रीसाइक्लिंग टोन |\n| 12‑18 से | कोन्विक्शन | “सिर्फ एक रीसाइक्लिंग बिन आपका शहर बदल सकता है।” | जार में रीसाइक्लिंग के साथ हल्का शोर |\n| 18‑24 से | कॉल‑टू‑एक्शन | “आज ही जॉइन करें – 1-800-स्वच्छ (800-773-7328)।” | टेलीफोन रिंग, नंबर कॉलिंग ध्वनि |\n| 24‑30 से | समापन | “स्वच्छ भारत, स्वच्छ भविष्य। आपका सहभाग ही बदलाव का कारण!” | ध्वनि-शालीन तान, खुशखुशाली ध्वनि |\n\n> **मार्कडाउन**: ऊपर तालिका को Markdown के रूप में फ़ॉर्मैट किया गया है ताकि आप इसे अपने प्रोजेक्ट में सीधे कॉपी कर सकें। यदि आपको किसी अन्य फ़ॉर्मेट की आवश्यकता हो तो बताएं।",
+   "seconds": 18.2,
+   "first_token_s": 2.0,
+   "tok_per_s": 24.4
+  },
+  "3": {
+   "answer": "**1.**  \n*Sunrise rides, India Gate vibes – Fit India ka swag!*  \n#FitIndiaRide #SunriseCycling #IndiaGate\n\n**2.**  \n*Subah ki thandi hawa, cycle ki dhadkan – yeh hai true fitness!*  \n#SundayCycle #FitIndia #IndiaGateMorning\n\n**3.**  \n*Pedal pe power, India Gate ke saath – Sunday ka ultimate adventure!*  \n#PedalPower #FitIndiaRally #IndiaGateVibes\n\n**4.**  \n*Cycling sunrise, historic backdrop – Fit India ka dum!*  \n#CyclingSunrise #FitIndiaChallenge #IndiaGateCycling\n\n**5.**  \n*Ride, smile, repeat – India Gate ke saath Sunday morning ke liye!*  \n#RideSmileRepeat #FitIndiaVibes #IndiaGateAdventure",
+   "seconds": 8.8,
+   "first_token_s": 1.7,
+   "tok_per_s": 25.4
+  },
+  "4": {
+   "answer": "**Subject:** Request for 15‑Day Extension on Project Report Submission  \n\nDear [Title] [Last Name],\n\nI hope this message finds you well.  \nI am writing on behalf of [Your Organization] to respectfully request a 15‑day extension for submitting the final project report currently due on **[original due date]**.  \n\nBecause a key component of the project was supplied by an external vendor, the delivery was delayed by **[number of days]** days. This unforeseen event has impacted our ability to complete the report to the high standards we uphold.\n\nWe remain fully committed to delivering a comprehensive and accurate submission and will forward it no later than **[new proposed due date]**.  \n\nThank you for considering this request. Please let me know if you require any additional information.\n\nYours sincerely,\n\n[Your Full Name]  \n[Your Title]  \n[Your Organization]  \n[Phone] | [Email]",
+   "seconds": 9.3,
+   "first_token_s": 1.7,
+   "tok_per_s": 24.9
+  },
+  "5": {
+   "answer": "**Formula**\n\n```excel\n=SUMIFS(B:B, A:A, \">=2026-03-01\", A:A, \"<=2026-03-31\")\n```\n\n**One‑line explanation**  \nThis sums the values in column B whose corresponding dates in column A fall between March 1, 2026 and March 31, 2026, inclusive.",
+   "seconds": 14.8,
+   "first_token_s": 11.7,
+   "tok_per_s": 26.0
+  },
+  "6": {
+   "answer": "**Step‑by‑step calculation**\n\n1. **Total registrations**  \n   \\[\n   N = 1\\,240\n   \\]\n\n2. **Number of students (35 %)**  \n   \\[\n   S = 0.35 \\times N = 0.35 \\times 1\\,240 = 434 \\text{ students}\n   \\]\n\n3. **Students needing accommodation (40 %)**  \n   \\[\n   A = 0.40 \\times S = 0.40 \\times 434 = 173.6\n   \\]\n\n   Since accommodation is for whole people, we round to the nearest whole number:  \n   \\[\n   A \\approx 174 \\text{ students}\n   \\]\n\n4. **Cost per student for 2 nights**  \n   \\[\n   C_{\\text{per}} = 850 \\text{ Rs/night} \\times 2 = 1\\,700 \\text{ Rs}\n   \\]\n\n5. **Total accommodation cost**  \n   \\[\n   C_{\\text{total}} = A \\times C_{\\text{per}}\n                 = 174 \\times 1\\,700\n                 = 295\\,800 \\text{ Rs}\n   \\]\n\n---\n\n**Answer:** The total accommodation cost is **₹295,800**.",
+   "seconds": 15.9,
+   "first_token_s": 4.9,
+   "tok_per_s": 25.3
+  },
+  "7": {
+   "answer": "Here’s a tiny, easy‑to‑copy helper that:\n\n1. Loads the CSV with the built‑in *csv* module.  \n2. Counts the attendees for each city with a `collections.Counter`.  \n3. Returns a list of `(city, count)` tuples sorted from most to least.\n\n```python\nimport csv\nfrom collections import Counter\nfrom typing import List, Tuple\n\n\ndef attendees_by_city(csv_path: str) -> List[Tuple[str, int]]:\n    \"\"\"\n    Reads a CSV that has at least the columns: name, email, city.\n    Returns a list of (city, count) sorted from most to least attendees.\n    \"\"\"\n    city_counts = Counter()\n\n    with open(csv_path, newline='', encoding='utf-8') as f:\n        reader = csv.DictReader(f)\n        for row in reader:\n            city = row.get('city')\n            if city:                     # skip rows with no city\n                city_counts[city] += 1\n\n    # Sort by count descending; tie‑break alphabetically for determinism.\n    sorted_cities = sorted(city_counts.items(),\n                           key=lambda x: (-x[1], x[0]))\n    return sorted_cities\n\n\n# -------------------------------------------------------------\n# Short usage example\n# -------------------------------------------------------------\nif __name__ == \"__main__\":\n    # Suppose 'attendees.csv' looks like:\n    # name,email,city\n    # Alice,alice@example.com,New York\n    # Bob,bob@example.com,Los Angeles\n    # Carol,carol@example.com,New York\n\n    result = attendees_by_city('attendees.csv')\n    print(\"Attendees per city (most → least):\")\n    for city, count in result:\n        print(f\"{city}: {count}\")\n```\n\n**What the script does**\n\n- `csv.DictReader` reads each row as a dictionary, picking out the `\"city\"` field.\n- `Counter` aggregates the counts automatically.\n- The final `sorted()` call ensures the list is ordered from highest to lowest count; if two cities have the same count, they’re sorted alphabetically for consistency.\n\nJust drop your CSV into the same directory (or give a full path) and run the script. The printed output will show the city breakdown in descending order.",
+   "seconds": 20.3,
+   "first_token_s": 1.3,
+   "tok_per_s": 24.5
+  },
+  "8": {
+   "answer": "- The convention exceeded its goal, drawing 2,300 youths from 14 blocks; day 1 offered a 40‑stall skills fair and 620 registrations for further courses, while day 2 highlighted civic engagement with mock parliament, a water‑conservation debate that amassed ~180 k social‑media views, and day 3 featured a cultural show and awards for 25 volunteers.  \n- Attendance tallied 1,150 feedback responses, rating the event 4.3/5, yet many cited long registration queues and a shortage of drinking‑water stations on day 1.  \n- Organisers plan to address these issues by introducing online pre‑registration and doubling water points for the next convention.",
+   "seconds": 7.2,
+   "first_token_s": 1.5,
+   "tok_per_s": 25.5
+  },
+  "9": {
+   "answer": "The three tiers of Panchayati Raj in India are:\n\n1. **Village level** – Gram Panchayat  \n2. **Intermediate (block) level** – Panchayat Samiti (or Block Panchayat)  \n3. **District level** – Zila Parishad\n\nTheir constitutional status was granted by the **73rd Constitutional Amendment Act, 1992**.",
+   "seconds": 4.1,
+   "first_token_s": 1.0,
+   "tok_per_s": 25.0
+  },
+  "10": {
+   "answer": "| Day | Platform | Format | Hook |\n|-----|----------|--------|------|\n| **Day 1** | Facebook | Carousel Post | “Why the flag matters – 5 symbols hidden inside its stripes” |\n| **Day 2** | Instagram | Reel (15 s) | “One minute, one flag. See it in motion” |\n| **Day 3** | Twitter | Thread | “Flag‑Hoisting 101: From the first salute to today’s tradition” |\n| **Day 4** | LinkedIn | Article | “The flag’s role in corporate responsibility: A business perspective” |\n| **Day 5** | TikTok | Duet Challenge | “Show us your flag‑hoisting trick – the best gets featured!” |\n| **Day 6** | YouTube Shorts | Quick FAQ | “Top 3 myths about the flag – debunked in 30 seconds” |\n| **Day 7** | Instagram Story | Countdown + Poll | “Only 3 days left! Vote which flag colour should inspire your outfit” |\n\n*Use consistent visuals (national colors, patriotic fonts) and include the campaign hashtag (#HoistWithPride) on every post.*",
+   "seconds": 11.8,
+   "first_token_s": 1.8,
+   "tok_per_s": 25.2
+  }
+ },
+ "qwen3:8b": {
+  "1": {
+   "answer": "**National Youth Festival 2027 Kicks Off in New Delhi, Celebrating Youth Empowerment and Innovation**  \n\nNew Delhi, October 28, 2026 — The Ministry of Youth Affairs today launched the **National Youth Festival 2027** in New Delhi, a vibrant platform to inspire youth engagement, innovation, and leadership. Spanning October 28 to November 1, 2027, the event will feature workshops, cultural showcases, tech exhibitions, and panel discussions, uniting over 50,000 participants from across India.  \n\n“**This festival is a testament to the nation’s belief in youth as catalysts for progress. By fostering creativity and collaboration, we aim to equip the next generation with tools to shape a sustainable future**,” said Dr. Ananya Mehta, Secretary, Ministry of Youth Affairs.  \n\nThe festival will spotlight initiatives like Skill India, climate action, and digital literacy, while celebrating diverse youth voices. Media inquiries: contact [email/phone].  \n\n*(Word count: 150)*",
+   "seconds": 21.7,
+   "first_token_s": 12.8,
+   "tok_per_s": 25.9
+  },
+  "2": {
+   "answer": "**स्क्रिप्ट: स्वच्छ भारत अभियान (30 सेकंड)**  \n\n**VO (आवाज़):**  \n\"स्वच्छ भारत, स्वच्छ भविष्य! हम एक साथ बना रहे हैं एक स्वच्छ भारत। अपने घर के आसपास स्वच्छता बनाए रखें, लगातार प्रयत्न करें। जब हम स्वच्छता बरकरार रखते हैं, तब हम अपने बच्चों के भविष्य की बरकरारी बनाते हैं। स्वच्छ भारत, हमारा ध्यान आपके लिए है!\"  \n\n**SFX (साउंड इफ़ेक्ट):**  \n- **0-5 सेकंड:** चिराग के झिंगर (खुशी के ध्वनि बर्न)  \n- **10-15 सेकंड:** बच्चों के हँसी के ध्वनि बर्न  \n- **20-25 सेकंड:** पानी के बूंद गिरते हुए ध्वनि  \n- **25-30 सेकंड:** जंगल के शांत ध्वनि बर्न (स्वच्छ पर्यावरण के चित्र)  \n\n**टिप्पणी:** आवाज़ सुन्ही और उत्साहित होनी चाहिए, जबकि साउंड इफ़ेक्ट वातावरण को जीवंत बनाए रखें।",
+   "seconds": 34.2,
+   "first_token_s": 10.9,
+   "tok_per_s": 25.1
+  },
+  "3": {
+   "answer": "Here are 5 catchy captions for your Instagram Reel about the **Fit India Cycling Rally** at **India Gate** on a Sunday morning, with 3 hashtags each:  \n\n1. 🚴‍♂️ Sunrise rides are magic! 🌅 Join the #FitIndiaRally at #IndiaGate and ride for a healthier nation! #CyclingInIndia  \n\n2. 🥇 Sunday mornings = power hours! 💪 Cycle with thousands at #IndiaGate and make history with #FitIndiaMovement #CycleForCause  \n\n3. 🚴‍♀️ Wheels of change are rolling! 🌍 Ride through #IndiaGate, breathe fresh air, and inspire millions! #EarlyMorningRide #FitIndiaChallenge  \n\n4. 🗺️ From Delhi to dreams! 🚴‍♂️ The #FitIndiaCyclingRally starts at #IndiaGate – let’s make it epic! #CyclingJourney #IndiaGateAdventure  \n\n5. 👨‍👩‍👧‍👦 Cycling isn’t just a sport – it’s a movement! 🌟 Join the #FitIndiaRally at #IndiaGate and ride for unity! #TogetherWeCycle #IndiaGateRally  \n\nLet me know if you want to tweak the tone! 🚴‍🔥",
+   "seconds": 27.0,
+   "first_token_s": 16.2,
+   "tok_per_s": 25.8
+  },
+  "4": {
+   "answer": "**Subject:** Request for Extension of Project Report Submission Deadline  \n\nDear [Department Name] Team,  \n\nI hope this message finds you well. I am writing to formally request a 15-day extension to submit our project report, originally due on [original deadline]. This delay is caused by unforeseen delays in vendor delivery, which have created a bottleneck in our workflow.  \n\nWe have been in active communication with the affected vendor and are closely monitoring their progress to resolve the issue promptly. While we aim to finalize the report as soon as possible, the current circumstances necessitate this adjustment to ensure accuracy and compliance.  \n\nOur revised submission deadline would be [new deadline]. We sincerely appreciate your understanding and flexibility in this matter. Please let us know if further information is required.  \n\nThank you for your consideration.  \n\nBest regards,  \n[Your Full Name]  \n[Your Position/Department]  \n[Contact Information]  \n\n*(Word count: 148)*",
+   "seconds": 22.2,
+   "first_token_s": 14.1,
+   "tok_per_s": 25.2
+  },
+  "5": {
+   "answer": "**Formula:**  \n`=SUMPRODUCT((YEAR(A2:A100)=2026)*(MONTH(A2:A100)=3),B2:B100)`  \n\n**Explanation:**  \nSums column B where the corresponding date in column A is in March 2026 by checking the year and month of each date.",
+   "seconds": 28.0,
+   "first_token_s": 25.1,
+   "tok_per_s": 25.1
+  },
+  "6": {
+   "answer": "To calculate the total accommodation cost:\n\n### Step 1: Find the number of students  \n**Total registrations** = 1,240  \n**Student percentage** = 35%  \nStudents = $ 1,240 \\times 0.35 = 434 $\n\n---\n\n### Step 2: Find students needing accommodation  \n**Percentage needing accommodation** = 40%  \nStudents needing accommodation = $ 434 \\times 0.40 = 173.6 $ (exact value, even though fractional)\n\n---\n\n### Step 3: Calculate cost per student  \n**Cost per night** = Rs 850  \n**Nights required** = 2  \nTotal cost per student = $ 850 \\times 2 = Rs\\ 1,700 $\n\n---\n\n### Step 4: Total accommodation cost  \nTotal cost = $ 173.6 \\times 1,700 = Rs\\ 295,120 $\n\n---\n\n**Final Answer:**  \nThe total accommodation cost is **Rs 295,120**.",
+   "seconds": 36.9,
+   "first_token_s": 27.5,
+   "tok_per_s": 25.2
+  },
+  "7": {
+   "answer": "Here's a Python function that reads a CSV file and returns attendee counts per city, sorted from most to least:\n\n```python\nimport csv\n\ndef count_attendees_by_city(file_path):\n    \"\"\"Count attendees by city and return sorted results.\"\"\"\n    city_counts = {}\n    \n    with open(file_path, 'r') as file:\n        reader = csv.DictReader(file)\n        for row in reader:\n            city = row['city']\n            city_counts[city] = city_counts.get(city, 0) + 1\n    \n    # Sort by count descending\n    sorted_cities = sorted(city_counts.items(), key=lambda x: x[1], reverse=True)\n    return sorted_cities\n```\n\n**Usage Example:**\n```python\n# Example CSV content (save as attendees.csv):\n# name,email,city\n# Alice,alice@example.com,New York\n# Bob,bob@example.com,Los Angeles\n# Charlie,charlie@example.com,New York\n# David,david@example.com,Chicago\n\nresult = count_attendees_by_city('attendees.csv')\nfor city, count in result:\n    print(f\"{city}: {count}\")\n```\n\n**Output:**\n```\nNew York: 2\nLos Angeles: 1\nChicago: 1\n```\n\nThe function uses `csv.DictReader` to parse the CSV and counts occurrences of each city. Results are sorted by descending count using Python's `sorted()` function.",
+   "seconds": 76.5,
+   "first_token_s": 63.9,
+   "tok_per_s": 24.5
+  },
+  "8": {
+   "answer": "- **Attendance & Activities**: The 3-day youth convention exceeded its 2,000-participant target, drawing 2,300 attendees from 14 blocks. Key events included a skills fair with 40 stalls, civic participation workshops, and a cultural evening with awards for 25 volunteers.  \n- **Feedback & Challenges**: Participants praised the event (4.3/5 rating) but noted long registration queues and insufficient water stations on day one, with the debate on water conservation gaining 1.8 lakh social media views.  \n- **Improvements Planned**: Organizers aim to address issues by introducing online pre-registration and doubling water stations for next year’s event.",
+   "seconds": 13.0,
+   "first_token_s": 7.1,
+   "tok_per_s": 25.4
+  },
+  "9": {
+   "answer": "The three tiers of Panchayati Raj in India are:  \n1. **Gram Panchayat** (village level)  \n2. **Panchayat Samiti** (block level)  \n3. **Zila Parishad** (district level)  \n\n**Constitutional status**: The **73rd Constitutional Amendment (1992)** gave them constitutional recognition under **Part IX** of the Indian Constitution.",
+   "seconds": 12.2,
+   "first_token_s": 8.8,
+   "tok_per_s": 26.8
+  },
+  "10": {
+   "answer": "Here's a 7-day social media content calendar for a national flag-hoisting campaign leading up to Independence Day:\n\n| **Day**       | **Platform**   | **Format**          | **Hook**                                                                 |\n|---------------|----------------|---------------------|--------------------------------------------------------------------------|\n| **Day 1**     | Instagram      | Carousel            | 🇨🇳 *\"What does your flag symbolize? Share your story in the comments!\"* |\n| **Day 2**     | TikTok         | Reel (Video)        | 💥 *\"How to hoist the flag like a pro! Tap to watch the 30-second guide.\"* |\n| **Day 3**     | Facebook       | Live Stream         | 🎤 *\"Join us live at 7 PM for a Q&A with historians about the flag's legacy!\"* |\n| **Day 4**     | YouTube        | Short Video         | 📽️ *\"Behind the scenes: The making of our national flag (with historical footage)\"* |\n| **Day 5**     | Twitter/X      | Thread + Poll       | 🗣️ *\"Poll: Which flag design is most iconic? A) Original B) Modern C) Both!\"* |\n| **Day 6**     | Pinterest      | Infographic         | 📌 *\"7 Ways to Celebrate Independence Day with your flag (scroll to see)\"* |\n| **Day 7**     | All Platforms  | User-Generated Post | 🧩 *\"Show us your flag display! Use #NationalFlagDay for a chance to be featured!\"* |\n\nThis calendar builds anticipation, educates, and encourages participation across platforms. Adjust dates/timing based on your event's actual Independence Day date.",
+   "seconds": 49.0,
+   "first_token_s": 34.3,
+   "tok_per_s": 25.8
+  }
+ },
+ "qwen3-coder:30b": {
+  "1": {
+   "answer": "# National Youth Festival 2027 to Kick Off in New Delhi\n\n**New Delhi, October 28, 2026** – The Ministry of Youth Affairs and Sports announces the upcoming National Youth Festival 2027, scheduled to take place in New Delhi from January 15-20, 2027. This prestigious event will bring together thousands of young people from across India to celebrate youth empowerment, cultural diversity, and national unity.\n\nThe festival will feature vibrant cultural performances, sports competitions, innovation challenges, and leadership workshops. Activities include traditional dance and music showcases, eco-friendly initiatives, and technology exhibitions highlighting youth entrepreneurship.\n\n\"This festival represents our commitment to nurturing the creative potential of India's youth while fostering national integration,\" said Minister Ajay Maken. \"It will showcase the dynamic spirit of our young generation through various cultural and competitive activities.\"\n\nThe event aims to inspire youth participation in nation-building and community development initiatives.\n\n*Contact: Youth Affairs Ministry Press Office*",
+   "seconds": 8.5,
+   "first_token_s": 1.2,
+   "tok_per_s": 27.8
+  },
+  "2": {
+   "answer": "### स्वच्छ भारत अभियान – 30 सेकंड के रेडियो विज्ञापन की स्क्रिप्ट\n\n---\n\n#### **आवाज़ (VO)**  \n(उच्चारण: धीमी और प्रेरक आवाज़ में)\n\n**VO:**  \n\"भारत, तुम्हारा स्वच्छता का सपना है। स्वच्छ भारत अभियान के तहत, हम सभी के साथ सफ़लता की यात्रा शुरू कर रहे हैं। ग्रामीण और शहरी क्षेत्रों में स्वच्छता को बढ़ावा देने के लिए आपकी सहमति और प्रयास की आवश्यकता है।\"\n\n---\n\n#### **साउंड इफ़ेक्ट (SFX)**  \n(आवाज़ में विशेष ध्वनियाँ जोड़ने के लिए)\n\n**SFX:**  \n1. **स्वच्छता की ध्वनि (जैसे: पानी का बूंद-बूंद ध्वनि)** – 3 सेकंड  \n2. **कागज़ को जलाने की ध्वनि** – 1 सेकंड  \n3. **चिमटी के बनावट की ध्वनि (स्वच्छता के लिए अपने आप को निर्माण)** – 2 सेकंड  \n4. **स्वच्छता में समृद्धि की ध्वनि (जैसे: स्वच्छ जल की ध्वनि, फूलों की हवाई ध्वनि)** – 4 सेकंड  \n\n---\n\n#### **आवाज़ (VO) - अंतिम भाग**  \n(उच्चारण: सकारात्मक और प्रेरक आवाज़ में)\n\n**VO:**  \n\"स्वच्छ भारत अभियान, हमारा सपना है। अपनी गाँव को, अपने शहर को स्वच्छ बनाओ – एक स्वच्छता की यात्रा के साथ।\"\n\n---\n\n#### **साउंड इफ़ेक्ट (SFX) - अंतिम भाग**  \n1. **स्वच्छता की सुरभि की ध्वनि (उदाहरण: पौधों की हवाई ध्वनि)** – 3 सेकंड  \n2. **एक साथ स्वच्छता के लिए गाना की ध्वनि (प्रेरणात्मक गीत या ध्वनि)** – 5 सेकंड  \n3. **अंत में स्वच्छता की घोषणा की ध्वनि (जैसे: 'स्वच्छ भारत अभियान' की आवाज़)** – 2 सेकंड\n\n---\n\n### **कुल समय:** 30 सेकंड  \nइस विज्ञापन में स्वच्छता के महत्व को प्रदर्शित किया गया है, जो नागरिकों को सक्रिय रूप से शामिल होने के लिए प्रेरित करता है।",
+   "seconds": 48.6,
+   "first_token_s": 1.0,
+   "tok_per_s": 24.0
+  },
+  "3": {
+   "answer": "**Fit India Cycling Rally ke liye 5 catchy captions:**\n\n1. **Sunday subah India Gate pe cycle rally! Fitness ka style, energy ka beat! 🚴‍♂️💪**\n   #FitIndia #CycleRally #IndiaGate\n\n2. **Sunday morning = cycling energy = India Gate vibes! Let's ride to fitness! 🌟🚴‍♀️**\n   #FitnessGoals #CyclingIndia #SundayRide\n\n3. **India Gate pe subah 6 baje cycle rally start! Fitness ka passion, lifestyle ka statement! 🏆🚴**\n   #FitIndiaMovement #CycleChallenge #IndiaGateRally\n\n4. **Sunday morning cycling rally @ India Gate! Healthy lifestyle = Happy life! 🌿🚴‍♂️**\n   #HealthyLiving #CyclingLife #IndiaGateVibes\n\n5. **Fit India rally ka start! Sunday subah India Gate pe cycle ride! Fitness ka journey, lifestyle ka mission! 🎯🚴‍♀️**\n   #FitIndiaRally #SundayCycling #IndiaGateEvents",
+   "seconds": 9.3,
+   "first_token_s": 1.0,
+   "tok_per_s": 27.9
+  },
+  "4": {
+   "answer": "Subject: Request for Project Report Submission Extension\n\nDear Sir/Madam,\n\nI am writing to formally request a 15-day extension for submitting our project report, originally due on November 10, 2026.\n\nDue to an unexpected delay in vendor delivery of critical components, we have experienced significant setbacks in completing our final deliverables. This delay has impacted our ability to conduct necessary testing and validation procedures, which are essential for report accuracy.\n\nWe assure you that all other project milestones remain on schedule. The additional time will enable us to submit a comprehensive, high-quality report that meets your department's standards.\n\nWe apologize for any inconvenience this extension may cause and appreciate your understanding of this unavoidable circumstance.\n\nThank you for your consideration.\n\nSincerely,\n[Your Name]\n[Your Title]\n[Contact Information]",
+   "seconds": 6.4,
+   "first_token_s": 0.7,
+   "tok_per_s": 29.0
+  },
+  "5": {
+   "answer": "=SUMIFS(B:B,A:A,\">=3/1/2026\",A:A,\"<=3/31/2026\")\n\nThis formula sums all amounts in column B where the corresponding date in column A falls within March 2026 by using date range criteria.",
+   "seconds": 2.8,
+   "first_token_s": 0.8,
+   "tok_per_s": 31.0
+  },
+  "6": {
+   "answer": "I need to calculate the total accommodation cost for the event.\n\nLet me work through this step by step:\n\n**Step 1: Find the number of student registrations**\n- Total registrations = 1,240\n- Percentage of students = 35%\n- Number of students = 1,240 × 0.35 = 434 students\n\n**Step 2: Find how many students need accommodation**\n- 40% of students need accommodation\n- Students needing accommodation = 434 × 0.40 = 173.6 students\n\nSince we can't have a fraction of a person, I'll round to 174 students.\n\n**Step 3: Calculate the accommodation cost per student**\n- Cost per night = Rs 850\n- Number of nights = 2\n- Cost per student = Rs 850 × 2 = Rs 1,700\n\n**Step 4: Calculate total accommodation cost**\n- Number of students needing accommodation = 174\n- Total cost = 174 × Rs 1,700 = Rs 295,800\n\nThe total accommodation cost is Rs 295,800.",
+   "seconds": 10.4,
+   "first_token_s": 0.8,
+   "tok_per_s": 27.3
+  },
+  "7": {
+   "answer": "Here's a Python function that reads a CSV file of event attendees and returns the number of attendees per city, sorted from most to least:\n\n```python\nimport csv\nfrom collections import Counter\n\ndef attendees_per_city(csv_file):\n    \"\"\"\n    Reads a CSV file of event attendees and returns the number of attendees per city,\n    sorted from most to least.\n    \n    Args:\n        csv_file (str): Path to the CSV file with columns: name, email, city\n        \n    Returns:\n        list: List of tuples (city, count) sorted by count descending\n    \"\"\"\n    cities = []\n    \n    with open(csv_file, 'r', newline='', encoding='utf-8') as file:\n        reader = csv.DictReader(file)\n        for row in reader:\n            cities.append(row['city'])\n    \n    # Count occurrences and sort from most to least\n    city_counts = Counter(cities)\n    return city_counts.most_common()\n\n# Example usage:\nif __name__ == \"__main__\":\n    # Create a sample CSV file for demonstration\n    sample_data = \"\"\"name,email,city\nAlice Johnson,alice@example.com,New York\nBob Smith,bob@example.com,Los Angeles\nCharlie Brown,charlie@example.com,New York\nDiana Prince,diana@example.com,Chicago\nEve Wilson,eve@example.com,Los Angeles\nFrank Miller,frank@example.com,New York\nGrace Lee,grace@example.com,Chicago\nHenry Davis,henry@example.com,New York\"\"\"\n    \n    # Write sample data to a temporary CSV file\n    with open('attendees.csv', 'w') as f:\n        f.write(sample_data)\n    \n    # Call the function\n    result = attendees_per_city('attendees.csv')\n    print(\"Attendees per city (sorted by count):\")\n    for city, count in result:\n        print(f\"{city}: {count}\")\n```\n\nThis will output:\n```\nAttendees per city (sorted by count):\nNew York: 4\nLos Angeles: 2\nChicago: 2\n```\n\nThe function works by:\n1. Reading the CSV file using `csv.DictReader` which automatically maps column names to dictionary keys\n2. Extracting all city values into a list\n3. Using `Counter` from the collections module to count occurrences of each city\n4. Returning the results sorted by count in descending order using `most_common()`\n\nTo use this with your own CSV file, simply replace `'attendees.csv'` with the path to your actual file. The CSV should have columns named `name`, `email`, and `city` in that order.",
+   "seconds": 21.7,
+   "first_token_s": 0.8,
+   "tok_per_s": 25.9
+  },
+  "8": {
+   "answer": "• The district youth convention successfully attracted 2,300 participants from 14 blocks, exceeding its 2,000-person target, with activities spanning a skills fair, civic engagement exercises, and a cultural evening\n\n• Key highlights included 620 participants registering for follow-up courses after the skills fair, a widely shared social media debate on water conservation that reached 1.8 lakh views, and recognition of 25 youth volunteers through an awards ceremony\n\n• Participants rated the event 4.3 out of 5 in feedback, though complaints about long registration queues and insufficient drinking water stations led organizers to propose online pre-registration and increased water points for future events",
+   "seconds": 5.8,
+   "first_token_s": 1.0,
+   "tok_per_s": 29.1
+  },
+  "9": {
+   "answer": "The three tiers of Panchayati Raj in India are:\n\n1. **Gram Panchayat** - at village level\n2. **Panchayat Samiti** - at block level  \n3. **Zila Parishad** - at district level\n\nThe **73rd Constitutional Amendment Act, 1992** gave constitutional status to Panchayati Raj Institutions (PRIs).",
+   "seconds": 3.8,
+   "first_token_s": 0.5,
+   "tok_per_s": 26.0
+  },
+  "10": {
+   "answer": "| Day | Platform | Format | Hook |\n|-----|----------|--------|------|\n| Monday | Instagram | Carousel post | \"7 Days to Freedom: Each flag story you'll love\" |\n| Tuesday | Twitter | Thread | \"The forgotten hero who designed our national flag\" |\n| Wednesday | Facebook | Video | \"Flag hoisting ceremony live from [City Name]\" |\n| Thursday | Instagram | Reel | \"Before and after: How the flag became a symbol\" |\n| Friday | TikTok | Challenge | \"Show us your flag-hoisting skills #HoistTheFlag\" |\n| Saturday | LinkedIn | Article | \"Why national flags matter in modern leadership\" |\n| Sunday | All platforms | Countdown post | \"Independence Day is just 1 day away!\" |",
+   "seconds": 6.3,
+   "first_token_s": 0.8,
+   "tok_per_s": 29.0
+  }
+ }
+}

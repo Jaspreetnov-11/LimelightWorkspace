@@ -1,0 +1,31 @@
+/* Looks: pick one in Setup → Look (saved in this browser). Each look only changes the colour tokens. */
+:root[data-look="midnight"] {
+  --bg: #080c18; --side: #0b1122; --panel: #0f172b; --panel-2: #131d36; --panel-3: #1a2645; --line: #1a2440; --line-2: #263459;
+  --text: #eef1fb; --muted: #95a0bf; --faint: #5f6a8a; --accent: #e8b94a; --accent-ink: #1a1203; --accent-soft: rgba(232,185,74,.12); --accent-line: rgba(232,185,74,.5);
+  --shadow: 0 30px 80px -30px rgba(0,0,10,.9), 0 0 0 1px var(--line-2); color-scheme: dark;
+}
+:root[data-look="aurora"] {
+  --bg: #0a0913; --side: rgba(20,17,38,.92); --panel: rgba(28,24,52,.72); --panel-2: rgba(36,31,66,.8); --panel-3: #2c2650; --line: rgba(150,130,255,.14); --line-2: rgba(150,130,255,.26);
+  --text: #f1efff; --muted: #a9a3cc; --faint: #6f6995; --accent: #9b7cff; --accent-ink: #fff; --accent-soft: rgba(155,124,255,.16); --accent-line: rgba(155,124,255,.55);
+  --shadow: 0 30px 80px -30px rgba(10,0,40,.9), 0 0 0 1px var(--line-2); color-scheme: dark;
+}
+:root[data-look="aurora"] body { background: radial-gradient(ellipse 80% 60% at 15% 0%, rgba(124,92,255,.22), transparent 60%), radial-gradient(ellipse 70% 50% at 100% 100%, rgba(38,181,166,.16), transparent 60%), #0a0913; background-attachment: fixed; }
+:root[data-look="aurora"] .card, :root[data-look="aurora"] .tile, :root[data-look="aurora"] .tcard .tthumb { backdrop-filter: blur(14px); }
+:root[data-look="graphite"] {
+  --bg: #16171a; --side: #1b1c20; --panel: #202126; --panel-2: #26272d; --panel-3: #2f3037; --line: #2b2c33; --line-2: #383a42;
+  --text: #e8e9ec; --muted: #9a9ca6; --faint: #6b6d77; --accent: #4f8cff; --accent-ink: #fff; --accent-soft: rgba(79,140,255,.14); --accent-line: rgba(79,140,255,.5);
+  --r: 10px; --shadow: 0 24px 60px -24px rgba(0,0,0,.8), 0 0 0 1px var(--line-2); color-scheme: dark;
+}
+:root[data-look="saffron"] {
+  --bg: #fff8ef; --side: #fdf0de; --panel: #ffffff; --panel-2: #fff6ea; --panel-3: #fbe9d2; --line: #f3e1c8; --line-2: #e9cfac;
+  --text: #1d1a16; --muted: #6e6458; --faint: #a3968a; --accent: #e86a10; --accent-ink: #fff; --accent-soft: rgba(232,106,16,.1); --accent-line: rgba(232,106,16,.5);
+  --good: #138808; --shadow: 0 30px 80px -30px rgba(120,60,0,.25), 0 0 0 1px var(--line-2); color-scheme: light;
+}
+:root[data-look="saffron"] .side { background: linear-gradient(180deg, #fde6c8, #fdf0de 30%, #eef6ea); }
+:root[data-look="mono"] {
+  --bg: #000; --side: #050505; --panel: #0b0b0b; --panel-2: #121212; --panel-3: #1a1a1a; --line: #1c1c1c; --line-2: #2c2c2c;
+  --text: #ffffff; --muted: #a0a0a0; --faint: #666; --accent: #ffffff; --accent-ink: #000; --accent-soft: rgba(255,255,255,.08); --accent-line: rgba(255,255,255,.45);
+  --r: 6px; --shadow: 0 0 0 1px #2c2c2c; color-scheme: dark;
+}
+:root[data-look="mono"] .btn.primary { background: #fff; color: #000; border-color: #fff; }
+:root[data-look="mono"] nav a.on svg { color: #fff; }

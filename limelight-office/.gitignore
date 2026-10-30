@@ -1,0 +1,4 @@
+# private: everyone's mail, files, keys and sign-ins (never in git)
+data/
+node_modules/
+*.log
