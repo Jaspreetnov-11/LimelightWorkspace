@@ -64,16 +64,13 @@
 | Item | Who |
 |---|---|
 | Remove the AI password box from the workspace account menu (the key now works on NAYA B) | Code |
-| Check why image generation failed on 29 Oct (read B's `app.log`) | Owner + code |
 | Fix the AI footer name in the AI's own frontend (outside the workspace) | Code, deploy by Owner |
-| Start-up task for JASPREET's local AI and Ollama, or decide to drop the fallback | Owner decides, then code |
 | JASPREET's local AI has no `data\workspace.key` (checked 31 Oct), so when the workspace falls back to it, people may see its unlock screen. Copy `Data\ai.key` there (Design's inpainting is not affected) | Code |
 | Confirm the "Ollama LAN" firewall rule and `OLLAMA_HOST` are gone on NAYA B | Owner |
 | Make the password copy on JASPREET match B's file (or delete it) | Owner |
 | Vision model sometimes answers Hinglish in English | Code |
 | Not built: document search, skill playbooks, memory, calculator/date tools; video routes on B | Owner decides |
 | Bigger model (gpt-oss-120b) needs RAM/hardware | Owner decides |
-| Bring NAYA B's older `app.py` in line with the development copy carefully (code drift) | Code, deploy by Owner |
 
 ## Phone, speed and app
 | Item | Who |
@@ -97,9 +94,7 @@
 ## Housekeeping in this repo
 | Item | Who |
 |---|---|
-| `config.example.json` lists only some settings (no `editorStandbyUrl`, `aiLocalUrl`, `owners`, `keepSignedIn`, public host keys); defaults live in `server/config.mjs` | Code |
 | The Office key path is hard-coded (`E:/Limelight Ai/limelight-office/data/workspace.key` in `server/areas/office.mjs`) and so is the Office address (`127.0.0.1:3300`); a move to another drive needs a code change | Code |
-| Commit the archive move and these docs | Owner (asks for the commit) |
 
 ## Owner actions from the 31 Oct test
 
@@ -109,5 +104,4 @@
 | Cloudflare: Caching -> Configuration -> Browser Cache TTL -> "Respect Existing Headers" (now 4 hours, it overrides the server's "always check" for files without a version stamp, e.g. `sw.js`) | Owner |
 | JASPREET is still the only PC serving limelightcorp.net: a real standby would need Lighthouse on NAYA B with Data kept in sync and a second tunnel connector | Owner + code |
 | Leave balance on Profile > Overview ("policy not set") differs from the Leaves frame ("12 left") | Code |
-| Limelight AI's mode names in its sidebar (Chat/Cowork/Code/Images) differ from the docs (Ask/Work/Build/Images/Video) - check after the NAYA B update | Code |
 | Test the Office "Leave without saving?" pop-up after real edits, and the installable app with Install on a real phone | Owner |
