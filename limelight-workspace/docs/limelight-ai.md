@@ -109,7 +109,7 @@ NAYA B has **no internet**, and SMB to it fails. Reachable from JASPREET: SSH 22
 - Older way: copy files to `\\192.168.0.99\Team Editing\Limelight AI update\`, then `robocopy` on B.
 - Models and Python wheels: download on JASPREET, copy to B, install with `pip --no-deps` (otherwise a CPU-only torch replaces CUDA torch).
 - Change the `?v=` number in `index.html` whenever CSS or JS changes (Cloudflare caches 4 hours).
-- **Code drift:** B's `app.py` (= `deploy-naya-b\app.py`, about 390 lines) is older than `E:\…\server\app.py` (about 509 lines, has video and inpaint). Do not copy the E: file over B's blindly.
+- **Code drift resolved 31 Oct:** B now runs the same `server\*.py` and `web\` files as JASPREET (video routes, inpaint, faulthandler `data\crash.log`, office-key login `_key_ok` merged back into the E: copy). `deploy-naya-b\app.py` and `app-office-key.py` were replaced with the same file, so re-running the old .bat files no longer downgrades B. B-only setting kept in `run-ai.ps1`: `LIMELIGHT_WARM_FILL=0` (no SDXL fill model preloaded at start). Backup of B's code before the update: `D:\LimelightAI\app-backup-20261031-0218`. Video tab shows "Video model not downloaded yet" on B (Wan not copied).
 
 ## 3. Decisions and why
 - **Local only, no cloud API** (client data is confidential). No Ollama `:cloud` models or telemetry tools.
@@ -136,7 +136,7 @@ NAYA B has **no internet**, and SMB to it fails. Reachable from JASPREET: SSH 22
 
 ## 5. Known issues / pending
 - Remove the AI password box from the workspace account menu now that NAYA B accepts the key (code).
-- Image generation was reported failing on 29 Oct after a restart; B's `app.log` was never checked.
+- **Fixed 31 Oct:** "cannot generate image". The picture was made on B, but the chat stream sent nothing while it ran (cold Qwen load + render = 150-200 s; the picture model is dropped before every chat step, so most chat pictures are cold). Cloudflare cuts a silent stream after 100 s, so users on `*.limelightcorp.net` got an error. `agent.py` now sends a keep-alive (`: ping` SSE comment) every 15 s while any tool runs. Still open: the Images page (`/api/images/generate`, one plain request) can still time out behind Cloudflare on a cold load.
 - The AI footer showed a fixed owner name outside the workspace (inside the workspace the proxy now sets the right name; the frontend itself is not fixed).
 - Video: no working clip; B's `app.py` has no video routes.
 - JASPREET's local AI and Ollama do not auto-start (needs a startup task or a decision to drop the fallback).

@@ -63,6 +63,12 @@ def who(request):
     return {"email": "", "admin": True}
 
 
+# the Limelight apps on JASPREET (Lighthouse, Studio) come in with that key instead of the password
+def _key_ok(request):
+    key = _ws_key()
+    return bool(key) and hmac.compare_digest(request.headers.get("x-lh-key", ""), key)
+
+
 def mine(request, cid):
     c = db.get(cid)
     w = who(request)
@@ -75,7 +81,7 @@ def mine(request, cid):
 async def auth(request: Request, call_next):
     p = request.url.path
     if TOKEN and p.startswith(("/api", "/images", "/videos", "/uploads")) and p not in ("/api/login", "/api/auth", "/api/logout"):
-        if request.cookies.get("ll_token") != TOKEN:
+        if request.cookies.get("ll_token") != TOKEN and not _key_ok(request):
             return JSONResponse({"detail": "login required"}, status_code=401)
     response = await call_next(request)
     if not p.startswith(("/api", "/images", "/videos")):
@@ -89,7 +95,7 @@ class Login(BaseModel):
 
 @app.get("/api/auth")
 def auth_state(request: Request):
-    return {"required": bool(TOKEN), "ok": not TOKEN or request.cookies.get("ll_token") == TOKEN}
+    return {"required": bool(TOKEN), "ok": not TOKEN or request.cookies.get("ll_token") == TOKEN or _key_ok(request)}
 
 
 @app.post("/api/login")
@@ -233,7 +239,8 @@ async def chat(request: Request, cid: str, body: ChatReq):
     async def gen():
         async for ev in agent.run(cid, body.message, body.images or None, body.model or None,
                                   body.permission, body.think):
-            yield f"data: {json.dumps(ev, ensure_ascii=False)}\n\n"
+            # (keep-alive while a long tool runs: an SSE comment, which the page ignores but keeps proxies open)
+            yield ": ping\n\n" if ev.get("type") == "ping" else f"data: {json.dumps(ev, ensure_ascii=False)}\n\n"
     return StreamingResponse(gen(), media_type="text/event-stream",
                              headers={"Cache-Control": "no-cache", "X-Accel-Buffering": "no"})
 

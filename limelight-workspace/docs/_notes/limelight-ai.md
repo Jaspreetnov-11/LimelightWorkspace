@@ -249,7 +249,7 @@ NAYA B has **no internet** and SMB to it fails (error 53). Ports reachable from 
 
 ## 5. Pending / open
 
-1. **Image generation reported failing on 29 Oct ("cannot generate image")** after the Log out update and restart. It may be the 2–2.5 min first load, or text being added before the picture existed. B's `app.log` was requested but never checked.
+1. ~~Image generation reported failing on 29 Oct~~ **fixed 31 Oct** (silent chat stream cut by Cloudflare after 100 s; keep-alive added, see update log). Remaining: the Images page's plain `/api/images/generate` request can still hit the 100 s limit on a cold load when opened through `*.limelightcorp.net`.
 2. **AI footer shows a fixed "Jaspreet Singh"** instead of the logged-in person (frontend not fixed yet).
 3. **Video:** no working clip. Options are to finish Wan 2.2 TI2V-5B on NAYA B (12 GB) by copying the 34 GB model, the `naya-b-video\wheels-video` wheels (`--no-deps`) and the code, or to try LTX-Video. B's `app.py` has no video routes yet. Phase 3 (clips into the FFmpeg video editor) has not started.
 4. **Not model-only features** (proposed 28 Oct, never chosen): office knowledge/RAG over folders and NAS using `nomic-embed-text`, Limelight skill playbooks (scripts, press releases, CBC justification), memory across chats, calculator/date tools with answer checking.
@@ -284,3 +284,4 @@ NAYA B has **no internet** and SMB to it fails (error 53). Ports reachable from 
 | 29 Oct | Limelight AI added to the Lighthouse workspace (proxy 3344). The office AI password is set once by an admin in Lighthouse. Studio generative fill uses the local AI on JASPREET for SDXL inpainting. |
 | 30 Oct ~19:00–20:00 | Wan crash debugging (driver reset on 8 GB); **Wan stopped on the owner's request**. |
 | 30 Oct 19:44 | Owner ran "Per-person AI chats (run once).bat": office-key login (no password inside Lighthouse) plus per-person chats live on B. |
+| 31 Oct ~02:22 | "Cannot generate image" root cause found: the chat stream was silent for 150-200 s while a cold Qwen picture was made (measured 190.9 s), and Cloudflare drops a stream after 100 s of silence. Fix: keep-alive `: ping` every 15 s while a tool runs (measured after: longest silence 15.6 s). B brought up to JASPREET's code (video + inpaint routes, faulthandler); `_key_ok` office-key login merged into the E: copy; `?v=20261031-video`; B's `run-ai.ps1` got `LIMELIGHT_WARM_FILL=0`. Backup `D:\LimelightAI\app-backup-20261031-0218`. Restarted via the "Limelight AI" task; health, chat, chat picture, Studio inpaint and the 3344 proxy (401 without session) checked. |

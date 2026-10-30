@@ -356,7 +356,13 @@ async def run(conv_id, user_text, images=None, model=None, perm="ask", think=Non
                         result, ok = "The user denied this action. Ask them what to do instead, or try another approach.", False
                     else:
                         try:
-                            result = await asyncio.to_thread(tools.execute, ws, name, args)
+                            # A picture can take 2-3 min (cold model load). Cloudflare drops a stream that sends
+                            # nothing for 100 s, so the user saw an error although the picture was made: while a
+                            # tool runs, send a keep-alive every 15 s (app.py writes it as an SSE comment).
+                            job = asyncio.ensure_future(asyncio.to_thread(tools.execute, ws, name, args))
+                            while not (await asyncio.wait({job}, timeout=15))[0]:
+                                yield {"type": "ping"}
+                            result = job.result()
                             ok = True
                         except tools.ToolError as e:
                             result, ok = f"Error: {e}", False
