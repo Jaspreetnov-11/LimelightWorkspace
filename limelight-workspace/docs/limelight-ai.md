@@ -145,4 +145,4 @@ NAYA B has **no internet**, and SMB to it fails. Reachable from JASPREET: SSH 22
 - Not built (proposed): document search over folders/NAS, skill playbooks, memory across chats, calculator/date tools.
 - Bigger model (gpt-oss-120b) needs more RAM or new hardware; no decision.
 - **Fixed 31 Oct (later):** the Images page (`/api/images/generate?keepalive=1`) and Design's fill (`/api/images/inpaint`) send their headers at once and a space every 10 s until the JSON, so a cold model load no longer hits Cloudflare's 100 s cut; errors arrive as `{error, status, detail}`. Without `?keepalive=1` the replies are unchanged. Studio's own `/api/ai/image`, `/api/ai/edit` and `/api/ai/inpaint` do the same (always).
-- **Fixed 31 Oct:** JASPREET's local AI now has `data\workspace.key` (the same key as the workspace's `Datai.key`), so the fallback knows who is signed in and keeps each person's chats apart.
+- **Fixed 31 Oct:** JASPREET's local AI now has `data\workspace.key` (the same key as the workspace's `Data\ai.key`), so the fallback knows who is signed in and keeps each person's chats apart.
