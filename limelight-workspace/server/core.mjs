@@ -4,6 +4,7 @@ import fs from 'node:fs';
 import fsp from 'node:fs/promises';
 import path from 'node:path';
 import { config, PUBLIC, PORT } from './config.mjs';
+import { isSecure, tlsOn } from './tls.mjs';
 
 // an area's route() gives this back when none of its paths matched: the router then asks the next area
 export const NEXT = Symbol('next area');
@@ -54,15 +55,24 @@ export async function serveFile(res, file, cache = 'no-cache', req = null) {
 export const isPublic = (req) => { const h = String(req.headers.host || '').toLowerCase().split(':')[0];
   return h === config.publicDomain || h.endsWith('.' + config.publicDomain); };
 export const cookieDomain = (req) => (isPublic(req) ? config.publicDomain : '');
-export const proto = (req) => (isPublic(req) ? 'https' : 'http');
-export const homeUrl = (req) => (isPublic(req) ? `https://${config.publicHost}` : `http://localhost:${PORT}`);
+export const proto = (req) => (isPublic(req) || isSecure(req) ? 'https' : 'http');
+// (https on the office network: back to the workspace on the same name, port 3350)
+export const homeUrl = (req) => (isSecure(req) ? `https://${String(req.headers.host || config.lanHost).split(':')[0]}:${PORT}`
+  : isPublic(req) ? `https://${config.publicHost}` : `http://localhost:${PORT}`);
+const loopback = (req) => /^(::1|127\.|::ffff:127\.)/.test(req.socket?.remoteAddress || '');
 
 // Visitors who typed http://limelightcorp.net come through Cloudflare as plain http: send them to https first.
+// With lanHttpsOnly, office-network http visits go to https://lanHost on the same port (the tunnel and this PC
+// itself reach the server over 127.0.0.1 and are left alone).
 export function toHttps(req, res) {
   const host = String(req.headers.host || '');
   const plain = req.headers['x-forwarded-proto'] === 'http' || /"scheme":"http"/.test(req.headers['cf-visitor'] || '');
-  if (!plain ||!/(^|\.)limelightcorp\.net$/.test(host)) return false;
-  res.writeHead(301, { location: 'https://' + host + req.url });
+  let to = '';
+  if (plain && /(^|\.)limelightcorp\.net$/.test(host)) to = 'https://' + host + req.url;
+  else if (config.lanHttpsOnly && tlsOn && !isSecure(req) && !loopback(req) && !plain)
+    to = `https://${config.lanHost}:${req.socket.localPort}${req.url}`;
+  if (!to) return false;
+  res.writeHead(301, { location: to });
   res.end();
   return true;
 }

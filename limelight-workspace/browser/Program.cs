@@ -31,6 +31,9 @@ namespace Lighthouse
         // Tried first when url is the online address; not answering (outside the office) = url. "" = never.
         [DataMember(Name = "officeUrl")] public string OfficeUrl;
         public const string DefaultOfficeUrl = "http://192.168.0.210:3350/";
+        // 🔒 the same hub over https (real certificate for office.limelightcorp.net -> 192.168.0.210): tried before the
+        // plain address, so passwords and chats are encrypted on the office Wi-Fi too
+        public const string DefaultOfficeSecureUrl = "https://office.limelightcorp.net:3350/";
 
         public static Settings Load()
         {
@@ -67,7 +70,12 @@ namespace Lighthouse
             // (the json does not set fields it leaves out: no officeUrl at all = the office hub)
             var office = settings.OfficeUrl ?? Settings.DefaultOfficeUrl;
             var online = Uri.TryCreate(settings.Url, UriKind.Absolute, out var su) && su.Host != "localhost" && su.Host != "127.0.0.1";
-            if (online && office != "" && MainWindow.Answers(office, 1200)) settings.Url = office;
+            if (online && office != "")
+            {
+                // (only the default office address gets the https try; a custom officeUrl is used as written)
+                if (settings.OfficeUrl == null && MainWindow.Answers(Settings.DefaultOfficeSecureUrl, 1200)) settings.Url = Settings.DefaultOfficeSecureUrl;
+                else if (MainWindow.Answers(office, 1200)) settings.Url = office;
+            }
             Application.Run(new MainWindow(settings));
         }
     }
@@ -206,7 +214,8 @@ namespace Lighthouse
             var home = new Uri(s.Url);
             // the workspace and its app hosts (www.limelightcorp.net -> limelightcorp.net, lh-*.limelightcorp.net) stay in here
             var root = home.Host.StartsWith("www.") ? home.Host.Substring(4) : home.Host;
-            bool local(Uri u) => u.Host == root || u.Host.EndsWith("." + root) || u.Host == "localhost" || u.Host == "127.0.0.1";
+            bool local(Uri u) => u.Host == root || u.Host.EndsWith("." + root) || u.Host == "localhost" || u.Host == "127.0.0.1"
+                || u.Host == "limelightcorp.net" || u.Host.EndsWith(".limelightcorp.net");   // (office.* over https, www.* online)
             // other sites (and "Alag window" popups) open in the PC's normal browser
             cw.NewWindowRequested += (o, e) => { e.Handled = true; try { Process.Start(e.Uri); } catch { } };
             cw.NavigationStarting += (o, e) =>

@@ -15,3 +15,7 @@ docs/shots/
 docs/*.pdf
 docs/*.pptx
 node_modules/
+# lego (the certificate tool), downloaded by tls/office-cert.mjs
+tls/bin/
+# certificate script output
+tls/last-run.log

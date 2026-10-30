@@ -25,5 +25,7 @@
   ],
   "keepSignedIn": [
     "gurpreet"
-  ]
+  ],
+  "lanHost": "office.limelightcorp.net",
+  "lanHttpsOnly": false
 }

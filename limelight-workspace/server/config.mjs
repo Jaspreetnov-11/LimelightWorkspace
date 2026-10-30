@@ -25,6 +25,13 @@ const defaults = {
   publicHost: 'limelightcorp.net',             // the workspace itself (www.limelightcorp.net too)
   appHosts: { editor: 'lh-edit.limelightcorp.net', office: 'lh-office.limelightcorp.net', lighthouse: 'lh-team.limelightcorp.net',
     ai: 'lh-ai.limelightcorp.net', design: 'lh-design.limelightcorp.net' },                              // office Limelight AI password: set once by an admin (account menu); everyone is signed in with it
+  // https on the office network (server/tls.mjs): this PC's name there (DNS: lanHost -> 192.168.0.210, not proxied)
+  // and its certificate (tls/Get office certificate.bat). lanHttpsOnly: office-network http visits are sent to
+  // https://lanHost - turn on once every office PC has Lighthouse.exe 1.4, which knows that name.
+  lanHost: 'office.limelightcorp.net',
+  tlsCert: 'Data/tls/fullchain.pem',
+  tlsKey: 'Data/tls/privkey.pem',
+  lanHttpsOnly: false,
 };
 export const config = { ...defaults, ...(fs.existsSync(CONFIG_FILE) ? JSON.parse(fs.readFileSync(CONFIG_FILE, 'utf8')) : {}) };
 if (!fs.existsSync(CONFIG_FILE)) fs.writeFileSync(CONFIG_FILE, JSON.stringify(config, null, 2));

@@ -156,3 +156,5 @@ Every update from the five raw notes in `_notes/`, merged into one list, oldest 
 - 02:40 [Design] Studio's "← Workspace" link (a local address) is hidden inside the workspace frame.
 - 02:40 [Profile] [Create] [Office] Small fixes: no empty profile picture request, "How many" label, Gita line wraps on tablets, no "Sign out" in Office setup inside the workspace.
 - 03:00 [Workspace] Final check: both repos clean, pushed and private; every app and PC up; 26/26 page and data checks unchanged; PENDING.md cleared of items finished on 31 Oct.
+- [Servers] https on the office network: every workspace port answers http and https (`server/tls.mjs`); name office.limelightcorp.net (DNS only); Let's Encrypt certificate via `tls\Get office certificate.bat` with weekly renewal; optional `lanHttpsOnly` redirect.
+- [App] Lighthouse.exe 1.4: tries https://office.limelightcorp.net:3350 first, then the old office address, then online.

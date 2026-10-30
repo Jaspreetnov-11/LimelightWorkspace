@@ -114,6 +114,14 @@ The editor deploy and the AI deploy scripts use these aliases. The owner runs th
 - Not signed in → 302 to `/login` (the only other redirect).
 - On the public domain the session cookie is `Domain=limelightcorp.net; Secure`, shared by every host.
 
+### https on the office network
+- Plain `http://192.168.0.210:3350` sends passwords, cookies and chats unencrypted over the office Wi-Fi. So every workspace port (3350 and the proxies 3341-3345) also answers **https** on the same port (`server/tls.mjs`): a TLS hello (first byte 0x16) goes to the https server, anything else to http. The tunnel (http to 127.0.0.1) and older Lighthouse.exe copies keep working unchanged.
+- Name: **office.limelightcorp.net → 192.168.0.210**, a Cloudflare DNS record set to *DNS only* (grey cloud), so office traffic never passes through Cloudflare. Address on the office network: `https://office.limelightcorp.net:3350`.
+- Certificate: Let's Encrypt, checked through Cloudflare DNS. The owner saves a Cloudflare API token (Zone → DNS → Edit, limelightcorp.net) in `Data\tls\cloudflare.token` and runs `tls\Get office certificate.bat` once; it creates the DNS record, gets the certificate into `Data\tls\` (`fullchain.pem`, `privkey.pem`) and adds a weekly renewal task. The server reloads a renewed certificate within 6 hours; the **first** certificate needs one workspace restart.
+- No certificate files: http only, exactly as before.
+- `lanHttpsOnly` (config.json, default false): office-network http visits get a 301 to `https://office.limelightcorp.net:<same port>`. 127.0.0.1 (the tunnel, this PC) is never redirected. Turn on once every office PC runs **Lighthouse.exe 1.4** (tries `https://office.limelightcorp.net:3350` first, then the old address, then online). Older copies would open the new name in the normal browser.
+- If an office PC can't resolve office.limelightcorp.net (some routers drop public DNS answers that point to 192.168.x.x), add the name to the router's local DNS.
+
 ---
 
 ## 4. Standby and failover

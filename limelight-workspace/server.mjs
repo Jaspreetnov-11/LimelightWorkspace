@@ -6,7 +6,8 @@ import http from 'node:http';
 import path from 'node:path';
 import os from 'node:os';
 import { exec } from 'node:child_process';
-import { PUBLIC, args, LAN, PORT, HOST } from './server/config.mjs';
+import { PUBLIC, args, LAN, PORT, HOST, config } from './server/config.mjs';
+import { listenBoth, tlsOn } from './server/tls.mjs';
 import { send, readJson, servePage, serveFile, toHttps, cookieDomain, OPEN, NEXT, fileCache } from './server/core.mjs';
 import { apps } from './server/app-list.mjs';
 import { auth } from './server/state.mjs';
@@ -69,10 +70,11 @@ const server = http.createServer(async (req, res) => {
 });
 
 for (const a of apps()) if (a.port) appProxy(a);
-server.listen(PORT, HOST, () => {
+listenBoth(server, PORT, HOST, () => {
   const url = `http://localhost:${PORT}`;
   console.log(`Lighthouse running at ${url}`);
   if (LAN) for (const n of Object.values(os.networkInterfaces()).flat())
     if (n.family === 'IPv4' && !n.internal) console.log(`  LAN: http://${n.address}:${PORT}`);
+  if (LAN && tlsOn) console.log(`  LAN (https): https://${config.lanHost}:${PORT}`);
   if (args.includes('--open') && process.platform === 'win32') exec(`start "" "${url}"`);
 });

@@ -8,6 +8,7 @@ import tls from 'node:tls';
 import path from 'node:path';
 import { PUBLIC, HOST } from './config.mjs';
 import { send, serveFile, toHttps, proto, homeUrl } from './core.mjs';
+import { listenBoth } from './tls.mjs';
 import { embedFile, targetOf } from './app-list.mjs';
 import { auth } from './state.mjs';
 import { editAs, editMembers, noEditPage } from './areas/edit.mjs';
@@ -160,5 +161,5 @@ export function appProxy(a) {
     conn.on('error', () => sock.destroy()); sock.on('error', () => conn.destroy());
   });
   srv.on('error', (e) => console.error(`${a.name} proxy on ${a.port}:`, e.message));
-  srv.listen(a.port, HOST);
+  listenBoth(srv, a.port, HOST);
 }
