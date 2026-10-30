@@ -165,7 +165,7 @@ async function loadProfile() {
   $('#pfTitle').textContent = [p.title, p.dept].filter(Boolean).join(' · ');
   $('#pfTags').innerHTML = [p.empId && `ID ${p.empId}`, p.joined && `Joined ${new Date(p.joined).toLocaleDateString([], { day: 'numeric', month: 'short', year: 'numeric' })}`,
     p.shift && `${p.shift[0].toUpperCase() + p.shift.slice(1)} shift`, p.email].filter(Boolean).map((t) => `<span>${esc(t)}</span>`).join('');
-  $('#pfImg').src = p.photo ? photoUrl(p.email) : ''; $('#pfImg').classList.toggle('hidden', !p.photo);
+  if (p.photo) $('#pfImg').src = photoUrl(p.email); else $('#pfImg').removeAttribute('src'); $('#pfImg').classList.toggle('hidden', !p.photo);
   $('#pfIni').textContent = initials(p.name); $('#pfPhoto').style.background = colorOf(p.email);
   const pu = PUNCH;
   $('#pfToday').innerHTML = !pu ? '' : pu.in ? `<b>${pu.out ? 'Day complete' : 'Working'}</b><small>${hm(pu.in)}${pu.out ? ' – ' + hm(pu.out) : ' · ' + since(pu.in)}</small>` : `<b>Not clocked in</b><small><a href="/" data-view="home">Clock in on Home →</a></small>`;

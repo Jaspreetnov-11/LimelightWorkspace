@@ -47,7 +47,7 @@
 - Extra whitespace in bubbles (pre-wrap) → text in its own span; avatars stretching; unread badge stretching across the row.
 - "Chats disappeared" (30 Oct): nothing was lost. The old chats belonged to the test account that browser had been signed in as.
 - Old system lines in Hinglish (for example the "created the group" line) were rewritten to English. The originals are backed up in `archive/originals/chat-msgs/` (the notes say `originals/chat-msgs/`; it has since moved into `archive/`).
+- The group-rename system line ("<name> renamed the group to …") and the empty-message error ("Empty message") are in English in `chat.mjs` (checked 31 Oct; the first draft of these docs wrongly listed them as still Hinglish).
 
 ## Known issues / pending
-- **Two Hinglish strings are still in the code** (found while writing these docs, `chat.mjs`): the system line when a group is renamed (`… ne naam badla: "<name>"`) and the error for an empty message (`Khaali message`). They should become "<name> renamed the group to …" and "Empty message". (Code task.)
 - Chat files and photos are on JASPREET only, not on the NAS (moving them was offered, not done).

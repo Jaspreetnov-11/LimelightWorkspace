@@ -1247,8 +1247,15 @@ const ROUTES = {
 };
 let lastHash = location.hash;
 async function route() {
+  // unsaved changes: our own pop-up, not confirm() - the browser blocks confirm() inside another site's frame (the
+  // workspace), where it answered "no" by itself and every menu item stayed stuck on the editor
   if (window.__lloDirty && location.hash !== lastHash) {
-    if (!confirm('You have unsaved changes. Leave without saving?')) { history.replaceState(null, '', lastHash); return; }
+    const to = location.hash;
+    history.replaceState(null, '', lastHash);
+    const m = modal(`<h2>Unsaved changes</h2><p>Leave without saving? Your changes in this file will be lost.</p>
+      <div class="foot"><button class="btn ghost" data-close>Stay</button><button class="btn primary" id="leave-go">Leave without saving</button></div>`);
+    $('#leave-go', m).onclick = () => { closeModal(); window.__lloDirty = false; location.hash = to; };
+    return;
   }
   window.__lloDirty = false; lastHash = location.hash;
   document.body.classList.remove('editing'); document.onselectionchange = null; document.onkeydown = null; view.className = 'view';

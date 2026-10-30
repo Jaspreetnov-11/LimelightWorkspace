@@ -73,3 +73,5 @@ html:root .ed-scroll, html:root .pp-main { background: rgba(0,0,0,.22); }
 .ed-status { padding-left: 118px; }
 /* phones: no floating "← Workspace" button (the workspace's bottom bar goes Home), so the editors' status bar needs no room for it */
 @media (max-width: 600px) { #lh-home { display: none !important; } .ed-status { padding-left: 12px; } }
+/* Office setup: no "Sign out" inside the workspace - Office is signed in through the workspace login */
+#s-out { display: none !important; }

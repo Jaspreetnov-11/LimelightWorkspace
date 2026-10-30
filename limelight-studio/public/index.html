@@ -23,7 +23,8 @@
       <button data-jump="edTemplates">Design gallery</button>
     </nav>
     <div class="grow"></div>
-    <a class="ed-link" href="http://localhost:3350/" target="_top">← Workspace</a>
+    <a class="ed-link" id="toWorkspace" href="http://localhost:3350/" target="_top">← Workspace</a>
+    <script>/* inside the workspace (a frame) its own bar goes back - the link is for Studio opened on its own */ if (window.top !== window) document.getElementById('toWorkspace').remove();</script>
     <button class="ed-link" id="btnSettings">AI settings</button>
     <button class="ed-link" id="btnOpenFile" title="Open .json project, SVG, PSD or image">Open file</button>
   </header>

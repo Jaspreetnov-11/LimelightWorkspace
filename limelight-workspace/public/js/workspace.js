@@ -82,7 +82,7 @@ function placeSearch(inBar) {
   else if (!inBar && spot.parentNode !== spotHome.parent) spotHome.parent.insertBefore(spot, spotHome.next);
 }
 // ---------- navigation ----------
-let CURRENT = 'home';
+let CURRENT = 'home', ROUTING = false;
 function show(view, appId) {
   if (view !== 'app' && document.body.classList.contains('focus')) setFull(false);
   CURRENT = view;
@@ -92,7 +92,10 @@ function show(view, appId) {
   $$('.view').forEach((v) => v.classList.toggle('hidden', v.id !== 'v-' + view));
   $$('.pill').forEach((b) => b.classList.toggle('on', b.dataset.view === view));
   $$('#dock [data-app], #pdock [data-app]').forEach((b) => b.classList.toggle('on', b.dataset.app === appId));
-  history.replaceState(null, '', view === 'home' ? '/' : '#' + (appId || view));
+  // each page is a step in the browser's history, so Back (and a phone's back gesture) returns to the last page;
+  // while following Back/Forward (ROUTING) the address only changes in place
+  const to = view === 'home' ? '' : '#' + (appId || view);
+  if (to !== location.hash) history[ROUTING ? 'replaceState' : 'pushState'](null, '', to || '/');
   if (view === 'library') loadLibrary();
   if (view === 'home') loadHome();
   if (view === 'create' && createTab() === 'video') loadJobs();
@@ -523,11 +526,14 @@ setInterval(refreshStatus, 30000);
 // (no theme picked on this device yet: Desktop is the default)
 // ("auto": the default, not a pick - it keeps following phone / computer)
 { const t = savedTheme(); if (!t || t.auto) { setTheme(DEFAULT_THEME); try { localStorage.setItem('lh-theme-vars', JSON.stringify({ ...savedTheme(), auto: true })); } catch (e) { /* private window */ } } else if (t.key !== 'custom' && THEMES.some((x) => x[0] === t.key)) setTheme(t.key); }
-ready.then(() => {
+// the page named in the address (#chats, #office, #mail ...): at start, and on Back / Forward
+function routeHash(first) {
   const start = location.hash.slice(1);
   if (['chats', 'create', 'library', 'profile'].includes(start)) show(start);
   else if (['attendance', 'leaves'].includes(start)) { show('profile'); document.querySelector(`#pfTabs [data-t="${start}"]`)?.click(); }
   else if (APPS.some((a) => a.id === start)) openApp(start);
   else if (OFFICE_ITEMS.some((i) => i[0] === start)) openOffice(start);
-  else loadHome();
-});
+  else if (first) loadHome(); else show('home');
+}
+ready.then(() => routeHash(true));
+window.addEventListener('popstate', () => { ROUTING = true; try { routeHash(false); } finally { ROUTING = false; } });

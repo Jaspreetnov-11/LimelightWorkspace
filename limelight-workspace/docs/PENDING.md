@@ -13,7 +13,6 @@
 ## Chats
 | Item | Who |
 |---|---|
-| Rewrite the two Hinglish strings in `chat.mjs` (group rename system line, empty-message error) to English | Code |
 | Optional: move chat files and profile photos to the NAS | Owner decides, then code |
 
 ## Create and Library
@@ -101,3 +100,14 @@
 | `config.example.json` lists only some settings (no `editorStandbyUrl`, `aiLocalUrl`, `owners`, `keepSignedIn`, public host keys); defaults live in `server/config.mjs` | Code |
 | The Office key path is hard-coded (`E:/Limelight Ai/limelight-office/data/workspace.key` in `server/areas/office.mjs`) and so is the Office address (`127.0.0.1:3300`); a move to another drive needs a code change | Code |
 | Commit the archive move and these docs | Owner (asks for the commit) |
+
+## Owner actions from the 31 Oct test
+
+| Item | Who |
+|---|---|
+| Copy `limelight-workspace\Limelight Workspace (start all).vbs` into the Startup folder (Win+R, `shell:startup`) so a restart of JASPREET brings every app back | Owner |
+| Cloudflare: Caching -> Configuration -> Browser Cache TTL -> "Respect Existing Headers" (now 4 hours, it overrides the server's "always check" for files without a version stamp, e.g. `sw.js`) | Owner |
+| JASPREET is still the only PC serving limelightcorp.net: a real standby would need Lighthouse on NAYA B with Data kept in sync and a second tunnel connector | Owner + code |
+| Leave balance on Profile > Overview ("policy not set") differs from the Leaves frame ("12 left") | Code |
+| Limelight AI's mode names in its sidebar (Chat/Cowork/Code/Images) differ from the docs (Ask/Work/Build/Images/Video) - check after the NAYA B update | Code |
+| Test the Office "Leave without saving?" pop-up after real edits, and the installable app with Install on a real phone | Owner |

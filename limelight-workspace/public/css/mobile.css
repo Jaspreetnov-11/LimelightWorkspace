@@ -235,3 +235,14 @@
 @media (display-mode: standalone) and (max-width: 760px) {
   .ws { padding-top: calc(10px + env(safe-area-inset-top)); }
 }
+
+/* phone chats: room for the bottom bar under the chat list; inside an open conversation the bar steps aside
+   (like WhatsApp), so the message box sits at the bottom - the conversation's own back arrow returns to the list */
+@media (max-width: 760px) {
+  #v-chats { padding-bottom: calc(84px + env(safe-area-inset-bottom)); }
+  body:has(#v-chats:not(.hidden) .chatwrap.open) .pills.float { display: none; }
+  body:has(#v-chats:not(.hidden) .chatwrap.open) #v-chats { padding-bottom: calc(8px + env(safe-area-inset-bottom)); }
+}
+
+/* tablets: the Gita line wraps instead of being cut off ("— Bhaga…") */
+@media (max-width: 1000px) { .greet .quote { white-space: normal; } }

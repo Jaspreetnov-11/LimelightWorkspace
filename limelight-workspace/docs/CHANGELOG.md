@@ -145,3 +145,13 @@ Every update from the five raw notes in `_notes/`, merged into one list, oldest 
 - 01:22 [Edit] Deploy-script fix committed (47e1979).
 - (no time, from git) [Workspace] Snapshot commit of the workspace as it ran (0767ad8), then the server split into one file per area under `server/` and `server/areas/` with behaviour unchanged (bd115ea).
 - (no time, from the folder) [Workspace] [Docs] Design mockup pages moved from `public/` to `archive/mockups/` (no longer served); `.gitignore` updated; this handbook written in `docs/`.
+- (no time) [Chats] [Docs] Checked `chat.mjs`: the group-rename line and empty-message error are already English; removed the stale "two Hinglish strings" item from `chats.md` and `PENDING.md`.
+- 02:00 [Workspace] One repo for the whole workspace: `E:\Limelight Ai` (Lighthouse, Office, Design, Limelight AI) pushed to github.com/Jaspreetnov-11/LimelightWorkspace; Lighthouse's own history kept; private data, passwords and installs left out. Edit stays in its own repo (EditorAgent).
+- 02:07 [Servers] `start-all.ps1` + "Limelight Workspace (start all).vbs": starts Lighthouse, Office, Design and the local Limelight AI fallback (with Ollama on JASPREET) if they are not running.
+- 02:10 [Workspace] One chat per area in the Claude app (Home, Chats, Edit, Design, Office, Limelight AI, Platform & Servers); the old workspace chats archived. `FEATURES.md` written.
+- 02:20 [Workspace] Full read-only test of every area (phone, tablet, desktop, public site).
+- 02:40 [Chats] Phone: the message box was hidden under the bottom bar - inside an open chat the bar now steps aside; "Write a message" placeholder.
+- 02:40 [Office] A new Document/Grid/Deck is "New · not saved yet" instead of "Unsaved changes"; leaving a changed file asks with Office's own pop-up (the browser's confirm() is blocked inside the workspace frame and kept every menu item stuck on the editor).
+- 02:40 [Workspace] Back / Forward (and a phone's back gesture) move between areas; each page is a history step.
+- 02:40 [Design] Studio's "← Workspace" link (a local address) is hidden inside the workspace frame.
+- 02:40 [Profile] [Create] [Office] Small fixes: no empty profile picture request, "How many" label, Gita line wraps on tablets, no "Sign out" in Office setup inside the workspace.

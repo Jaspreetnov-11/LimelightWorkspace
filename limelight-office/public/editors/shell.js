@@ -138,13 +138,14 @@ export function frame(view, { kind, name, tabs, saved = true }) {
     <div class="ed-body" id="ed-body"></div>
     <div class="ed-status" id="ed-status"></div></div>`;
   const parts = { root: $('.ed', view), name: $('.ed-name', view), state: $('#ed-state'), ribbon: $('#ed-ribbon'), body: $('#ed-body'), status: $('#ed-status'), tabs: $('#ed-tabs'), extra: $('#ed-extra') };
-  setDirty(parts, !saved);
+  // (a new file is "not saved yet", not "unsaved changes": nothing to lose until something is typed)
+  setDirty(parts, false, saved ? '' : 'New · not saved yet');
   return parts;
 }
-export function setDirty(parts, dirty) {
+export function setDirty(parts, dirty, label = '') {
   window.__lloDirty = dirty;
   if (dirty) parts.onEdit?.(); else parts.onClean?.(); // editing together (live.js): tell the others
-  parts.state.textContent = dirty ? '● Unsaved changes' : '✓ Saved';
+  parts.state.textContent = dirty ? '● Unsaved changes' : label || '✓ Saved';
   parts.state.classList.toggle('dirty', dirty);
 }
 
