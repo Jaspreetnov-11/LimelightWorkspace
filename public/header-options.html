@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Header Options</title>
+<style>
+@font-face { font-family: 'Inter'; src: url(fonts/inter-latin-wght-normal.woff2) format('woff2'); font-weight: 100 900; }
+@font-face { font-family: 'Rozha One'; src: url(fonts/RozhaOne-Regular.ttf); }
+@font-face { font-family: 'Mukta'; src: url(fonts/Mukta-ExtraBold.ttf); font-weight: 800; }
+* { box-sizing: border-box; }
+body { margin: 0; background: #050508; color: #fff; font: 14px/1.5 Inter, 'Segoe UI', sans-serif; padding: 30px 26px 60px; }
+.page-h { max-width: 1400px; margin: 0 auto 24px; }
+.page-h h1 { margin: 0; font-size: 26px; letter-spacing: -.5px; }
+.page-h p { margin: 4px 0 0; color: #ffffffa6; }
+.grid { max-width: 1400px; margin: 0 auto; display: grid; grid-template-columns: repeat(auto-fill, minmax(600px, 1fr)); gap: 30px; }
+@media (max-width: 660px) { .grid { grid-template-columns: 1fr; } body { padding: 18px 16px; } }
+.opt h2 { font-size: 16px; margin: 0 0 2px; } .opt h2 span { color: #ffc21a; font-size: 13px; margin-left: 8px; }
+.opt > p { color: #ffffffa6; margin: 0 0 10px; font-size: 13px; }
+.frame { position: relative; aspect-ratio: 16 / 9; border-radius: 14px; overflow: hidden; border: 1px solid #ffffff22; }
+.mock { position: absolute; left: 0; top: 0; width: 1280px; height: 720px; transform-origin: 0 0; overflow: hidden; padding: 14px 20px; display: flex; flex-direction: column; gap: 14px;
+  --ink: 255 255 255; color: rgb(var(--ink)); }
+.mock * { box-sizing: border-box; }
+.logo { display: block; }
+.tiles { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; flex: 1; }
+.tile { border-radius: 20px; padding: 16px 18px; background: rgb(var(--ink) / .07); border: 1px solid rgb(var(--ink) / .14); backdrop-filter: blur(22px); }
+.tile .n { font-size: 36px; font-weight: 800; letter-spacing: -1.5px; line-height: 1; }
+.tile b { display: block; margin-top: 8px; font-size: 14px; } .tile small { color: rgb(var(--ink) / .6); font-size: 12px; }
+.tile.w2 { grid-column: span 2; }
+.search { display: flex; align-items: center; gap: 10px; padding: 0 16px; color: rgb(var(--ink) / .55); font-size: 17px; }
+.search kbd { margin-left: auto; font: 500 10px Inter; border: 1px solid rgb(var(--ink) / .25); border-radius: 5px; padding: 1px 6px; }
+.pills { display: flex; gap: 2px; font-size: 13px; }
+.pills span { padding: 6px 16px; border-radius: 10px; color: rgb(var(--ink) / .6); }
+.pills b { padding: 6px 16px; border-radius: 10px; font-weight: 500; }
+.dock { display: flex; gap: 6px; } .dock i { width: 28px; height: 28px; border-radius: 9px; display: block; }
+.av { width: 30px; height: 30px; border-radius: 50%; display: grid; place-items: center; font-weight: 800; font-size: 11px; }
+</style>
+</head>
+<body>
+<div class="page-h"><h1>Upar ka UI + background — 6 options</h1><p>Har option mein teen cheezein alag hain: <b>background ke rang</b>, <b>top bar / logo / search ka style</b>, aur <b>"Lighthouse" ki typography</b>. Number bataiye — mix bhi chalega (jaise "2 ka rang + 4 ka header").</p></div>
+<div class="grid" id="grid"></div>
+<script>
+const dock = (c) => `<div class="dock">${['#ff8a3d', '#ffc21a', '#5b8cff', '#c084fc'].map((x) => `<i style="background:${x}"></i>`).join('')}</div>`;
+const tiles = (c) => `<div class="tiles">
+  <div class="tile"><div class="n" style="color:#ff8a3d">Live</div><b>Edit</b><small>Video editor</small></div>
+  <div class="tile"><div class="n" style="color:${c}">4</div><b>Design</b><small>Is hafte ke designs</small></div>
+  <div class="tile"><div class="n" style="color:#5b8cff">2</div><b>Office</b><small>Naye mails</small></div>
+  <div class="tile"><div class="n" style="color:#c084fc">✦</div><b>Limelight AI</b><small>Image · Video</small></div>
+  <div class="tile w2"><b style="margin:0">Aaj</b><small>Thursday, 29 October</small></div><div class="tile"><b style="margin:0">Projects</b></div><div class="tile"><b style="margin:0">Team updates</b></div></div>`;
+const beam = (c) => `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="${c}" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2.8v2"/><path d="M9.5 6.5h5l1.6 13.5H7.9z"/><path d="M8.6 11h6.8M8.2 15.5h7.6"/><path d="M3.5 7.5l3 1M20.5 7.5l-3 1"/></svg>`;
+
+const OPTS = [
+  ['Soft Aurora', 'halka lavender-peach · centred nav', 'Background halka aur khula (lavender, peach, aasmani). Top bar ek tairta hua pill; "LIGHTHOUSE" patle bade akshar, khule spacing ke saath.',
+    'radial-gradient(circle at 12% 15%, #8b5cf6aa, transparent 45%), radial-gradient(circle at 88% 10%, #fdba74aa, transparent 42%), radial-gradient(circle at 60% 100%, #38bdf899, transparent 50%), #1c1a2e', '#fdba74', (c) => `
+    <div style="display:flex;justify-content:center"><div style="display:flex;align-items:center;gap:22px;padding:7px 8px 7px 20px;border-radius:40px;background:#ffffff1a;border:1px solid #ffffff2e;backdrop-filter:blur(24px);box-shadow:0 10px 40px #0003">
+      <span style="display:flex;align-items:center;gap:10px"><img class="logo" src="img/limelight-logo-white.png" style="height:18px"><span style="font:300 12px Inter;letter-spacing:5px;color:#fdba74">LIGHTHOUSE</span></span>
+      <div class="pills"><b style="background:#ffffff26">Home</b><span>Chats</span><span>Create</span><span>Library</span></div>${dock(c)}<div class="av" style="background:${c};color:#2a1500">JS</div></div></div>
+    <div style="text-align:center;padding-top:10px"><img class="logo" src="img/limelight-logo-white.png" style="height:60px;margin:0 auto">
+      <div style="margin:12px 0 16px;color:#ffffffb0;font-size:14px">Good morning, Jaspreet · Thursday, 29 October · 10:35</div>
+      <div class="search" style="width:620px;height:52px;margin:0 auto;border-radius:26px;background:#ffffff1f;border:1px solid #ffffff38">⌕&nbsp; Search<kbd>Ctrl K</kbd></div></div>`],
+  ['Midnight Gold', 'gehra navy · sone ki roshni', 'Gehra navy background, upar beech se sunehri roshni. Top bar bina box ke, sirf patli line. "Lighthouse" sundar italic serif (Rozha One) mein, sone ke rang mein.',
+    'radial-gradient(ellipse at 50% -10%, #ffc21a66, transparent 50%), radial-gradient(circle at 0% 100%, #1e3a8a88, transparent 50%), radial-gradient(circle at 100% 80%, #312e8188, transparent 45%), #0a0f1f', '#ffc21a', (c) => `
+    <div style="display:flex;align-items:center;padding:6px 6px 12px;border-bottom:1px solid #ffc21a33">
+      <img class="logo" src="img/limelight-logo-white.png" style="height:20px"><span style="margin-left:12px;font:26px 'Rozha One',Georgia,serif;color:#ffc21a;letter-spacing:.3px;line-height:1">Lighthouse</span>
+      <div class="pills" style="margin:0 auto"><b style="color:#ffc21a;box-shadow:inset 0 -2px 0 #ffc21a;border-radius:0">Home</b><span>Chats</span><span>Create</span><span>Library</span></div>${dock(c)}<div class="av" style="margin-left:10px;background:#ffc21a;color:#1a1300">JS</div></div>
+    <div style="text-align:center;padding-top:8px"><div style="font:44px 'Rozha One',Georgia,serif;letter-spacing:.5px">Good morning, <span style="color:#ffc21a">Jaspreet</span></div>
+      <div style="margin:4px 0 16px;color:#ffffff90;font-size:13px;letter-spacing:3px">THURSDAY · 29 OCTOBER · 10:35</div>
+      <div class="search" style="width:640px;height:52px;margin:0 auto;border-radius:14px;background:#ffffff0f;border:1px solid #ffc21a55;box-shadow:0 0 40px #ffc21a22">⌕&nbsp; Search<kbd>Ctrl K</kbd></div></div>`],
+  ['Ocean Glass', 'neela-firozi · full-width bar', 'Neela aur firozi (teal) rang, saaf aur thanda. Top bar poori chaudai ki glass patti. "Lighthouse" mota, firozi se safed gradient mein.',
+    'radial-gradient(circle at 15% 20%, #2563eb99, transparent 45%), radial-gradient(circle at 85% 15%, #22d3ee88, transparent 42%), radial-gradient(circle at 55% 100%, #14b8a688, transparent 50%), #0b1622', '#22d3ee', (c) => `
+    <div style="display:flex;align-items:center;margin:-14px -20px 0;padding:12px 24px;background:#ffffff12;border-bottom:1px solid #ffffff26;backdrop-filter:blur(24px)">
+      <img class="logo" src="img/limelight-logo-white.png" style="height:20px"><span style="margin-left:12px;font:800 19px Inter;letter-spacing:-.4px;background:linear-gradient(90deg,#22d3ee,#fff);-webkit-background-clip:text;color:transparent">Lighthouse</span>
+      <div class="pills" style="margin:0 auto;background:#00000026;padding:3px;border-radius:12px"><b style="background:#22d3ee;color:#04222b">Home</b><span>Chats</span><span>Create</span><span>Library</span></div>${dock(c)}<div class="av" style="margin-left:10px;background:#22d3ee;color:#04222b">JS</div></div>
+    <div style="display:flex;align-items:center;gap:30px;padding:16px 10px 4px">
+      <div><div style="font:800 36px Inter;letter-spacing:-1px">Good morning, Jaspreet 👋</div><div style="color:#ffffffa0;margin-top:2px">Thursday, 29 October · 10:35 · 3 tasks, 2 meetings</div></div>
+      <div class="search" style="margin-left:auto;width:460px;height:50px;border-radius:14px;background:#ffffff1a;border:1px solid #22d3ee66">⌕&nbsp; Search<kbd>Ctrl K</kbd></div></div>`],
+  ['Sunrise', 'garam coral-peach · bada greeting', 'Subah jaisa garam rang — coral, peach, halka baingani. Bada greeting left mein, logo aur search right mein. "light·house" chhote akshar, beech mein yellow bindu.',
+    'radial-gradient(circle at 10% 10%, #fb7185aa, transparent 45%), radial-gradient(circle at 90% 20%, #fdba74aa, transparent 45%), radial-gradient(circle at 50% 110%, #a855f799, transparent 50%), #23141f', '#fb923c', (c) => `
+    <div style="display:flex;align-items:center;padding:8px 10px 8px 18px;border-radius:18px;background:#ffffff14;border:1px solid #ffffff26;backdrop-filter:blur(24px)">
+      <img class="logo" src="img/limelight-logo-white.png" style="height:20px"><span style="margin-left:12px;font:600 18px Inter;letter-spacing:-.3px">light<span style="color:#ffc21a">·</span>house</span>
+      <div class="pills" style="margin:0 auto"><b style="background:#ffffff26">Home</b><span>Chats</span><span>Create</span><span>Library</span></div>${dock(c)}<div class="av" style="margin-left:10px;background:#fb923c;color:#2a1000">JS</div></div>
+    <div style="display:grid;grid-template-columns:1fr 520px;align-items:end;gap:30px;padding:14px 10px 0">
+      <div><div style="font-size:13px;letter-spacing:3px;color:#fdba74">THURSDAY · 29 OCT · 10:35</div><div style="font:800 52px Inter;letter-spacing:-2px;line-height:1.05;margin-top:6px">Good morning,<br>Jaspreet.</div></div>
+      <div><img class="logo" src="img/limelight-logo-white.png" style="height:34px;margin:0 0 14px auto"><div class="search" style="height:52px;border-radius:16px;background:#ffffff1f;border:1px solid #ffffff38">⌕&nbsp; Search<kbd>Ctrl K</kbd></div></div></div>`],
+  ['Graphite', 'grey-charcoal · bilkul minimal', 'Halka graphite grey, kam rang — sirf yellow accent. Top bar mein lighthouse ka chhota icon. "Lighthouse" saaf medium font. Kaam pe dhyaan, aankhon ko aaram.',
+    'radial-gradient(circle at 50% -20%, #ffffff22, transparent 55%), radial-gradient(circle at 100% 100%, #ffc21a1f, transparent 45%), linear-gradient(180deg, #2a2b31, #1a1b20)', '#ffc21a', (c) => `
+    <div style="display:flex;align-items:center;padding:8px 10px 8px 16px;border-radius:14px;background:#ffffff0d;border:1px solid #ffffff1a">
+      ${beam('#ffc21a')}<span style="margin-left:9px;font:600 15px Inter;letter-spacing:-.1px">Lighthouse</span><span style="margin-left:10px;color:#ffffff55;font-size:12px">by limelight</span>
+      <div class="pills" style="margin:0 auto"><b style="background:#ffffff1a">Home</b><span>Chats</span><span>Create</span><span>Library</span></div>${dock(c)}<div class="av" style="margin-left:10px;background:#ffc21a;color:#1a1300">JS</div></div>
+    <div style="text-align:center;padding-top:14px"><img class="logo" src="img/limelight-logo-white.png" style="height:54px;margin:0 auto;opacity:.95">
+      <div style="margin:14px 0 16px;color:#ffffff90;font-size:13.5px">Good morning, <b style="color:#fff">Jaspreet</b> &nbsp;·&nbsp; Thursday, 29 October &nbsp;·&nbsp; 10:35</div>
+      <div class="search" style="width:600px;height:48px;margin:0 auto;border-radius:12px;background:#00000033;border:1px solid #ffffff22">⌕&nbsp; Search<kbd>Ctrl K</kbd></div></div>`],
+  ['Rose Quartz Light', 'halka gulabi-lavender · light mode', 'Poora light theme — halka gulabi aur lavender, kaale akshar. Din ke kaam ke liye fresh. "Lighthouse" mota, sunehre-gulabi gradient mein, beam icon ke saath.',
+    'radial-gradient(circle at 12% 15%, #f9a8d4cc, transparent 45%), radial-gradient(circle at 88% 12%, #c4b5fdcc, transparent 45%), radial-gradient(circle at 55% 105%, #fde68acc, transparent 50%), #fbf7fb', '#db2777', (c) => `
+    <div style="display:flex;align-items:center;padding:8px 10px 8px 18px;border-radius:18px;background:#ffffffb3;border:1px solid #0000000f;box-shadow:0 10px 30px #db277714;color:#1f1020">
+      <img class="logo" src="img/limelight-logo-black.png" style="height:20px">${'<span style="margin:0 6px 0 12px">' + beam('#db2777') + '</span>'}<span style="font:800 18px Inter;letter-spacing:-.4px;background:linear-gradient(90deg,#db2777,#d97706);-webkit-background-clip:text;color:transparent">Lighthouse</span>
+      <div class="pills" style="margin:0 auto"><b style="background:#1f102012">Home</b><span style="color:#1f102099">Chats</span><span style="color:#1f102099">Create</span><span style="color:#1f102099">Library</span></div>${dock(c)}<div class="av" style="margin-left:10px;background:#db2777;color:#fff">JS</div></div>
+    <div style="text-align:center;padding-top:12px;color:#1f1020"><img class="logo" src="img/limelight-logo-black.png" style="height:58px;margin:0 auto">
+      <div style="margin:12px 0 16px;color:#1f102099;font-size:14px">Good morning, <b style="color:#1f1020">Jaspreet</b> · Thursday, 29 October · 10:35</div>
+      <div class="search" style="width:620px;height:52px;margin:0 auto;border-radius:16px;background:#ffffffcc;border:1px solid #db277733;color:#1f102088">⌕&nbsp; Search<kbd style="border-color:#1f102033">Ctrl K</kbd></div></div>`, true],
+];
+document.getElementById('grid').innerHTML = OPTS.map(([n, tag, d, bg, c, head, light], i) =>
+  `<section class="opt"><h2>${i + 1} · ${n}<span>${tag}</span></h2><p>${d}</p><div class="frame"><div class="mock" style="background:${bg};${light ? '--ink:31 16 32;' : ''}">${head(c)}${tiles(c)}</div></div></section>`).join('');
+const fit = () => document.querySelectorAll('.frame').forEach((f) => { f.firstElementChild.style.transform = `scale(${f.clientWidth / 1280})`; });
+addEventListener('resize', fit); fit();
+</script>
+</body>
+</html>

@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Limelight</title>
+<link rel="icon" href="img/favicon.png">
+<!-- installable app: name, icons and colours for Android, iPhone, Mac and Windows (manifest.webmanifest, sw.js) -->
+<link rel="manifest" href="/manifest.webmanifest">
+<meta name="theme-color" content="#000000">
+<link rel="apple-touch-icon" href="/img/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Limelight">
+<link rel="stylesheet" href="css/workspace.css?v=0">
+<script src="js/theme-boot.js?v=0"></script>
+<script src="js/frame.js?v=0" defer></script>
+<style>
+  body { display: grid; place-items: center; min-height: 100vh; overflow: auto; padding: 16px; }
+  .card { width: min(410px, 100%); padding: 34px 30px 26px; box-shadow: 0 30px 80px #0008; }
+  .logo { display: block; height: 52px; margin: 0 auto 6px; filter: drop-shadow(0 6px 30px #ffc21a40); }
+  .ws-tag { text-align: center; color: var(--brand); font-weight: 300; letter-spacing: 6px; font-size: 12px; text-transform: uppercase; margin-bottom: 24px; }
+  h1 { font-size: 22px; margin: 0 0 4px; letter-spacing: -.3px; }
+  .sub { color: var(--muted); margin: 0 0 18px; font-size: 13px; }
+  label { display: block; font-size: 12px; font-weight: 600; color: var(--muted); margin: 14px 0 7px; }
+  .apps-row { display: flex; gap: 6px; flex-wrap: wrap; justify-content: center; margin-top: 22px; }
+  .apps-row span { font-size: 11px; color: var(--muted); border: 1px solid var(--edge); border-radius: 20px; padding: 3px 9px; }
+</style>
+</head>
+<body>
+<form class="card glass" id="f">
+  <img class="logo lg" src="img/limelight-logo-white.png" alt="Limelight">
+  <h1>Login</h1>
+  <p class="sub">With your Limelight email and password. One login for every app.</p>
+  <label for="email">Email</label>
+  <input class="field" id="email" type="email" autocomplete="username" required autofocus>
+  <label for="pw">Password</label>
+  <input class="field" id="pw" type="password" autocomplete="current-password" required>
+  <button class="go wide" id="go" type="submit">Login</button>
+  <p class="note" id="msg"></p>
+  <div class="apps-row"><span>Edit</span><span>Design</span><span>Office</span><span>Chats</span><span>Limelight AI</span></div>
+</form>
+<script>
+document.getElementById('f').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const go = document.getElementById('go'), msg = document.getElementById('msg');
+  go.disabled = true; msg.className = 'note'; msg.textContent = 'Checking…';
+  try {
+    const r = await fetch('/api/login', { method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email: document.getElementById('email').value, password: document.getElementById('pw').value }) });
+    const j = await r.json();
+    if (!r.ok) throw new Error(j.error || 'Could not sign in');
+    location.href = '/';
+  } catch (err) { msg.className = 'note err'; msg.textContent = err.message; go.disabled = false; }
+});
+</script>
+</body>
+</html>

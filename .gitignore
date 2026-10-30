@@ -1,0 +1,17 @@
+# private: everyone's data, sessions, keys, chats, photos, salary (never in git)
+Data/
+# passwords and keys (config.example.json shows the settings without them)
+config.json
+*.log
+# build outputs and copies (rebuilt from browser/ - see docs/REBUILD.md)
+browser/bin/
+browser/obj/
+browser/app/
+dist/
+editor-app-backup/
+originals/
+# large files: the guide PDFs / PPTX and screenshots stay on disk, outside git
+docs/shots/
+docs/*.pdf
+docs/*.pptx
+node_modules/

@@ -1,0 +1,211 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Home Options</title>
+<style>
+@font-face { font-family: 'Inter'; src: url(fonts/inter-latin-wght-normal.woff2) format('woff2'); font-weight: 100 900; }
+* { box-sizing: border-box; }
+body { margin: 0; background: #050508; color: #fff; font: 14px/1.5 Inter, 'Segoe UI', sans-serif; padding: 30px 26px 60px; }
+.page-h { max-width: 1400px; margin: 0 auto 24px; }
+.page-h h1 { margin: 0; font-size: 26px; letter-spacing: -.5px; }
+.page-h p { margin: 4px 0 0; color: #ffffffa6; }
+.grid { max-width: 1400px; margin: 0 auto; display: grid; grid-template-columns: repeat(auto-fill, minmax(600px, 1fr)); gap: 30px; }
+@media (max-width: 660px) { .grid { grid-template-columns: 1fr; } body { padding: 18px 16px; } }
+.opt h2 { font-size: 16px; margin: 0 0 2px; } .opt h2 span { color: #ffc21a; font-size: 13px; margin-left: 8px; }
+.opt > p { color: #ffffffa6; margin: 0 0 10px; font-size: 13px; }
+.frame { position: relative; aspect-ratio: 16 / 10; border-radius: 14px; overflow: hidden; border: 1px solid #ffffff22; }
+.mock { position: absolute; left: 0; top: 0; width: 1280px; height: 800px; transform-origin: 0 0; overflow: hidden; padding: 16px 22px;
+  background: radial-gradient(circle at 14% 18%, #7c3aed70, transparent 38%), radial-gradient(circle at 86% 8%, #ffc21a5c, transparent 36%),
+  radial-gradient(circle at 62% 96%, #0ea5e95e, transparent 42%), radial-gradient(circle at 4% 92%, #db277738, transparent 34%), #07070c; }
+.mock * { box-sizing: border-box; }
+svg { display: block; }
+.glass { background: #ffffff12; border: 1px solid #ffffff26; backdrop-filter: blur(22px); border-radius: 20px; }
+/* shared top + hero (unchanged part) */
+.top { display: flex; align-items: center; padding: 8px 10px 8px 18px; }
+.top img { height: 20px; } .top .w { color: #ffc21a; font-weight: 600; margin-left: 9px; padding-left: 9px; border-left: 1px solid #ffffff30; font-size: 13px; }
+.top .pills { margin: 0 auto; display: flex; gap: 4px; background: #00000026; padding: 4px; border-radius: 13px; font-size: 13px; }
+.top .pills b, .top .pills span { padding: 6px 15px; border-radius: 9px; color: #ffffffa6; font-weight: 500; } .top .pills b { background: #ffffff2a; color: #fff; }
+.top .av { width: 32px; height: 32px; border-radius: 50%; background: #ffc21a; color: #1a1300; display: grid; place-items: center; font-weight: 800; font-size: 12px; }
+.hero { text-align: center; padding: 34px 0 26px; }
+.hero img { height: 74px; filter: drop-shadow(0 8px 40px #ffc21a40); }
+.hero p { color: #ffffffa6; margin: 6px 0 16px; font-size: 14px; }
+.ask { width: 680px; margin: 0 auto; display: flex; align-items: center; gap: 10px; padding: 7px 7px 7px 18px; border-radius: 16px; color: #ffffff6b; font-size: 15px; }
+.ask .seg { margin-left: auto; display: flex; gap: 2px; background: #0003; border-radius: 10px; padding: 3px; font-size: 12px; color: #ffffffa6; }
+.ask .seg i { font-style: normal; padding: 5px 10px; border-radius: 7px; } .ask .seg i:first-child { background: #ffffff2a; color: #fff; }
+.ask b { background: #ffc21a; color: #1a1300; padding: 9px 16px; border-radius: 11px; font-size: 13px; }
+.lower { padding: 0 6px; }
+.muted { color: #ffffffa6; } .dim { color: #ffffff6b; }
+.dotg { width: 7px; height: 7px; border-radius: 50%; background: #3ddc84; box-shadow: 0 0 8px #3ddc84; display: inline-block; }
+.n { background: #ffc21a; color: #1a1300; font-size: 10px; font-weight: 800; border-radius: 9px; padding: 1px 6px; }
+.th { border-radius: 10px; background: linear-gradient(135deg, #111 55%, #ffc21a 55%); }
+.th.b { background: linear-gradient(160deg, #0d1b3d, #1f4fd1); } .th.o { background: linear-gradient(160deg, #3a1a05, #ff8a3d); } .th.p { background: linear-gradient(160deg, #2a0b40, #c084fc); }
+
+/* ---------- 1 · Glossy dock ---------- */
+.o1 .dock { margin: 6px auto 0; width: max-content; display: flex; gap: 22px; padding: 16px 26px 12px; border-radius: 30px; }
+.o1 .dock div { text-align: center; font-size: 12px; color: #ffffffc0; }
+.o1 .sq { width: 66px; height: 66px; border-radius: 19px; display: grid; place-items: center; margin-bottom: 7px; position: relative;
+  box-shadow: inset 0 1px 0 #ffffff80, inset 0 -8px 16px #0003, 0 12px 26px #0007; }
+.o1 .sq::after { content: ''; position: absolute; inset: 3px 6px 50% 6px; border-radius: 15px 15px 40% 40%; background: linear-gradient(#ffffff55, #ffffff00); }
+.o1 .sq svg { width: 32px; height: 32px; position: relative; z-index: 1; }
+.o1 .live { position: absolute; top: -3px; right: -3px; z-index: 2; border: 2px solid #1b1b24; width: 12px; height: 12px; }
+.o1 .w3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-top: 26px; }
+.o1 .wg { padding: 14px 18px; display: flex; align-items: center; gap: 14px; border-radius: 18px; }
+.o1 .wg .big { font-size: 30px; font-weight: 800; letter-spacing: -1px; }
+.o1 .wg small { display: block; color: #ffffffa6; font-size: 12px; }
+.o1 .wg .r { margin-left: auto; color: #ffc21a; font-size: 12px; }
+
+/* ---------- 2 · Neon orbs ---------- */
+.o2 .orbs { display: flex; justify-content: center; gap: 44px; margin-top: 8px; }
+.o2 .orbs div { text-align: center; font-size: 13px; font-weight: 600; }
+.o2 .orb { width: 92px; height: 92px; border-radius: 50%; display: grid; place-items: center; margin: 0 auto 10px; position: relative;
+  background: radial-gradient(circle at 35% 30%, #ffffff30, #ffffff08 60%); border: 1.5px solid var(--c); box-shadow: 0 0 30px -4px var(--c), inset 0 0 22px -6px var(--c); color: var(--c); }
+.o2 .orb svg { width: 36px; height: 36px; filter: drop-shadow(0 0 8px var(--c)); }
+.o2 .orbs small { display: block; color: #ffffff6b; font-weight: 400; font-size: 11px; }
+.o2 .strip { margin: 34px auto 0; width: 1000px; display: grid; grid-template-columns: repeat(3, 1fr); border-radius: 22px; overflow: hidden; }
+.o2 .strip > div { padding: 16px 20px; border-right: 1px solid #ffffff1a; }
+.o2 .strip > div:last-child { border: 0; }
+.o2 .strip h5 { margin: 0 0 8px; font-size: 11px; letter-spacing: 1.4px; text-transform: uppercase; color: #ffc21a; }
+.o2 .strip p { margin: 4px 0; font-size: 13px; display: flex; gap: 8px; }
+
+/* ---------- 3 · Feature cards + app chips ---------- */
+.o3 .chips { display: flex; justify-content: center; gap: 10px; margin-top: 4px; }
+.o3 .chip { display: flex; align-items: center; gap: 9px; padding: 7px 16px 7px 7px; border-radius: 40px; font-size: 13px; font-weight: 600; }
+.o3 .chip i { width: 30px; height: 30px; border-radius: 50%; display: grid; place-items: center; color: #111; }
+.o3 .chip i svg { width: 16px; height: 16px; }
+.o3 .feat { display: grid; grid-template-columns: 1.2fr 1fr 1fr; gap: 16px; margin-top: 28px; }
+.o3 .fc { height: 250px; padding: 22px; position: relative; overflow: hidden; border-radius: 24px; }
+.o3 .fc h3 { margin: 0; font-size: 22px; letter-spacing: -.4px; } .o3 .fc small { color: #ffffffa6; }
+.o3 .fc .bgi { position: absolute; right: -20px; bottom: -30px; opacity: .14; } .o3 .fc .bgi svg { width: 190px; height: 190px; }
+.o3 .msg { display: flex; align-items: center; gap: 10px; margin-top: 12px; font-size: 13px; }
+.o3 .msg i { width: 30px; height: 30px; border-radius: 50%; flex: none; }
+.o3 .tk { margin-top: 10px; display: flex; gap: 10px; align-items: center; font-size: 13px; }
+.o3 .tk em { width: 16px; height: 16px; border: 1.5px solid #ffffff60; border-radius: 5px; }
+
+/* ---------- 4 · Duotone gradient tiles ---------- */
+.o4 .apps { display: grid; grid-template-columns: repeat(6, 1fr); gap: 14px; }
+.o4 .t { height: 150px; border-radius: 22px; padding: 18px; display: flex; flex-direction: column; justify-content: space-between; position: relative; overflow: hidden;
+  background: linear-gradient(150deg, var(--a), var(--b)); box-shadow: 0 14px 34px -10px var(--a); }
+.o4 .t svg { width: 34px; height: 34px; color: #fff; }
+.o4 .t b { font-size: 16px; } .o4 .t small { display: block; color: #ffffffcc; font-size: 12px; }
+.o4 .t::before { content: ''; position: absolute; width: 140px; height: 140px; border-radius: 50%; right: -50px; top: -50px; background: #ffffff22; }
+.o4 .feed { margin-top: 16px; padding: 18px 22px; border-radius: 22px; display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 26px; }
+.o4 .feed h5 { margin: 0 0 6px; font-size: 13px; color: #ffffffa6; font-weight: 600; }
+.o4 .tl { border-left: 2px solid #ffffff20; padding-left: 14px; }
+.o4 .tl p { margin: 0 0 10px; position: relative; font-size: 13px; } .o4 .tl p::before { content: ''; position: absolute; left: -19px; top: 6px; width: 8px; height: 8px; border-radius: 50%; background: #ffc21a; }
+
+/* ---------- 5 · Launcher + Today feed ---------- */
+.o5 .split { display: grid; grid-template-columns: 300px 1fr; gap: 16px; }
+.o5 .launch { padding: 12px; border-radius: 22px; }
+.o5 .row { display: flex; align-items: center; gap: 12px; padding: 9px 10px; border-radius: 13px; font-weight: 600; font-size: 14px; }
+.o5 .row:first-child { background: #ffffff14; }
+.o5 .row i { width: 36px; height: 36px; border-radius: 11px; display: grid; place-items: center; border: 1px solid #ffffff2a; background: #ffffff10; color: var(--c); }
+.o5 .row i svg { width: 20px; height: 20px; }
+.o5 .row small { display: block; font-weight: 400; color: #ffffff6b; font-size: 11.5px; }
+.o5 .row .dotg { margin-left: auto; }
+.o5 .today { padding: 20px 24px; border-radius: 22px; }
+.o5 .today h3 { margin: 0 0 4px; font-size: 20px; } .o5 .today .tabs { display: flex; gap: 6px; margin: 10px 0 8px; font-size: 12px; }
+.o5 .tabs span { padding: 4px 12px; border-radius: 20px; border: 1px solid #ffffff26; color: #ffffffa6; } .o5 .tabs span:first-child { background: #ffc21a24; border-color: #ffc21a; color: #ffc21a; }
+.o5 .fi { display: flex; align-items: center; gap: 14px; padding: 11px 0; border-bottom: 1px solid #ffffff12; font-size: 13.5px; }
+.o5 .fi i { width: 34px; height: 34px; border-radius: 10px; display: grid; place-items: center; flex: none; color: #111; } .o5 .fi i svg { width: 18px; height: 18px; }
+.o5 .fi em { margin-left: auto; font-style: normal; color: #ffffff6b; font-size: 12px; }
+
+/* ---------- 6 · Spotlight tall cards ---------- */
+.o6 .apps { display: grid; grid-template-columns: repeat(6, 1fr); gap: 14px; }
+.o6 .t { height: 230px; border-radius: 24px; padding: 18px; position: relative; overflow: hidden; display: flex; flex-direction: column; justify-content: flex-end;
+  background: linear-gradient(to top, #000a, transparent 60%), radial-gradient(circle at 50% 30%, var(--c), transparent 70%), #ffffff0d; border: 1px solid #ffffff22; }
+.o6 .t svg { position: absolute; top: 40px; left: 50%; transform: translateX(-50%); width: 70px; height: 70px; color: #fff; filter: drop-shadow(0 8px 20px #0008); }
+.o6 .t b { font-size: 17px; } .o6 .t small { color: #ffffffb0; font-size: 12px; }
+.o6 .t .st { position: absolute; top: 14px; right: 14px; font-size: 10px; display: flex; gap: 5px; align-items: center; background: #0006; padding: 2px 8px; border-radius: 10px; }
+.o6 .t.hot { outline: 2px solid #ffc21a; box-shadow: 0 0 40px -6px #ffc21a; }
+.o6 .bar { margin-top: 16px; display: flex; gap: 14px; }
+.o6 .bar > div { flex: 1; padding: 13px 18px; border-radius: 18px; display: flex; align-items: center; gap: 12px; font-size: 13px; }
+.o6 .bar b { color: #ffc21a; font-size: 18px; }
+
+/* ---------- 7 · Minimal line ---------- */
+.o7 .apps { display: flex; justify-content: center; gap: 60px; margin-top: 10px; }
+.o7 .apps div { text-align: center; font-size: 13px; color: #ffffffc0; }
+.o7 .apps svg { width: 40px; height: 40px; margin: 0 auto 10px; color: #fff; stroke-width: 1.4; }
+.o7 .apps div:first-child svg { color: #ffc21a; filter: drop-shadow(0 0 10px #ffc21a99); }
+.o7 .apps div:first-child { color: #ffc21a; }
+.o7 .tabsbox { width: 900px; margin: 44px auto 0; border-radius: 22px; overflow: hidden; }
+.o7 .tb { display: flex; border-bottom: 1px solid #ffffff1a; } .o7 .tb span { flex: 1; text-align: center; padding: 12px; color: #ffffffa6; font-size: 13px; }
+.o7 .tb span:first-child { color: #fff; box-shadow: inset 0 -2px 0 #ffc21a; }
+.o7 .tc { padding: 8px 22px 14px; }
+.o7 .tc p { display: flex; gap: 12px; align-items: center; margin: 0; padding: 10px 0; border-bottom: 1px solid #ffffff10; font-size: 13.5px; }
+.o7 .tc p em { margin-left: auto; font-style: normal; color: #ffffff6b; font-size: 12px; }
+</style>
+</head>
+<body>
+<div class="page-h"><h1>Home — 7 naye options</h1><p>Background aur upar ka logo/prompt same hai. Sirf apps, icons aur neeche ke cards badle hain. Jo pasand aaye uska number bataiye (mix bhi chalega, jaise "1 ke icons + 5 ka layout").</p></div>
+<div class="grid" id="grid"></div>
+
+<template id="topHero">
+  <div class="top glass"><img src="img/limelight-logo-white.png" alt=""><span class="w">Workspace</span>
+    <div class="pills"><b>Home</b><span>Chats</span><span>Create</span><span>Library</span></div><div class="av">JS</div></div>
+  <div class="hero"><img src="img/limelight-logo-white.png" alt=""><p>Good morning, Jaspreet — ek prompt se image, video ya design</p>
+    <div class="ask glass">Sunrise drone shot over India Gate…<div class="seg"><i>Image</i><i>Video</i><i>Design</i></div><b>Generate ✦</b></div></div>
+</template>
+
+<script>
+// new icon set (24px grid): one shape per app, used in every option
+const P = {
+  edit: '<path d="M4 6.5A2.5 2.5 0 0 1 6.5 4h11A2.5 2.5 0 0 1 20 6.5v11a2.5 2.5 0 0 1-2.5 2.5h-11A2.5 2.5 0 0 1 4 17.5z"/><path d="M10 9.2v5.6l4.8-2.8z" fill="currentColor"/><path d="M4 8.5h2.5M4 15.5h2.5M17.5 8.5H20M17.5 15.5H20"/>',
+  design: '<path d="M14.5 4.5l5 5L10 19H5v-5z"/><path d="M12.5 6.5l5 5"/><circle cx="7.5" cy="16.5" r="1" fill="currentColor"/>',
+  office: '<rect x="4" y="5" width="16" height="14" rx="2.5"/><path d="M4 9h16"/><path d="M8 13h3M8 16h6"/><circle cx="16.5" cy="14.5" r="1.5"/>',
+  lighthouse: '<path d="M12 2.8v2"/><path d="M9.5 6.5h5l1.6 13.5H7.9z"/><path d="M8.6 11h6.8M8.2 15.5h7.6"/><path d="M3.5 7.5l3 1M20.5 7.5l-3 1"/>',
+  ai: '<path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M18.5 15.5l.8 2 2 .8-2 .8-.8 2-.8-2-2-.8 2-.8z"/>',
+  chats: '<path d="M5 5.5h11a2.5 2.5 0 0 1 2.5 2.5v5.5A2.5 2.5 0 0 1 16 16H10l-4.5 3.5V16H5a2.5 2.5 0 0 1-2.5-2.5V8A2.5 2.5 0 0 1 5 5.5z"/><path d="M7 10h7M7 12.8h4.5"/><path d="M21.5 10.5v6a2 2 0 0 1-2 2h-.5"/>',
+};
+const ic = (k, w = 1.9) => `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="${w}" stroke-linecap="round" stroke-linejoin="round">${P[k]}</svg>`;
+const APPS = [['edit', 'Edit', 'Video edit', '#ff8a3d', '#ff5f6d'], ['design', 'Design', 'Posts, PSD, 3D', '#ffc21a', '#ff8a00'], ['office', 'Office', 'Mail, docs', '#5b8cff', '#3b5bdb'],
+  ['lighthouse', 'Lighthouse', 'Team, tasks', '#3ddc84', '#0ea371'], ['ai', 'Limelight AI', 'Ask anything', '#c084fc', '#7c3aed'], ['chats', 'Chats', 'Team se baat', '#2dd4bf', '#0891b2']];
+
+const OPTS = [
+  ['Glossy Dock', 'naye chamakdar icons', 'Apps ek floating dock mein, chamakdar (glossy) icons — jaise phone/Mac. Neeche 3 chhote widgets: unread, tasks, check-in.', `
+    <div class="o1"><div class="dock glass">${APPS.map(([k, n, , a, b]) => `<div><div class="sq" style="background:linear-gradient(160deg,${a},${b})">${ic(k, 2)}<i class="dotg live"></i></div>${n}</div>`).join('')}</div>
+    <div class="w3"><div class="wg glass"><div class="big" style="color:#2dd4bf">5</div><div>Unread chats<small>Design Team · Rahul · Accounts</small></div><span class="r">Kholo →</span></div>
+    <div class="wg glass"><div class="big" style="color:#3ddc84">3</div><div>Aaj ke tasks<small>VBYLD reel · Proposal deck</small></div><span class="r">Lighthouse →</span></div>
+    <div class="wg glass"><div class="big" style="color:#ffc21a">9:42</div><div>Check-in<small>Aaj office mein</small></div><span class="r">Recent →</span></div></div></div>`],
+  ['Neon Orbs', 'gol glowing icons', 'Har app ek gol "orb", apne rang ki neon chamak ke saath. Neeche ek hi glass patti mein Chats, Aaj aur Recent.', `
+    <div class="o2"><div class="orbs">${APPS.map(([k, n, d, a]) => `<div><div class="orb" style="--c:${a}">${ic(k, 1.7)}</div>${n}<small>${d}</small></div>`).join('')}</div>
+    <div class="strip glass"><div><h5>Chats</h5><p><b>Design Team</b><span class="muted">Poster v3 ready</span><span class="n">2</span></p><p><b>Rahul</b><span class="muted">Footage upload ho gaya</span></p></div>
+    <div><h5>Aaj</h5><p>VBYLD reel final cut <span class="dim">12:00</span></p><p>Ministry proposal deck <span class="dim">3:00</span></p></div>
+    <div><h5>Recent</h5><div style="display:flex;gap:8px"><div class="th" style="width:58px;height:58px"></div><div class="th b" style="width:58px;height:58px"></div><div class="th o" style="width:58px;height:58px"></div></div></div></div></div>`],
+  ['Feature Cards', 'bade cards + app chips', 'Apps upar chhote gol "chips" mein. Neeche teen bade cards: Create, Chats, Aaj — kaam seedha card par dikhta hai.', `
+    <div class="o3"><div class="chips">${APPS.map(([k, n, , a]) => `<div class="chip glass"><i style="background:${a}">${ic(k, 2.2)}</i>${n}</div>`).join('')}</div>
+    <div class="feat"><div class="fc glass" style="background:linear-gradient(150deg,#ffc21a33,#ffffff0a)"><h3>Create with AI</h3><small>Image · Video · Design</small>
+      <div style="display:flex;gap:10px;margin-top:30px"><div class="th" style="width:90px;height:110px"></div><div class="th p" style="width:90px;height:110px"></div><div class="th b" style="width:90px;height:110px"></div></div><div class="bgi">${ic('ai', 1.2)}</div></div>
+    <div class="fc glass"><h3>Chats</h3><small>5 unread</small><div class="msg"><i style="background:#2dd4bf"></i><b>Design Team</b><span class="muted">Poster v3</span></div><div class="msg"><i style="background:#ff8a3d"></i><b>Rahul</b><span class="muted">Footage…</span></div><div class="msg"><i style="background:#c084fc"></i><b>Accounts</b><span class="muted">Invoice</span></div><div class="bgi">${ic('chats', 1.2)}</div></div>
+    <div class="fc glass"><h3>Aaj</h3><small>Lighthouse · 3 tasks</small><div class="tk"><em></em>VBYLD reel final cut</div><div class="tk"><em></em>Ministry proposal deck</div><div class="tk"><em></em>Payroll check</div><div class="bgi">${ic('lighthouse', 1.2)}</div></div></div></div>`],
+  ['Gradient Tiles', 'rangeen bade tiles', 'Har app apne gradient rang ka tile, safed icons ke saath — sabse bold aur energetic. Neeche ek timeline: chats, tasks, recent.', `
+    <div class="o4"><div class="apps">${APPS.map(([k, n, d, a, b]) => `<div class="t" style="--a:${a};--b:${b}">${ic(k, 1.9)}<div><b>${n}</b><small>${d}</small></div></div>`).join('')}</div>
+    <div class="feed glass"><div><h5>Chats</h5><div class="tl"><p>Design Team — Poster v3 ready</p><p>Rahul — Footage upload ho gaya</p></div></div>
+    <div><h5>Aaj</h5><div class="tl"><p>12:00 · VBYLD reel final cut</p><p>3:00 · Ministry proposal deck</p></div></div>
+    <div><h5>Recent</h5><div style="display:flex;gap:8px"><div class="th" style="width:64px;height:64px"></div><div class="th b" style="width:64px;height:64px"></div><div class="th o" style="width:64px;height:64px"></div></div></div></div></div>`],
+  ['Launcher + Today', 'list + ek feed', 'Left mein apps ki saaf list (status ke saath), right mein ek "Aaj" feed jismein chats, tasks aur recent sab ek jagah.', `
+    <div class="o5"><div class="split"><div class="launch glass">${APPS.map(([k, n, d, a]) => `<div class="row"><i style="--c:${a}">${ic(k, 2)}</i><div>${n}<small>${d}</small></div><span class="dotg"></span></div>`).join('')}</div>
+    <div class="today glass"><h3>Aaj</h3><span class="muted">Thursday, 29 October</span><div class="tabs"><span>Sab</span><span>Chats</span><span>Tasks</span><span>Files</span></div>
+      <div class="fi"><i style="background:#2dd4bf">${ic('chats')}</i><div><b>Design Team</b> — Poster v3 ready hai</div><span class="n">2</span><em>10:12</em></div>
+      <div class="fi"><i style="background:#3ddc84">${ic('lighthouse')}</i><div>Task: <b>VBYLD reel final cut</b></div><em>12:00</em></div>
+      <div class="fi"><i style="background:#ffc21a">${ic('design')}</i><div>Design edit hua: <b>Something big is coming</b></div><em>9:50</em></div>
+      <div class="fi"><i style="background:#ff8a3d">${ic('edit')}</i><div>Render ready: <b>KYV reel v2</b></div><em>9:31</em></div></div></div></div>`],
+  ['Spotlight Cards', 'lambe glowing cards', 'Lambe cards jinmein bada icon apne rang ki roshni mein chamakta hai; jis app mein kuch naya ho wo highlight. Neeche patli stats bar.', `
+    <div class="o6"><div class="apps">${APPS.map(([k, n, d, a], i) => `<div class="t ${i === 5 ? 'hot' : ''}" style="--c:${a}aa"><span class="st"><i class="dotg"></i>${i === 5 ? '5 new' : 'live'}</span>${ic(k, 1.6)}<b>${n}</b><small>${d}</small></div>`).join('')}</div>
+    <div class="bar"><div class="glass"><b>5</b>unread chats</div><div class="glass"><b>3</b>tasks aaj</div><div class="glass"><b>9:42</b>check-in</div><div class="glass"><b>12</b>designs is hafte</div></div></div>`],
+  ['Minimal Line', 'patle line icons', 'Bina box ke patle line icons, sirf chuna hua app yellow. Neeche ek hi glass box jismein tabs: Chats | Aaj | Recent.', `
+    <div class="o7"><div class="apps">${APPS.map(([k, n]) => `<div>${ic(k, 1.4)}${n}</div>`).join('')}</div>
+    <div class="tabsbox glass"><div class="tb"><span>Chats · 5</span><span>Aaj · 3</span><span>Recent</span></div><div class="tc">
+      <p><b>Design Team</b><span class="muted">Poster v3 ready hai</span><span class="n">2</span><em>10:12</em></p>
+      <p><b>Rahul</b><span class="muted">Footage upload ho gaya</span><em>9:58</em></p>
+      <p><b>Accounts</b><span class="muted">Invoice bhej do</span><em>Kal</em></p></div></div></div>`],
+];
+const tpl = document.getElementById('topHero').innerHTML;
+document.getElementById('grid').innerHTML = OPTS.map(([n, tag, d, lower], i) =>
+  `<section class="opt"><h2>${i + 1} · ${n}<span>${tag}</span></h2><p>${d}</p><div class="frame"><div class="mock">${tpl}<div class="lower">${lower}</div></div></div></section>`).join('');
+const fit = () => document.querySelectorAll('.frame').forEach((f) => { f.firstElementChild.style.transform = `scale(${f.clientWidth / 1280})`; });
+addEventListener('resize', fit); fit();
+</script>
+</body>
+</html>

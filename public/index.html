@@ -1,0 +1,320 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Limelight</title>
+<link rel="icon" href="img/favicon.png">
+<!-- installable app: name, icons and colours for Android, iPhone, Mac and Windows (manifest.webmanifest, sw.js) -->
+<link rel="manifest" href="/manifest.webmanifest">
+<meta name="theme-color" content="#000000">
+<link rel="apple-touch-icon" href="/img/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Limelight">
+<link rel="stylesheet" href="css/workspace.css?v=20261030v">
+<link rel="stylesheet" href="css/profile.css?v=20261030v">
+<link rel="stylesheet" href="css/library.css?v=20261030v">
+<link rel="stylesheet" href="css/salary.css?v=20261030v">
+<link rel="stylesheet" href="css/office-pages.css?v=20261030v">
+<link rel="stylesheet" href="css/mobile.css?v=20261030v">
+<script src="js/theme-boot.js?v=20261030v"></script>
+<script src="js/frame.js?v=20261030v" defer></script>
+</head>
+<body>
+<div class="ws">
+
+  <!-- ============ top bar ============ -->
+  <header class="top glass">
+    <a class="brand" href="/" data-view="home"><img class="lg" src="img/limelight-logo-white.png" alt="Limelight"></a>
+    <div class="spot" id="spot">
+      <label class="spot-bar"><i data-i="search"></i><input id="spotIn" placeholder="Search" autocomplete="off" spellcheck="false"><kbd>Ctrl K</kbd></label>
+      <div class="spot-res hidden" id="spotRes"></div>
+    </div>
+    <div class="right">
+      <div class="dock" id="dock"></div>
+      <button class="theme-btn" id="themeBtn" title="Colour theme"><i data-i="palette"></i></button>
+      <button class="av" id="meBtn" title="Account"></button>
+    </div>
+    <div class="theme-pop hidden" id="themePop"><b>Colour theme</b><div class="swatches" id="swatches"></div>
+      <div class="custom"><b>Custom — your own colours on this PC</b>
+        <div class="crow">
+          <label><input type="color" id="cBg" value="#07070c">Base</label>
+          <label><input type="color" id="cA1" value="#7c3aed">Glow 1</label>
+          <label><input type="color" id="cA2" value="#ffc21a">Glow 2</label>
+          <label><input type="color" id="cA3" value="#0ea5e9">Glow 3</label>
+          <label><input type="color" id="cAcc" value="#ffc21a">Button</label>
+        </div>
+        <button class="btn sm" id="cApply">Use custom</button>
+      </div></div>
+    <div class="menu-pop hidden" id="meMenu"><b id="mmName"></b><small id="mmEmail"></small>
+      <form class="aiset hidden" id="aiSet"><b>Limelight AI</b><small id="aiSetState"></small>
+        <input class="field" type="password" id="aiPw" placeholder="Office AI password" autocomplete="new-password"><button class="btn sm">Save</button></form>
+      <button class="btn" data-view="profile">My profile</button>
+      <button class="btn" id="logoutBtn">Logout</button></div>
+  </header>
+  <nav class="pills glass float">
+      <a class="pbrand" href="/" data-view="home" title="Home"><img class="lg" src="img/limelight-logo-white.png" alt="Limelight"></a>
+      <button class="pill on" data-view="home"><i data-i="home"></i><span>Home</span></button>
+      <button class="pill" data-view="chats"><i data-i="chat"></i><span>Chats</span><span class="badge hidden" id="chatBadge"></span></button>
+      <button class="pill" data-view="create"><i data-i="wand"></i><span>Create</span></button>
+      <button class="pill" data-view="library"><i data-i="folder"></i><span>Library</span></button>
+      <button class="pill" data-view="profile"><i data-i="people"></i><span>Profile</span></button>
+      <span class="pspot" id="pspot"></span>
+      <span class="pdock" id="pdock"></span>
+      <span class="pacts"><button id="barShare" title="Share what is open here with the team"><i data-i="share"></i>Share</button>
+        <button id="barReload" title="Reload this app"><i data-i="reload"></i></button>
+        <button id="barFull" title="Full screen (Esc to come back)"><i data-i="expand"></i></button></span>
+  </nav>
+
+  <main class="main">
+
+    <!-- HOME -->
+    <section class="view" id="v-home"><div class="inner">
+      <div class="hero split">
+        <div class="greet">
+          <div class="when"><span id="nowDate"></span> · <span id="nowTime"></span></div>
+          <h1 id="hello">Namaste.</h1>
+          <p class="quote" id="quote"></p>
+        </div>
+        <!-- clock in, first thing on Home -->
+        <div class="punch glass" id="punch" data-state="loading">
+          <div class="pring"><i></i><i></i><span id="punchIcon"></span></div>
+          <div class="ptext"><b id="punchTitle">Checking your day…</b><small id="punchSub"></small></div>
+          <button class="btn pbtn" id="punchBtn" disabled>Clock in</button>
+          <!-- on a phone the button becomes a slide (no clocking in by a stray tap) -->
+          <div class="pslide" id="punchSlide"><i class="pfill"></i><span class="plabel" id="punchSlideL">Slide to clock in</span>
+            <span class="pknob" id="punchKnob"><svg viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></span></div>
+        </div>
+      </div>
+
+      <!-- dashboard for everyone: a little from every app, glass tiles -->
+      <div class="dash">
+        <!-- top row: the apps, as big tabs -->
+        <button class="dt app-card" style="--c:#ff8a3d" data-app="editor">
+          <span class="ac-top"><span class="ac-ic"><i data-i="editor"></i></span><span class="ac-st" id="dEditSt"><i></i><span>…</span></span></span>
+          <b class="ac-name">Edit</b><small class="ac-desc" id="dEdit">…</small>
+          <span class="ac-foot"><em id="dEditN">–</em><span>video editor</span><span class="ac-go">Open →</span></span></button>
+        <button class="dt app-card" style="--c:#ffc21a" data-app="design">
+          <span class="ac-top"><span class="ac-ic"><i data-i="design"></i></span><span class="ac-st" id="dDesignSt"><i></i><span>…</span></span></span>
+          <b class="ac-name">Design</b><small class="ac-desc" id="dDesign">…</small>
+          <span class="ac-foot"><em id="dDesignN">–</em><span>designs this week</span><span class="ac-go">Open →</span></span></button>
+        <button class="dt app-card" style="--c:#5b8cff" data-app="office" data-sub="home">
+          <span class="ac-top"><span class="ac-ic"><i data-i="office"></i></span><span class="ac-st" id="dOfficeSt"><i></i><span>…</span></span></span>
+          <b class="ac-name">Office</b><small class="ac-desc" id="dMailSub">…</small>
+          <span class="ac-foot"><em id="dMail">–</em><span>new mails</span><span class="ac-go">Open →</span></span></button>
+        <form class="dt app-card ai-card" style="--c:#c084fc" id="dAiForm">
+          <span class="ac-top"><span class="ac-ic"><i data-i="ai"></i></span><span class="ac-st" id="dAiSt"><i></i><span>…</span></span></span>
+          <b class="ac-name">Limelight AI</b><small class="ac-desc" id="dAi">…</small>
+          <span class="ac-foot ac-ask"><input class="field" id="dAiIn" placeholder="Describe an image or video…" autocomplete="off"><button class="ac-send" title="Create">↵</button><em id="dAiN" hidden>✦</em></span></form>
+
+        <div class="dt today wide" style="--c:#c084fc">
+          <div class="dh"><b>Today</b><span class="date" id="todayDate"></span>
+            <div class="ftabs" id="feedTabs"><button class="on" data-f="all">All</button><button data-f="chat">Chats</button><button data-f="task">Tasks</button><button data-f="file">Files</button></div></div>
+          <div id="feed"></div>
+        </div>
+        <div class="dt list" style="--c:#3ddc84"><div class="dh"><b>Projects</b><button class="more" data-app="office" data-sub="projects">All →</button></div><div id="dProjects"></div></div>
+        <div class="dt list" style="--c:#ff8a3d"><div class="dh"><b>Team updates</b><button class="more" data-app="office" data-sub="alerts">All →</button></div><div id="dActivity"></div></div>
+
+        <!-- bottom row: my numbers -->
+        <button class="dt stat sm" style="--c:#2dd4bf" data-view="chats"><span class="big" id="dChats">0</span><b>Unread chats</b><small id="dChatsSub">All caught up</small><i data-i="chat"></i></button>
+        <button class="dt stat sm" style="--c:#3ddc84" data-app="office" data-sub="tasks"><span class="big" id="dTasks">–</span><b>Today's tasks</b><small id="dTasksSub">…</small><i data-i="check"></i></button>
+        <button class="dt stat sm" style="--c:#ffc21a" data-view="profile"><span class="big" id="dIn">–</span><b>Attendance</b><small id="dInSub">…</small><i data-i="clock"></i></button>
+        <div class="dt list" style="--c:#5b8cff"><div class="dh"><b>Today's meetings</b><button class="more" data-app="office" data-sub="meetings">All →</button></div><div id="dMeet"></div></div>
+      </div>
+    </div></section>
+
+    <!-- PROFILE: me (photo, details, attendance, leaves) + everyone's profile -->
+    <section class="view hidden" id="v-profile"><div class="inner">
+      <div class="pf-head glass">
+        <label class="pf-photo" id="pfPhoto" title="Change photo"><img id="pfImg" alt=""><span id="pfIni"></span>
+          <em>Change photo</em><input type="file" accept="image/*" id="pfFile" hidden></label>
+        <div class="pf-who"><h1 id="pfName">…</h1><p id="pfTitle"></p>
+          <div class="pf-tags" id="pfTags"></div></div>
+        <div class="pf-today" id="pfToday"></div>
+      </div>
+      <div class="ftabs pf-tabs" id="pfTabs"><button class="on" data-t="overview">Overview</button><button data-t="attendance">Attendance</button><button data-t="leaves">Leaves / WFH</button><button data-t="team">Team</button><button data-t="time">Time</button></div>
+      <div class="pf-pane" data-p="overview">
+        <div class="pf-stats" id="pfStats"></div>
+        <div class="pf-cols">
+          <div class="dt list glass" style="--c:#3ddc84"><div class="dh"><b>Leave balance</b></div><div id="pfBal"></div></div>
+          <div class="dt list glass" style="--c:#ffc21a"><div class="dh"><b>My leaves &amp; WFH</b><button class="more" data-pft="leaves">Apply →</button></div><div id="pfLeaves"></div></div>
+        </div>
+      </div>
+      <div class="pf-pane hidden" data-p="attendance"><iframe class="pf-frame" data-lh="/attendance" allow="camera; geolocation"></iframe></div>
+      <div class="pf-pane hidden" data-p="leaves"><iframe class="pf-frame" data-lh="/leaves"></iframe></div>
+      <div class="pf-pane hidden" data-p="time"><div class="tm-tools"><label>Day <input type="date" class="field" id="tmDay"></label></div>
+        <div class="tm glass" id="tmMine"></div><div class="tm-team" id="tmTeam"></div></div>
+      <div class="pf-pane hidden" data-p="team"><input class="field pf-find" id="pfFind" placeholder="Find someone…" autocomplete="off"><div class="pf-grid" id="pfGrid"></div></div>
+    </div></section>
+
+    <!-- CHATS -->
+    <section class="view hidden" id="v-chats">
+      <div class="chatwrap" id="chatwrap">
+        <aside class="clist glass">
+          <div class="clist-h"><h2>Chats</h2>
+            <button class="icon-btn" id="newGroupBtn" title="New group"><i data-i="group"></i></button>
+            <button class="icon-btn" id="newChatBtn" title="New chat"><i data-i="plus"></i></button></div>
+          <label class="search"><i data-i="search"></i><input id="chatSearch" placeholder="Search chats or people"></label>
+          <div class="ctabs" id="chatTabs"><button class="on" data-f="all">All</button><button data-f="unread">Unread</button><button data-f="group">Groups</button></div>
+          <div class="citems" id="chatItems"></div>
+        </aside>
+        <section class="conv glass" id="conv">
+          <div class="conv-empty" id="convEmpty"><img class="lg" src="img/limelight-logo-white.png" alt=""><b>Limelight Chats</b><span>Talk to the team — pick a chat or start a new one.</span></div>
+          <div class="conv-h hidden" id="convHead">
+            <button class="icon-btn back" id="convBack" title="Back"><i data-i="back"></i></button>
+            <div class="cav" id="convAv"></div>
+            <div class="cmeta"><b id="convName"></b><small id="convSub"></small></div>
+          </div>
+          <div class="msgs hidden" id="msgs"></div>
+          <div class="replybar hidden" id="replyBar"><div id="replyText"></div><button class="icon-btn" id="replyX" style="width:26px;height:26px">×</button></div>
+          <form class="composer hidden" id="composer">
+            <label class="icon-btn" title="Send a photo or file"><i data-i="clip"></i><input type="file" id="fileIn" hidden multiple></label>
+            <textarea id="msgIn" rows="1" placeholder="Message likho"></textarea>
+            <button class="go" title="Send"><i data-i="send"></i></button>
+          </form>
+          <div class="dropzone hidden" id="dropzone">Drop the file here</div>
+          <aside class="info hidden" id="info"></aside>
+        </section>
+      </div>
+    </section>
+
+    <!-- CREATE (AI image + AI video) -->
+    <section class="view hidden" id="v-create"><div class="inner">
+      <header class="vh"><div><h1 id="createTitle">AI Image</h1><p id="createSub">Write a prompt and Limelight AI (NAYA B) will make the picture.</p></div>
+        <div class="seg" id="createTab"><button type="button" class="on" data-v="image">Image</button><button type="button" data-v="video">Video</button></div></header>
+
+      <div class="gen" id="c-image">
+        <form class="panel glass" id="imgForm">
+          <label>Prompt</label>
+          <textarea id="imgPrompt" rows="5" placeholder="A golden diya on a dark blue background, festive bokeh lights, premium poster look"></textarea>
+          <label>Style</label>
+          <div class="chips" id="imgStyle"></div>
+          <label>Size</label>
+          <div class="chips" id="imgRatio"></div>
+          <div class="row2">
+            <div><label>Quality</label>
+              <div class="seg" id="imgPreset"><button type="button" class="on" data-v="fast">Fast</button><button type="button" data-v="quality">Best</button></div></div>
+            <div><label>Kitni</label>
+              <div class="seg" id="imgCount"><button type="button" data-v="1">1</button><button type="button" class="on" data-v="2">2</button><button type="button" data-v="4">4</button></div></div>
+          </div>
+          <details><summary>Leave out (negative prompt)</summary><input id="imgNeg" placeholder="blurry, watermark, extra fingers"></details>
+          <button class="go wide" id="imgGo" type="submit">Generate <i data-i="spark"></i></button>
+          <p class="note" id="imgNote"></p>
+        </form>
+        <div class="out" id="imgOut"><div class="empty"><i data-i="image"></i><p>Your pictures will appear here</p></div></div>
+      </div>
+
+      <div class="gen hidden" id="c-video">
+        <form class="panel glass" id="vidForm">
+          <label>Describe the scene</label>
+          <textarea id="vidPrompt" rows="5" placeholder="Slow drone shot over India Gate at sunrise, tricolour smoke, cinematic"></textarea>
+          <label>Start image (optional)</label>
+          <label class="drop" id="vidDrop"><input type="file" accept="image/*" id="vidImg" hidden><span>Add a photo — the video is made from it</span></label>
+          <label>Camera</label>
+          <div class="chips" id="vidCam"></div>
+          <div class="row2">
+            <div><label>Format</label>
+              <div class="seg" id="vidRatio"><button type="button" class="on" data-v="9:16">9:16</button><button type="button" data-v="16:9">16:9</button><button type="button" data-v="1:1">1:1</button></div></div>
+            <div><label>Length</label>
+              <div class="seg" id="vidSec"><button type="button" class="on" data-v="5">5s</button><button type="button" data-v="10">10s</button></div></div>
+          </div>
+          <button class="go wide" type="submit">Generate video <i data-i="spark"></i></button>
+          <p class="note">For now the request is saved. Once the video engine (Wan 2.2 / LTX-Video on NAYA B) is installed, this button will make the video.</p>
+        </form>
+        <div class="out">
+          <div class="player glass" id="vidPlayer"><div class="empty"><i data-i="video"></i><p>The video preview plays here</p></div></div>
+          <h3>Requests</h3>
+          <div class="jobs" id="vidJobs"></div>
+        </div>
+      </div>
+    </div></section>
+
+    <!-- LIBRARY -->
+    <section class="view hidden" id="v-library"><div class="inner">
+      <header class="vh"><div><h1>Library</h1><p>Finished renders from Edit, and AI images — all in one place.</p></div>
+        <div class="seg libtabs" id="libTabs"><button class="on" data-v="videos">Videos</button><button data-v="images">Images</button></div></header>
+      <div class="yt" id="libVideos">
+        <div class="yt-main">
+          <div class="yt-stage" id="ytStage"><video id="ytVideo" controls playsinline preload="metadata"></video><div class="yt-empty" id="ytEmpty">Loading renders…</div></div>
+          <h2 class="yt-title" id="ytTitle"></h2>
+          <div class="yt-meta" id="ytMeta"></div>
+        </div>
+        <aside class="yt-side glass">
+          <div class="yt-tools">
+            <label class="search" style="margin:0;flex:1"><i data-i="search"></i><input id="ytSearch" placeholder="Search renders or projects"></label>
+            <label class="yt-auto" title="Play the next video when one ends"><input type="checkbox" id="ytAuto" checked><span>Autoplay</span></label>
+          </div>
+          <div class="yt-list" id="ytList"></div>
+        </aside>
+      </div>
+      <div class="lib hidden" id="libGrid"></div>
+    </div></section>
+
+    <!-- APP (every app runs inside this window; frames stay alive while you switch) -->
+    <section class="view hidden" id="v-app">
+      <div class="appbar">
+        <b id="appTitle"></b><span class="dot" id="appDot"></span>
+        <div class="grow"></div>
+        <button class="btn sm hidden" id="appStart">Start</button>
+        <button class="btn sm share-btn" id="appShare" title="Share what is open here with the team"><i data-i="share"></i>Share</button>
+        <button class="btn sm" id="appReload">Reload</button>
+        <a class="btn sm" id="appPop" target="_blank" rel="noopener">Alag window</a>
+        <button class="btn sm" id="appFull" title="Full screen (Esc to come back)"><i data-i="expand"></i>Full screen</button>
+      </div>
+      <div class="appbody"><nav class="omenu glass hidden" id="omenu"></nav><div class="frames" id="frames"></div><div class="wspane hidden" id="wsPane"></div></div>
+    </section>
+  </main>
+</div>
+
+<div class="modal hidden" id="pickModal"><div class="modal-card">
+  <header><h3 id="pickTitle"></h3><button class="btn sm" id="pickClose">Close</button></header>
+  <div class="mb">
+    <input class="field hidden" id="groupName" placeholder="Group name" maxlength="80">
+    <label class="search" style="margin:0"><i data-i="search"></i><input id="pickSearch" placeholder="Search names"></label>
+    <div class="picked" id="picked"></div>
+    <div class="plist" id="plist"></div>
+  </div>
+  <footer id="pickFoot"><button class="go" id="pickGo">Create group</button></footer>
+</div></div>
+
+<!-- share: whatever is open in an app (or a chat message) to people and groups -->
+<div class="modal hidden" id="shareModal"><div class="modal-card">
+  <header><h3 id="shareTitle">Share</h3><button class="btn sm" id="shareClose">Close</button></header>
+  <div class="mb">
+    <div class="shwhat" id="shareWhat"></div>
+    <label class="search" style="margin:0"><i data-i="search"></i><input id="shareSearch" placeholder="Search people or groups"></label>
+    <div class="plist" id="shareList"></div>
+    <textarea class="field" id="shareNote" rows="2" maxlength="2000" placeholder="Add a message (optional)"></textarea>
+  </div>
+  <footer><button class="go" id="shareGo" disabled>Send</button></footer>
+</div></div>
+
+<!-- clock in: selfie + mode -->
+<div class="pmodal hidden" id="pmodal"><div class="pm glass">
+  <b id="pmTitle">Clock in</b><small id="pmSub">Your photo and location are saved with this punch.</small>
+  <div class="pm-cam"><video id="pmVideo" autoplay playsinline muted></video><img id="pmShot" class="hidden" alt=""><span id="pmCamMsg"></span></div>
+  <div class="ftabs pm-mode" id="pmMode"><button class="on" data-m="office">Office</button><button data-m="wfh">Work from home</button><button data-m="field">Field</button></div>
+  <div class="pm-row"><button class="btn ghost" id="pmCancel">Cancel</button><label class="btn ghost" id="pmPick">Use a photo<input type="file" accept="image/*" capture="user" id="pmFile" hidden></label><button class="btn" id="pmGo">Clock in</button></div>
+</div></div>
+<!-- welcome after clock in -->
+<div class="welcome hidden" id="welcome"><div class="wl-burst"><i></i><i></i><i></i></div><div class="wl-sparks" id="wlSparks"></div>
+  <div class="wl-card"><div class="wl-time" id="wlTime"></div><h2 id="wlHead">Welcome to the AI world</h2><p class="wl-q" id="wlQuote"></p><small id="wlSub"></small></div></div>
+
+<div class="viewer hidden" id="viewer"><img id="viewerImg" alt=""><div class="viewer-bar">
+  <a class="btn" id="viewerDl" download>Download</a><a class="btn" href="#design" data-app="design">Open in Design</a><button class="btn" id="viewerClose">Close</button></div></div>
+<button class="exit-full" id="exitFull" title="Exit full screen (Esc)"><i data-i="shrink"></i>Exit full screen</button>
+<div class="toast hidden" id="toast"></div>
+
+<script src="js/workspace.js?v=20261030v"></script>
+<script src="js/chats.js?v=20261030v"></script>
+<script src="js/search.js?v=20261030v"></script>
+<script src="js/profile.js?v=20261030v"></script>
+<script src="js/share.js?v=20261030v"></script>
+<script src="js/library.js?v=20261030v"></script>
+<script src="js/activity.js?v=20261030v"></script>
+<script src="js/salary.js?v=20261030v"></script>
+<script src="js/office-pages.js?v=20261030v"></script>
+</body>
+</html>

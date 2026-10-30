@@ -1,0 +1,237 @@
+/* Lighthouse on phones and tablets - loaded last, so it wins over the desktop layout above it */
+
+/* the page tabs carry an icon for the phone's bottom bar; on a computer only the word shows */
+.pill > svg { display: none; }
+
+/* slide to clock in (phones only - see the phone rules below) */
+.pslide { display: none; position: relative; height: 54px; border-radius: 999px; overflow: hidden; touch-action: none; user-select: none; -webkit-user-select: none;
+  background: rgb(var(--ink) / .08); border: 1px solid rgb(var(--ink) / .12); }
+.pslide .pfill { position: absolute; left: 0; top: 0; bottom: 0; width: var(--px, 0px); border-radius: 999px; background: color-mix(in srgb, var(--acc) 28%, transparent); }
+.pslide .plabel { position: absolute; inset: 0; display: grid; place-items: center; padding-left: 40px; font-size: 14.5px; font-weight: 650; color: rgb(var(--ink) / .72); transition: opacity .2s;
+  background: linear-gradient(100deg, rgb(var(--ink) / .45) 35%, var(--text) 50%, rgb(var(--ink) / .45) 65%) 0 0 / 250% 100%; -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
+  animation: pslideshine 2.6s linear infinite; }
+@keyframes pslideshine { from { background-position: 125% 0; } to { background-position: -125% 0; } }
+.pslide.far .plabel { opacity: .25; }
+.pslide .pknob { position: absolute; left: 4px; top: 4px; width: 46px; height: 46px; border-radius: 50%; display: grid; place-items: center; cursor: grab; z-index: 1;
+  background: var(--acc); color: var(--acc-ink); box-shadow: 0 6px 18px color-mix(in srgb, var(--acc) 45%, transparent); }
+.pslide .pknob svg { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width: 2.6; stroke-linecap: round; stroke-linejoin: round; }
+.pslide.off { opacity: .6; } .pslide.off .pknob { cursor: default; }
+.punch[data-state="in"] .pslide .pknob { background: #ff6b6b; color: #2a0505; box-shadow: 0 6px 18px #ff6b6b55; }
+.punch[data-state="in"] .pslide .pfill { background: #ff6b6b40; }
+.punch[data-state="done"] .pslide .pknob { background: rgb(var(--ink) / .2); color: var(--text); box-shadow: none; }
+.punch[data-state="off"] .pslide .pknob, .punch[data-state="loading"] .pslide .pknob { display: none; }
+.punch[data-state="off"] .pslide .plabel, .punch[data-state="loading"] .pslide .plabel { padding-left: 0; }
+@media (prefers-reduced-motion: reduce) { .pslide .plabel { animation: none; -webkit-text-fill-color: currentColor; background: none; } }
+
+/* ---------- tablets ---------- */
+@media (max-width: 1000px) {
+  .ws { padding: 12px 14px 0; }
+  .dash { grid-template-columns: repeat(2, minmax(0, 1fr)); grid-template-rows: none; }
+  .dash .dt.today { min-height: 340px; }
+  .dash .dt.list { min-height: 220px; }
+}
+
+/* ---------- phones ---------- */
+@media (max-width: 760px) {
+  html, body { height: 100%; height: 100dvh; }
+  .ws { height: 100%; padding: 10px 10px 0; gap: 10px; }
+
+  /* top bar: logo, search, account - one slim row */
+  .top { grid-template-columns: auto minmax(0, 1fr) auto; gap: 10px; padding: 6px 6px 6px 14px; border-radius: 22px !important; }
+  .brand img { height: 24px; }
+  .top .spot-bar { height: 40px; padding: 0 12px; gap: 8px; border-radius: 14px; }
+  .top .spot-bar input { font-size: 16px; }
+  .top .spot-bar svg { width: 16px; height: 16px; }
+  .top .spot-res { position: fixed; left: 10px; right: 10px; top: 66px; width: auto; margin: 0; max-height: 60vh; }
+  .theme-btn { width: 34px; height: 34px; }
+  .av { width: 34px; height: 34px; }
+  .theme-pop { position: fixed; left: 10px; right: 10px; top: 66px; width: auto; max-height: calc(100dvh - 160px); }
+  .swatches { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  .menu-pop { position: fixed; right: 10px; top: 66px; width: min(280px, calc(100vw - 20px)); }
+
+  /* page tabs: an app-style bar fixed to the bottom of the screen */
+  .pills.float, body.appwin .pills.float, body.focus .pills.float {
+    position: fixed; left: 10px; right: 10px; bottom: calc(10px + env(safe-area-inset-bottom)); margin: 0; z-index: 25;
+    justify-self: stretch; align-self: auto; width: auto;
+    display: flex; align-items: stretch; gap: 2px; padding: 5px; border-radius: 22px !important;
+    background: color-mix(in srgb, var(--bg) 82%, transparent); box-shadow: 0 12px 40px #0009, inset 0 1px 0 rgb(var(--ink) / .10); }
+  .pills.float .pill, body.appwin .pills.float .pill, body.focus .pills.float .pill {
+    flex: 1 1 0; min-width: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px;
+    padding: 7px 2px 6px; border-radius: 17px; font-size: 11px; font-weight: 600; letter-spacing: .1px; color: var(--muted); }
+  .pill > svg { display: block; width: 21px; height: 21px; }
+  .pill.on { background: var(--acc-soft); color: var(--acc); box-shadow: none; }
+  .pill .badge { top: 3px; right: calc(50% - 22px); }
+  .pbrand, .pspot, .pdock, .pacts,
+  body.appwin .pbrand, body.focus .pbrand, body.appwin .pspot, body.focus .pspot,
+  body.appwin .pdock, body.focus .pdock, body.appwin .pacts, body.focus .pacts { display: none !important; }
+
+  /* every page scrolls clear of the bottom bar */
+  .view { padding-bottom: calc(96px + env(safe-area-inset-bottom)); }
+  body.appwin .ws, body.focus .ws { padding: 6px 6px 0; }
+  body.appwin #v-app, body.focus #v-app { padding-bottom: calc(80px + env(safe-area-inset-bottom)); }
+  .toast { bottom: calc(92px + env(safe-area-inset-bottom)); max-width: calc(100vw - 32px); }
+
+  /* home: greeting */
+  .hero.split { padding: 14px 4px 14px; }
+  .hero::before, .hero.split::before { width: 300px; margin-left: -150px; }
+  .greet .when { font-size: 10.5px; letter-spacing: 2px; }
+  .greet h1 { font-size: 28px; letter-spacing: -.8px; margin: 4px 0 6px; }
+  .greet .quote { font-size: 13.5px; line-height: 1.45; }
+  .greet .quote .q-src { display: block; margin: 4px 0 0; font-size: 11px; }
+
+  /* home: clock in */
+  .punch { gap: 12px; margin-top: 16px; padding: 10px 10px 10px 12px; border-radius: 22px !important; flex-wrap: nowrap; }
+  .pring { width: 44px; height: 44px; } .pring span { width: 38px; height: 38px; } .pring svg { width: 19px; height: 19px; }
+  .ptext b { font-size: 15px; }
+  .ptext small { font-size: 12px; }
+  .pbtn { padding: 10px 18px !important; font-size: 14px !important; }
+  /* the clock-in card: status on top, a slide-to-clock-in track under it */
+  .punch { flex-wrap: wrap; row-gap: 12px; padding: 12px; }
+  .punch .pbtn { display: none; }
+  .pslide { display: block; flex: 1 0 100%; }
+
+  /* home: tiles on a 6-column grid - apps two a row, numbers three a row, lists full width */
+  .dash { grid-template-columns: repeat(6, minmax(0, 1fr)); grid-template-rows: none; gap: 10px; }
+  .dash > .dt { grid-column: span 6; border-radius: 20px; padding: 14px 15px; }
+  .dash > .app-card { grid-column: span 3; min-height: 0; padding: 14px 14px 12px; gap: 3px; }
+  .dash > .dt.stat.sm { grid-column: span 2; padding: 12px; min-height: 104px; }
+  .dash .app-card .ac-top { margin-bottom: 6px; }
+  .dash .app-card .ac-ic { width: 40px; height: 40px; border-radius: 12px; }
+  .dash .app-card .ac-ic svg { width: 21px; height: 21px; }
+  .dash .app-card .ac-st { padding: 3px 8px; font-size: 10.5px; }
+  .dash .app-card .ac-name { font-size: 17px; }
+  .dash .app-card .ac-desc { font-size: 12px; white-space: normal; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; min-height: 34px; }
+  .dash .app-card .ac-foot { flex-wrap: wrap; align-items: baseline; gap: 2px 6px; padding-top: 8px; margin-top: 8px; font-size: 11.5px; line-height: 1.3; }
+  .dash .app-card .ac-foot em { font-size: 16px; }
+  .dash .app-card .ac-go { display: none; }
+  .dash .ai-card .ac-ask { flex-wrap: nowrap; gap: 6px; }
+  .dash .ai-card .ac-ask input { min-width: 0; height: 34px; padding: 0 9px; font-size: 16px; }
+  .dash .ai-card .ac-send { flex: none; }
+  .dt .big { font-size: 34px; }
+  .dt.stat.sm .big { font-size: 26px; margin-bottom: 6px; }
+  .dt.stat.sm b { font-size: 12.5px; line-height: 1.25; }
+  .dt.stat.sm small { font-size: 11px; }
+  .dt.stat > svg { width: 70px; height: 70px; right: -8px; bottom: -10px; }
+  .dash .dt.today { min-height: 300px; max-height: 420px; }
+  .dash .dt.list { min-height: 0; max-height: 320px; }
+  .dh .ftabs { margin: 4px 0 0; width: 100%; overflow-x: auto; }
+
+  /* tab rows scroll sideways in one line instead of wrapping */
+  .ftabs.pf-tabs, #libTabs { flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; max-width: 100%; }
+  .ftabs.pf-tabs button { white-space: nowrap; flex: none; }
+
+  /* inputs at 16px so phones don't zoom in when typing */
+  input.field, textarea.field, select.field { font-size: 16px; }
+  /* modals sit as sheets from the bottom */
+  .modal-card { width: 100% !important; max-width: none !important; max-height: 88dvh; border-radius: 20px 20px 0 0 !important; align-self: end; }
+}
+
+@media (max-width: 360px) {
+  .pills.float .pill { font-size: 10px; }
+  .greet h1 { font-size: 25px; }
+  .pbtn { padding: 9px 14px !important; }
+}
+
+/* ---------- Office on a phone: the side menu becomes a strip of tabs along the top ---------- */
+@media (max-width: 760px) {
+  .appbody { flex-direction: column; gap: 8px; }
+  .omenu, .omenu.glass { width: auto; flex: none; flex-direction: row; align-items: center; gap: 4px; padding: 5px; overflow-x: auto; overflow-y: hidden;
+    border-radius: 18px !important; scrollbar-width: none; overscroll-behavior-x: contain; scroll-snap-type: x proximity; }
+  .omenu::-webkit-scrollbar { display: none; }
+  .omenu .ohead, .omenu .osec, .omenu .osep, .omenu .ofoot { display: none !important; }
+  .omenu button { flex: none; justify-content: center; gap: 6px; padding: 8px 13px; border-radius: 999px; white-space: nowrap; font-size: 13px; scroll-snap-align: start; }
+  .omenu button span { display: inline; }
+  .omenu button svg { width: 16px; height: 16px; }
+  .omenu button.on { background: var(--acc-soft); color: var(--acc); box-shadow: none; }
+  .appbody > .frames, .appbody > .wspane { flex: 1; min-height: 0; }
+  .frames { border-radius: 16px; }
+
+  /* Office pages the workspace draws (Home, Tasks, Projects, Overtime, Salary) */
+  .op { padding: 2px 0 30px; gap: 12px; }
+  .op-card { padding: 14px 15px; border-radius: 18px; }
+  .op-hero { padding: 20px 18px; border-radius: 20px; gap: 14px; }
+  .op-hello h1 { font-size: 28px; }
+  .op-hello p { font-size: 13.5px; }
+  .op-hero-acts { flex-wrap: wrap; margin-top: 14px; }
+  .op-hero-acts .btn { flex: 1 1 auto; justify-content: center; }
+  .op-score { padding: 14px 16px; gap: 14px; }
+  .op-metrics, .op-metrics.six { grid-template-columns: 1fr 1fr; gap: 10px; }
+  .op-pgrid, .op-pgrid.big { grid-template-columns: 1fr; }
+  .op-board { grid-template-columns: repeat(6, minmax(78vw, 1fr)); scroll-snap-type: x mandatory; }
+  .op-board > * { scroll-snap-align: start; }
+  .op-kv, .op-form .op-2, .op-otrow { grid-template-columns: 1fr; }
+  .op-otsum { grid-template-columns: 1fr 1fr 1fr; }
+  .sal-sum { grid-template-columns: 1fr 1fr; }
+  .op table { display: block; overflow-x: auto; }
+}
+
+/* ---------- phone polish: calmer header, left-aligned greeting, cleaner tiles, lists without scroll-inside-scroll ---------- */
+@media (max-width: 760px) {
+  /* header: logo left; search, theme and account as three round buttons - search opens across the bar when tapped */
+  .top { background: rgb(var(--ink) / .06); border-color: rgb(var(--ink) / .10); box-shadow: 0 8px 30px #0005; }
+  .top .spot { justify-self: end; width: 38px; }
+  .top .spot-bar { width: 38px; height: 38px; padding: 0; justify-content: center; border-radius: 50%; gap: 0; background: rgb(var(--ink) / .07); border-color: rgb(var(--ink) / .12); }
+  .top .spot-bar input { width: 0; flex: 0 0 0; padding: 0; }
+  .top .spot:focus-within { position: absolute; left: 6px; right: 6px; top: 6px; width: auto; z-index: 5; }
+  .top .spot:focus-within .spot-bar { width: 100%; padding: 0 14px; gap: 10px; justify-content: flex-start; border-radius: 16px; background: var(--pop); }
+  .top .spot:focus-within .spot-bar input { flex: 1; width: auto; }
+  .theme-btn, .av { width: 38px; height: 38px; }
+  .theme-btn { background: rgb(var(--ink) / .07); border-color: rgb(var(--ink) / .12); }
+
+  /* greeting: left-aligned, the verse as a quiet second line */
+  .hero.split { text-align: left; padding: 18px 6px 6px; }
+  .hero::before, .hero.split::before { left: -40px; margin-left: 0; width: 260px; height: 160px; }
+  .greet .when { font-size: 11px; letter-spacing: 1.6px; opacity: .9; }
+  .greet h1 { font-size: 30px; letter-spacing: -1px; margin: 6px 0 8px; }
+  .greet .quote { margin: 0; max-width: none; font-size: 13.5px; color: rgb(var(--ink) / .62); }
+  .greet .quote .q-hi { display: block; margin: 3px 0 0; font-size: 13px; opacity: .7; }
+  .greet .quote .q-src { font-size: 10.5px; letter-spacing: .3px; opacity: .8; }
+
+  /* clock-in card: a little more air */
+  .punch { margin-top: 18px; padding: 14px; border-radius: 24px !important; background: linear-gradient(160deg, rgb(var(--ink) / .09), rgb(var(--ink) / .035)); }
+  .pslide { height: 52px; } .pslide .pknob { width: 44px; height: 44px; }
+
+  /* section rhythm */
+  .dash { gap: 12px; margin-top: 4px; }
+  .dash > .dt { border-radius: 22px; }
+
+  /* app tiles: a status dot instead of the "Live" pill; the AI tile opens Limelight AI (no cramped box) */
+  .dash .app-card .ac-st { padding: 0; background: none; width: 10px; height: 10px; }
+  .dash .app-card .ac-st span { display: none; }
+  .dash .app-card .ac-st i { width: 9px; height: 9px; }
+  .dash .app-card .ac-desc { color: rgb(var(--ink) / .58); }
+  .dash .ai-card { cursor: pointer; }
+  .dash .ai-card .ac-ask > * { display: none !important; }
+  .dash .ai-card .ac-ask::before { content: "Ask or create  →"; font-size: 12.5px; font-weight: 600; color: var(--c); }
+
+  /* my numbers right under the apps: three calm tiles */
+  .dash > .dt.stat.sm { order: 1; min-height: 0; padding: 14px 12px; align-items: flex-start; }
+  .dash > .dt.stat.sm .big { font-size: 28px; margin-bottom: 8px; }
+  .dash > .dt.stat.sm b { font-size: 12px; font-weight: 600; color: rgb(var(--ink) / .72); }
+  .dash > .dt.stat.sm small { display: none; }
+  .dash > .dt.stat.sm > svg { width: 22px; height: 22px; right: 12px; top: 14px; bottom: auto; opacity: .55; }
+  .dash > .dt.today { order: 2; }
+  .dash > .dt.list:has(#dMeet) { order: 3; }
+  .dash > .dt.list:has(#dProjects) { order: 4; }
+  .dash > .dt.list:has(#dActivity) { order: 5; }
+
+  /* lists: no scrolling inside the page's scroll - the first few rows, "Sab →" for the rest */
+  .dash .dt.today, .dash .dt.list { min-height: 0; max-height: none; }
+  .dt #feed, .dt.list > div:last-child { overflow: visible; }
+  #feed > .fi:nth-child(n+6), #dProjects > .dl:nth-child(n+6), #dActivity > .dl:nth-child(n+5), #dMeet > .dl:nth-child(n+5) { display: none; }
+  .fi { gap: 12px; padding: 10px 0; font-size: 13.5px; }
+  .fi > i { width: 32px; height: 32px; border-radius: 10px; }
+  .dl { padding: 10px 0; }
+  .dh { margin-bottom: 4px; }
+  .dh b { font-size: 16px; letter-spacing: -.2px; }
+
+  /* bottom bar: deeper glass */
+  .pills.float, body.appwin .pills.float, body.focus .pills.float { background: rgb(14 14 18 / .78); border-color: rgb(var(--ink) / .12);
+    backdrop-filter: blur(24px) saturate(160%); -webkit-backdrop-filter: blur(24px) saturate(160%); }
+  :root[data-mode="light"] .pills.float { background: rgb(255 255 255 / .82); }
+}
+
+/* installed on an iPhone (no browser bar): keep clear of the clock / notch at the top */
+@media (display-mode: standalone) and (max-width: 760px) {
+  .ws { padding-top: calc(10px + env(safe-area-inset-top)); }
+}

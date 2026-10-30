@@ -1,0 +1,75 @@
+/* Injected into Limelight Office (Mail, Calendar, Meetings, Files, Document, Grid, Deck, News, Office setup) when it
+   opens inside the workspace: its own sidebar goes (the workspace draws the Office menu) and it takes the same glass
+   look as the HR pages of Office (office-hr.css) - one visual language across both. */
+.shell { grid-template-columns: 1fr !important; }
+.shell > .side { display: none !important; }
+
+html, body, .shell, .view { background: transparent !important; }
+html:root, html:root[data-look] {
+  --bg: transparent; --side: rgba(255,255,255,.03);
+  --panel: rgba(255,255,255,.07); --panel-2: rgba(255,255,255,.10); --panel-3: rgba(255,255,255,.14);
+  --line: rgba(255,255,255,.11); --line-2: rgba(255,255,255,.18);
+  --text: #fff; --muted: rgba(255,255,255,.66); --faint: rgba(255,255,255,.44);
+  --accent: #ffc21a; --accent-ink: #1a1300; --accent-soft: rgba(255,194,26,.14); --accent-line: rgba(255,194,26,.5);
+  --good: #3ddc84; --bad: #ff6b6b;
+  --r: 20px; --r-sm: 12px;
+  --shadow: 0 30px 80px -30px rgba(0,0,0,.7), 0 0 0 1px rgba(255,255,255,.12);
+}
+::-webkit-scrollbar-thumb { background: rgba(255,255,255,.16); }
+
+/* page heads like the workspace */
+.page { padding-top: 26px; }
+.head h1 { font-size: 30px; font-weight: 700; letter-spacing: -.03em; }
+
+/* cards and tiles: frosted glass, same recipe as the HR pages */
+.card, .tile, .nitem, .day, .ev, .sug, .look, .bcol, .login-card, .filechip, .att {
+  background: linear-gradient(180deg, rgba(255,255,255,.095), rgba(255,255,255,.05));
+  border: 1px solid rgba(255,255,255,.14); backdrop-filter: blur(22px) saturate(140%); -webkit-backdrop-filter: blur(22px) saturate(140%);
+  box-shadow: 0 22px 50px -30px rgba(0,0,0,.65), inset 0 1px 0 rgba(255,255,255,.08); }
+.card { border-radius: 20px; }
+.card .card, .card .tile, .bcol .tcd { backdrop-filter: none; -webkit-backdrop-filter: none; box-shadow: none; background: rgba(255,255,255,.05); }
+.card h3 { color: rgba(255,255,255,.62); font-size: 12px; letter-spacing: .09em; font-weight: 650; }
+.tile:hover, .day:hover, .nitem:hover, .sug:hover, .look:hover { border-color: rgba(255,255,255,.24); }
+.nitem.lead { background: linear-gradient(135deg, rgba(255,194,26,.16), rgba(255,255,255,.06) 60%); }
+.day.on { border-color: var(--accent-line); }
+
+/* controls */
+.btn { border-radius: 12px; background: rgba(255,255,255,.08); border-color: rgba(255,255,255,.16); }
+.btn:hover { background: rgba(255,255,255,.14); border-color: rgba(255,255,255,.26); }
+.btn.primary { background: #ffc21a; border-color: #ffc21a; color: #1a1300; box-shadow: 0 8px 24px -12px rgba(255,194,26,.75); }
+.btn.primary:hover { background: #ffd75c; filter: none; }
+.btn.ghost { background: transparent; border-color: transparent; }
+.input, textarea.input, select.input, .ask { background: rgba(0,0,0,.22); border-color: rgba(255,255,255,.15); }
+.input, textarea.input, select.input { border-radius: 12px; }
+.ask { backdrop-filter: blur(22px) saturate(140%); border-radius: 18px; }
+select option { background: #161618; }
+.tabs, .seg { background: rgba(0,0,0,.2); border-color: rgba(255,255,255,.12); border-radius: 12px; }
+.tabs button.on { background: rgba(255,255,255,.14); box-shadow: none; }
+.chip { background: rgba(255,255,255,.07); border-color: rgba(255,255,255,.15); }
+.item:hover, .m:hover { background: rgba(255,255,255,.07); }
+.m.on { background: rgba(255,255,255,.12); }
+
+/* mail: list and reader as two glass panes */
+.mail { gap: 0; }
+.mail-list { background: rgba(255,255,255,.04); border-right-color: rgba(255,255,255,.1); }
+.reader .bar { background: rgba(22,22,26,.5); }
+
+/* editors (Document, Grid, Deck): chrome is glass, the page stays white */
+.ed { background: transparent; }
+.ed-title, .ed-tabs, .ed-status { background: rgba(255,255,255,.04); }
+.ed-ribbon { background: rgba(255,255,255,.07); backdrop-filter: blur(22px) saturate(140%); }
+.ed-tabs button.on { background: rgba(255,255,255,.07); }
+.rsel { background: rgba(0,0,0,.22); }
+html:root .ed-scroll, html:root .pp-main { background: rgba(0,0,0,.22); }
+
+/* pop-ups stay solid so they read well */
+.sheet { background: rgba(22,22,26,.97) !important; border: 1px solid rgba(255,255,255,.14); border-radius: 20px; }
+.tpick, .findbar, .fmenu { background: rgba(22,22,26,.97); }
+.toast { background: rgba(22,22,26,.97) !important; border-color: rgba(255,255,255,.16); }
+.modal { background: rgba(10,8,18,.45) !important; backdrop-filter: blur(6px); }
+.meet .tile { background: #17171b; backdrop-filter: none; box-shadow: none; }
+.mail-top .tabs { scrollbar-width: none; }
+/* room for the "← Workspace" button in the bottom-left corner */
+.ed-status { padding-left: 118px; }
+/* phones: no floating "← Workspace" button (the workspace's bottom bar goes Home), so the editors' status bar needs no room for it */
+@media (max-width: 600px) { #lh-home { display: none !important; } .ed-status { padding-left: 12px; } }

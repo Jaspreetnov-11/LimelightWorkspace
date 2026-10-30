@@ -1,0 +1,27 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <!-- Lighthouse.exe - Limelight's own window for the Lighthouse workspace (Microsoft WebView2, the Edge engine already on
+       Windows 10/11; .NET Framework 4.8). Own data folder; it also takes the limelight:// links (Open in Premiere / DaVinci) that Limelight Editor.exe used to,
+       so that app is not needed. Build: browser/build.cmd -> browser/app/ -->
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net48</TargetFramework>
+    <UseWindowsForms>true</UseWindowsForms>
+    <LangVersion>latest</LangVersion>
+    <AssemblyName>Lighthouse</AssemblyName>
+    <RootNamespace>Lighthouse</RootNamespace>
+    <ApplicationIcon>app.ico</ApplicationIcon>
+    <Version>1.3.0</Version>
+    <Product>Limelight</Product>
+    <Company>Limelight</Company>
+    <Nullable>disable</Nullable>
+    <PlatformTarget>x64</PlatformTarget>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Web.WebView2" Version="1.0.*" />
+    <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.3" PrivateAssets="all" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Update="Lighthouse.json" CopyToOutputDirectory="PreserveNewest" />
+    <None Update="app.ico" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+</Project>

@@ -1,0 +1,5 @@
+{
+  "_": "Lighthouse.exe settings - change here, no rebuild needed. url: the Lighthouse workspace; serverDir: where its server.mjs is (started hidden when nothing answers on this PC).",
+  "url": "http://localhost:3350/",
+  "serverDir": "E:\\Limelight Ai\\limelight-workspace"
+}

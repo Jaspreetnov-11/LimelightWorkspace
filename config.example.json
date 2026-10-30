@@ -1,0 +1,11 @@
+{
+  "port": 3350,
+  "studioUrl": "http://127.0.0.1:3330",
+  "lighthouseUrl": "https://lighthouse.limelightcorp.in",
+  "editorUrl": "http://192.168.0.200",
+  "aiUrl": "http://192.168.0.205:8800",
+  "aiPassword": "<set on the server PC>",
+  "editNames": {
+    "amits@limelight.in": "amit"
+  }
+}
