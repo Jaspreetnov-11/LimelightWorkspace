@@ -174,8 +174,11 @@ async function loadProfile() {
     ['Present', m.present + (m.half ? m.half / 2 : 0), '#3ddc84'], ['Late', m.late, '#ffc21a'], ['Leave', m.leave, '#5b8cff'], ['Absent', m.absent, '#ff6b6b'],
     ['Avg day', m.avgMin ? `${Math.floor(m.avgMin / 60)}h ${m.avgMin % 60}m` : '–', '#c084fc'],
   ].map(([l, v, c]) => `<div class="dt stat sm glass" style="--c:${c}"><span class="big">${esc(v)}</span><b>${l}</b><small>${new Date(m.month + '-01').toLocaleDateString([], { month: 'long' })}</small></div>`).join('');
-  $('#pfBal').innerHTML = (p.leave?.casual || p.leave?.sick) ? [['Casual leave', p.leave.casual], ['Sick leave', p.leave.sick]].filter(([, n]) => n)
-    .map(([l, n]) => `<div class="dl"><span class="pip"></span><span class="t">${l}</span><em>${n} a year</em></div>`).join('') : '<div class="none">Leave policy not set</div>';
+  // same numbers as the Leaves tab (the HR app's own balance: paid leave quota a year, WFH does not count)
+  const b = p.balance;
+  $('#pfBal').innerHTML = b ? [['Left', `${b.left} of ${b.quota}`], ['Used', b.used], ['Pending', b.pending]]
+    .map(([l, n]) => `<div class="dl"><span class="pip"></span><span class="t">${l}</span><em>${esc(n)}</em></div>`).join('')
+    + `<div class="none">Paid leave ${esc(b.year)} · WFH does not count</div>` : '<div class="none">Leave balance not available right now - see the Leaves tab</div>';
   const KIND = { wfh: 'Work from home', half_day: 'Half day', leave: 'Leave' };
   $('#pfLeaves').innerHTML = p.leaves.length ? p.leaves.slice(0, 6).map((l) => `<div class="dl"><span class="pip"></span><span class="t"><b>${KIND[l.kind] || 'Leave'}</b> · ${esc(l.from === l.to ? l.from : `${l.from} → ${l.to}`)}</span><em class="st ${esc(l.status)}">${esc(l.status)}</em></div>`).join('') : '<div class="none">No leaves taken yet</div>';
 }

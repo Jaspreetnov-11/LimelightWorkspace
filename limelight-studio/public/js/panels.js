@@ -239,7 +239,7 @@ function panelAI(body) {
     $('#aiGo').disabled = true; $('#aiMsg').textContent = 'Generating… (first run loads the model, can take a minute)';
     try {
       const res = await fetch('/api/ai/image', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ prompt, preset: $('#aiPreset').value, width, height, count: 2 }) });
-      const out = await res.json(); if (!res.ok) throw new Error(out.error);
+      const out = await res.json(); if (!res.ok || out.error) throw new Error(out.error || `HTTP ${res.status}`);
       $('#aiOut').insertAdjacentHTML('afterbegin', out.map((f) => `<button class="tile img" data-url="${esc(f.url)}"><img src="${esc(f.url)}"></button>`).join(''));
       $$('#aiOut [data-url]').forEach((b) => b.onclick = () => addImage(b.dataset.url, { name: 'AI image', point: undefined }));
       $('#aiMsg').textContent = 'Done — click an image to add it. Saved in Library too.';

@@ -88,8 +88,6 @@ button:focus-visible, a:focus-visible { outline: 2px solid color-mix(in srgb, va
 .av { width: 32px; height: 32px; border-radius: 50%; background: var(--brand); color: #2a1500; display: grid; place-items: center; font-weight: 800; font-size: 12px; flex: none; border: 0; }
 .menu-pop { position: absolute; right: 0; top: 54px; width: 230px; padding: 16px; display: flex; flex-direction: column; gap: 2px; z-index: 30;
   background: var(--pop); border: 1px solid var(--edge); border-radius: 16px; box-shadow: 0 20px 60px #000a; }
-.aiset { display: flex; flex-direction: column; gap: 6px; padding: 10px 0 12px; margin-bottom: 8px; border-top: 1px solid var(--edge); border-bottom: 1px solid var(--edge); }
-.aiset b { font-size: 13px; } .aiset small { margin: 0 !important; } .aiset .btn { align-self: flex-start; }
 .menu-pop small { color: var(--muted); font-size: 12px; margin-bottom: 10px; overflow: hidden; text-overflow: ellipsis; }
 
 /* ---------- views ---------- */

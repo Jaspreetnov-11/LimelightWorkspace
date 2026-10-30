@@ -53,7 +53,7 @@ Three workspace pages that are drawn by the workspace itself (no app frame).
 
 ### What users can do
 - Open from the profile pill or "My profile" in the account menu.
-- **Overview:** photo (click to change), role, department, employee ID, joining date, shift; this month's present / late / leave / absent; leave balance and own leaves.
+- **Overview:** photo (click to change), role, department, employee ID, joining date, shift; this month's present / late / leave / absent; leave balance (left of the yearly quota, used, pending - worked out like the HR app's own Leaves page: HR `/settings` leaves per year minus approved leave days this year, half days 0.5, WFH not counted) and own leaves.
 - **Attendance** and **Leaves / WFH:** the HR app's own pages in frames (moved here from the Office menu).
 - **Time:**
   - Staff see only their own clock in / clock out for the day.

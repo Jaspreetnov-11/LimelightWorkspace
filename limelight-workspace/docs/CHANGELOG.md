@@ -158,3 +158,10 @@ Every update from the five raw notes in `_notes/`, merged into one list, oldest 
 - 03:00 [Workspace] Final check: both repos clean, pushed and private; every app and PC up; 26/26 page and data checks unchanged; PENDING.md cleared of items finished on 31 Oct.
 - [Servers] https on the office network: every workspace port answers http and https (`server/tls.mjs`); name office.limelightcorp.net (DNS only); Let's Encrypt certificate via `tls\Get office certificate.bat` with weekly renewal; optional `lanHttpsOnly` redirect.
 - [App] Lighthouse.exe 1.4: tries https://office.limelightcorp.net:3350 first, then the old office address, then online.
+- 03:20 [Profile] Overview's leave balance now matches the Leaves tab (HR yearly quota minus approved leave this year, pending shown); no more "Leave policy not set" when the HR record has no leave fields.
+- 03:20 [Home] [Limelight AI] The AI password box is gone from the account menu (and `POST /api/settings/ai`); the workspace key signs people in. `/api/health` reports 1.2.0.
+- 03:30 [Design] The open design is in the address (`#d/<id>`): reload and the workspace Share open that exact design; the tab title is the design's name.
+- 03:30 [Office] [Design] [App] READMEs rewritten to match the code (Office, Studio) and the Windows app read-me in English (also inside its zip).
+- 04:40 [Limelight AI] Images page and generative fill keep the connection alive (a space every 10 s) - no more Cloudflare cut on a cold model; deployed to NAYA B (backups `*.bak-20261031-0429`). JASPREET's fallback AI got the workspace key, so per-person chats work there too.
+- 04:50 [Design] Studio's AI routes (image, edit, generative fill) keep the connection alive the same way; pages read errors from the reply.
+- 04:50 [App] Desktop-shortcut message in the Windows app in English (folder and zip).

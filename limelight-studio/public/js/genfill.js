@@ -152,7 +152,7 @@ const r64 = (n) => Math.max(256, Math.round(n / 64) * 64);
 async function postJSON(url, body) {
   const r = await fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
   const j = await r.json().catch(() => ({}));
-  if (!r.ok) throw new Error(j.error || `HTTP ${r.status}`);
+  if (!r.ok || j.error) throw new Error(j.error || `HTTP ${r.status}`);
   return j;
 }
 const keepPng = async (name, cv) => (await postJSON('/api/library', { name, data: cv.toDataURL('image/png') })).url;
@@ -293,7 +293,7 @@ async function gfPaint(kind, prompt, crop, mask) {
   try {
     const r = await fetch('/api/ai/inpaint', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body), signal: ac.signal });
     const j = await r.json().catch(() => ({}));
-    if (!r.ok) throw new Error(j.error || `HTTP ${r.status}`);
+    if (!r.ok || j.error) throw new Error(j.error || `HTTP ${r.status}`);
     const ok = await gfCheck(j, crop, mask);
     genBusy(true, 'Blending…');
     return await gfHarmonize(ok, crop, mask);

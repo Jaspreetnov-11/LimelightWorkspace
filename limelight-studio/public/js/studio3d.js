@@ -258,7 +258,7 @@ async function genFill3D() {
   tick(); const timer = setInterval(tick, 1000);
   try {
     const r = await fetch('/api/ai/image', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ ...body, preset: 'quality', count: 1 }) });
-    const out = await r.json(); if (!r.ok) throw new Error(out.error || `HTTP ${r.status}`);
+    const out = await r.json(); if (!r.ok || out.error) throw new Error(out.error || `HTTP ${r.status}`);
     const url = out[0].url;
     if (forObj) { Object.assign(forObj.userData, { tex: url, color: '#ffffff', metal: Math.min(forObj.userData.metal, 0.3), emissiveI: 0, glass: 0 }); applyMat(forObj); }
     else { env.bgImage = url; env.transparent = false; applyEnv(); }

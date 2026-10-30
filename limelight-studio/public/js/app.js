@@ -24,10 +24,25 @@ function bootEditor() {
   document.addEventListener('click', (e) => { if (!e.target.closest('#dropdown')) closeMenu(); });
   setTool('select');
 }
+// The open design is part of the address (#d/<id>), so a reload - or a link the workspace's Share button sends -
+// opens that same design. Home has no hash. (A layer open in Vector / Book keeps its design's address.)
+// The tab title is the design's name, so a shared card is named after it.
+function setAddress(id) {
+  const want = id ? '#d/' + encodeURIComponent(id) : '';
+  if (location.hash !== want) history.replaceState(history.state, '', location.pathname + location.search + want);
+  const P = ED.stack?.project || ED.project;
+  document.title = id && P?.name ? P.name : 'Limelight Studio';
+}
+document.addEventListener('DOMContentLoaded', () => $('#docName').addEventListener('input', () => { if (ED.project && !ED.stack) document.title = ED.project.name || 'Limelight Studio'; }));
+function addressDesign() {
+  const h = decodeURIComponent(location.hash.slice(1));
+  return h.startsWith('d/') ? h.slice(2) : h; // (#<id> is the older form)
+}
+ED.on('project', () => { const p = ED.project; if (p && !p.child) setAddress(p.id); });
 async function openInEditor(proj) {
   showScreen('editor'); bootEditor();
   await openProject(proj);
-  history.replaceState(null, '', '#' + proj.id);
+  setAddress(proj.id);
 }
 async function startNew(w, h, name) {
   const s = SIZES.find((x) => x.w === w && x.h === h);
@@ -36,7 +51,7 @@ async function startNew(w, h, name) {
 }
 async function goHome() {
   if (ED.project) { clearTimeout(dirtyTimer); await saveProject(); }
-  ED.project = null; history.replaceState(null, '', '#');
+  ED.project = null; setAddress(null);
   showScreen('home'); renderHome();
 }
 
@@ -142,10 +157,11 @@ hydrateIcons();
 // (after every script - the tabs in modes.js, genfill, vector, book and the 3D module - has set itself up)
 window.addEventListener('DOMContentLoaded', async () => {
   await document.fonts.ready;
-  const id = location.hash.slice(1);
+  const id = addressDesign();
   if (id) {
-    const r = await fetch(`/api/projects/${id}`);
-    if (r.ok) return openInEditor(await r.json());
+    const r = await fetch(`/api/projects/${encodeURIComponent(id)}`).catch(() => null);
+    if (r?.ok) return openInEditor(await r.json());
+    setAddress(null); // (that design is gone: show Home with a clean address)
   }
   renderHome();
 });

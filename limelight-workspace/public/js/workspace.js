@@ -439,8 +439,6 @@ let ME = null;
 async function loadMe() {
   ME = await api('/api/me');
   $('#mmName').textContent = ME.name; $('#mmEmail').textContent = ME.email;
-  $('#aiSet').classList.toggle('hidden', !ME.admin);
-  $('#aiSetState').textContent = ME.aiReady ? 'Set for everyone ✓ (enter a new one to change it)' : 'Enter the password once — then no one sees the AI login';
   $('#meBtn').textContent = ME.name.split(/\s+/).map((w) => w[0]).slice(0, 2).join('').toUpperCase();
   const h = new Date().getHours();
   $('#hello').textContent = `${h < 12 ? 'Good morning' : h < 17 ? 'Good afternoon' : 'Good evening'}, ${ME.name.split(' ')[0]}.`;
@@ -452,14 +450,6 @@ async function loadMe() {
 }
 $('#meBtn').onclick = (e) => { e.stopPropagation(); $('#meMenu').classList.toggle('hidden'); };
 document.addEventListener('click', (e) => { if (!e.target.closest('#meMenu')) $('#meMenu').classList.add('hidden'); });
-$('#aiSet').addEventListener('submit', async (e) => {
-  e.preventDefault();
-  try {
-    const r = await api('/api/settings/ai', { password: $('#aiPw').value });
-    $('#aiPw').value = ''; $('#aiSetState').textContent = r.check; toast(r.check);
-    const f = $('#frames iframe[data-for="ai"]'); if (f) f.src = f.src;
-  } catch (err) { $('#aiSetState').textContent = err.message; }
-});
 $('#logoutBtn').onclick = async () => { await fetch('/api/logout', { method: 'POST' }); location.href = '/login'; };
 
 // ---------- colour themes: new palettes + the old looks' colours + a custom one, saved per PC ----------

@@ -34,7 +34,7 @@ const server = http.createServer(async (req, res) => {
   const u = new URL(req.url, 'http://x');
   const p = decodeURIComponent(u.pathname);
   try {
-    if (p === '/api/health') return send(res, 200, { ok: true, app: 'Lighthouse', version: '1.1.0' });
+    if (p === '/api/health') return send(res, 200, { ok: true, app: 'Lighthouse', version: '1.2.0' });
     if (p === '/api/login' && req.method === 'POST') {
       const b = await readJson(req);
       const s = await auth.login(b.email, b.password).catch((e) => { console.log(new Date().toISOString(), 'login failed', b.email, '-', e.message); throw e; });

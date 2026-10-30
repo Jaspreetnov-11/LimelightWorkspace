@@ -28,7 +28,7 @@ function openNow() {
   const app = f.dataset.for, a = APPS.find((x) => x.id === app);
   let p = f.dataset.where;
   if (!p) { try { const u = new URL(f.dataset.url || f.src); p = u.pathname + u.search + u.hash; } catch { p = '/'; } }
-  const t = f.dataset.wtitle && !/^limelight( office)?$/i.test(f.dataset.wtitle) ? f.dataset.wtitle : '';
+  const t = f.dataset.wtitle && !/^limelight( office| studio)?$/i.test(f.dataset.wtitle) ? f.dataset.wtitle : '';
   return { app, path: cleanPath(p), title: t || $('#appTitle').textContent || a?.name || 'Shared' };
 }
 

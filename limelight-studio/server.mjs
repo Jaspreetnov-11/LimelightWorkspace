@@ -37,6 +37,17 @@ const MIME = {
 const safeName = (s) => String(s || '').replace(/[<>:"/\\|?*\x00-\x1f]/g, '').trim().slice(0, 120) || 'Untitled';
 const safeId = (s) => /^[a-z0-9_-]{1,64}$/i.test(s || '') ? s : null;
 
+// a long AI job (a cold model load can take minutes): the reply starts at once and a space goes out every 10 s, so
+// Cloudflare (it cuts a reply after 100 s of silence) keeps it open; then the JSON (JSON allows leading spaces).
+// Errors come inside the JSON as { error } - the status is already 200.
+function keepAlive(req, res, work) {
+  res.writeHead(200, { 'Content-Type': 'application/json', 'Cache-Control': 'no-store, no-transform', 'X-Accel-Buffering': 'no' });
+  res.write(' ');
+  const t = setInterval(() => res.write(' '), 10000);
+  res.on('close', () => clearInterval(t));
+  Promise.resolve().then(work).then((v) => { clearInterval(t); res.end(JSON.stringify(v)); },
+    (e) => { clearInterval(t); res.end(JSON.stringify({ error: e.message })); });
+}
 function send(res, code, body, type = 'application/json') {
   const data = typeof body === 'string' || Buffer.isBuffer(body) ? body : JSON.stringify(body);
   res.writeHead(code, { 'Content-Type': type, 'Cache-Control': 'no-store' });
@@ -407,11 +418,11 @@ const server = http.createServer(async (req, res) => {
           error: r.ok ? undefined : r.status === 401 ? 'password needed — enter it in AI settings' : `HTTP ${r.status}` });
       } catch (e) { return send(res, 200, { ok: false, url: config.aiUrl, error: e.message }); }
     }
-    if (p === '/api/ai/image' && req.method === 'POST') return send(res, 200, await aiImage(await readJson(req)));
-    if (p === '/api/ai/edit' && req.method === 'POST') return send(res, 200, await aiEdit(await readJson(req)));
+    if (p === '/api/ai/image' && req.method === 'POST') return keepAlive(req, res, async () => aiImage(await readJson(req)));
+    if (p === '/api/ai/edit' && req.method === 'POST') return keepAlive(req, res, async () => aiEdit(await readJson(req)));
     if (p === '/api/ai/inpaint/progress') { try { const r = await aiFetch('/api/images/inpaint/progress', { signal: AbortSignal.timeout(3000) }, fillAt || aiLocal()); return send(res, 200, r.ok ? await r.json() : {}); } catch { return send(res, 200, {}); } }
     if (p === '/api/ai/inpaint/cancel' && req.method === 'POST') { await aiFetch('/api/images/inpaint/cancel', { method: 'POST', signal: AbortSignal.timeout(3000) }, fillAt || aiLocal()).catch(() => {}); return send(res, 200, { ok: true }); }
-    if (p === '/api/ai/inpaint' && req.method === 'POST') return send(res, 200, await aiInpaint(await readJson(req, 64 * 1024 * 1024)));
+    if (p === '/api/ai/inpaint' && req.method === 'POST') return keepAlive(req, res, async () => aiInpaint(await readJson(req, 64 * 1024 * 1024)));
 
 
     if (p === '/api/config' && req.method === 'GET') return send(res, 200, { aiUrl: config.aiUrl });

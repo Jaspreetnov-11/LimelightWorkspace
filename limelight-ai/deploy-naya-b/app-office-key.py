@@ -367,16 +367,47 @@ class ImgReq(BaseModel):
     count: int = 1
 
 
+# A picture job can run past Cloudflare's 100 s limit (a cold Qwen load is about 2 min), and Cloudflare cuts a request
+# that sends nothing for 100 s. With ?keepalive=1 (the Images page) the headers go out at once, then a space every
+# 15 s while the job runs, then the JSON (JSON.parse skips leading spaces). The status line is already sent by then,
+# so an error comes as 200 {"error": true, "status": <code>, "detail": "..."}. Without it (Studio, over the LAN) the
+# reply is the usual plain JSON with real status codes.
+async def _keepalive(work, keepalive):
+    if not keepalive:
+        return await work
+    from fastapi.encoders import jsonable_encoder
+    task = asyncio.ensure_future(work)
+
+    async def body():
+        yield b" "
+        while not task.done():
+            await asyncio.wait({task}, timeout=10)
+            if not task.done():
+                yield b" "
+        try:
+            out = jsonable_encoder(task.result())
+        except HTTPException as e:
+            out = {"error": True, "status": e.status_code, "detail": e.detail}
+        except Exception as e:
+            out = {"error": True, "status": 500, "detail": str(e) or type(e).__name__}
+        yield json.dumps(out, ensure_ascii=False).encode()
+    return StreamingResponse(body(), media_type="application/json",
+                             headers={"Cache-Control": "no-cache, no-transform", "X-Accel-Buffering": "no"})
+
+
 @app.post("/api/images/generate")
-async def gen_images(body: ImgReq):
+async def gen_images(body: ImgReq, keepalive: bool = False):
     if not images.status()["available"]:
         raise HTTPException(400, images.status()["reason"])
-    out = []
-    for i in range(max(1, min(body.count, 4))):
-        seed = None if body.seed in (None, -1) else body.seed + i
-        out.append(await asyncio.to_thread(images.generate, body.prompt, body.negative, body.preset,
-                                           body.width, body.height, body.steps, body.guidance, seed))
-    return out
+
+    async def work():
+        out = []
+        for i in range(max(1, min(body.count, 4))):
+            seed = None if body.seed in (None, -1) else body.seed + i
+            out.append(await asyncio.to_thread(images.generate, body.prompt, body.negative, body.preset,
+                                               body.width, body.height, body.steps, body.guidance, seed))
+        return out
+    return await _keepalive(work(), keepalive)
 
 
 class InpaintReq(BaseModel):
@@ -411,8 +442,9 @@ async def _describe(im):
 
 
 @app.post("/api/images/inpaint")
-async def inpaint_images(body: InpaintReq):
-    """Generative fill and expand (Studio): the masked part painted new in place, `count` variations."""
+async def inpaint_images(body: InpaintReq, keepalive: bool = False):
+    """Generative fill and expand (Studio): the masked part painted new in place, `count` variations.
+    ?keepalive=1: spaces every 10 s until the JSON, for a caller behind Cloudflare (see _keepalive)."""
     if not images.status()["available"]:
         raise HTTPException(400, images.status()["reason"])
     import base64
@@ -424,15 +456,18 @@ async def inpaint_images(body: InpaintReq):
         mk = mk.resize(im.size)
     if mk.mode in ("RGBA", "LA"):
         mk = mk.getchannel("A")  # a white-on-transparent mask: its alpha is the area
-    prompt = body.prompt
-    if not prompt.strip() and body.describe:
-        seen = await _describe(im)
-        prompt = f"{seen}, seamless continuation of the same scene" if seen else ""
-    try:
-        return await asyncio.to_thread(images.inpaint, im, mk, prompt, "", body.preset, body.count, body.seed,
-                                       body.steps, body.strength, body.guidance)
-    except images.Cancelled:
-        raise HTTPException(409, "cancelled")
+
+    async def work():
+        prompt = body.prompt
+        if not prompt.strip() and body.describe:
+            seen = await _describe(im)
+            prompt = f"{seen}, seamless continuation of the same scene" if seen else ""
+        try:
+            return await asyncio.to_thread(images.inpaint, im, mk, prompt, "", body.preset, body.count, body.seed,
+                                           body.steps, body.strength, body.guidance)
+        except images.Cancelled:
+            raise HTTPException(409, "cancelled")
+    return await _keepalive(work(), keepalive)
 
 
 @app.get("/api/images/inpaint/progress")

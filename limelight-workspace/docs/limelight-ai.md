@@ -68,7 +68,7 @@ Model stays loaded 60 minutes; context 16384 tokens.
 - On NAYA B, `D:\LimelightAI\app\data\workspace.key` holds the same value. If it matches (`hmac.compare_digest`), the request passes without the password and `who()` knows the person.
 - **Per-person chats** (live since 30 Oct 19:44): each conversation has an `owner`. Staff see only their own chats. Admins and owners also see the older shared chats that have no owner.
 - The proxy also writes the signed-in person's name into localStorage `ll_name`, so the AI shows the right name in its corner.
-- **Office AI password (older way, still in the code):** an admin can type the AI's own password once in the account menu ("Limelight AI" field, `POST /api/settings/ai`). It is saved as `aiPassword` in `config.json`, sent to Studio too, and used to get an `ll_token` cookie for each person. Only admins see this box. **Where the code differs from the notes:** the workspace notes call the key method "planned / partly built"; the code sends the key on every request and NAYA B accepts it since 30 Oct, so the password is no longer needed inside the workspace. The box is still shown (removing it is pending).
+- **Office AI password (older way):** the account-menu box and `POST /api/settings/ai` were removed on 31 Oct - the workspace key does the sign-in. An `aiPassword` in `config.json`, if set, is still used as a fallback by `auth.mjs`.
 - Design's generative fill uses the same office key (`x-lh-user: studio`).
 
 ### Failover
@@ -135,13 +135,14 @@ NAYA B has **no internet**, and SMB to it fails. Reachable from JASPREET: SSH 22
 - (Full list in `docs/_notes/limelight-ai.md`.)
 
 ## 5. Known issues / pending
-- Remove the AI password box from the workspace account menu now that NAYA B accepts the key (code).
 - **Fixed 31 Oct:** "cannot generate image". The picture was made on B, but the chat stream sent nothing while it ran (cold Qwen load + render = 150-200 s; the picture model is dropped before every chat step, so most chat pictures are cold). Cloudflare cuts a silent stream after 100 s, so users on `*.limelightcorp.net` got an error. `agent.py` now sends a keep-alive (`: ping` SSE comment) every 15 s while any tool runs. Still open: the Images page (`/api/images/generate`, one plain request) can still time out behind Cloudflare on a cold load.
 - The AI footer showed a fixed owner name outside the workspace (inside the workspace the proxy now sets the right name; the frontend itself is not fixed).
-- Video: no working clip; B's `app.py` has no video routes.
-- JASPREET's local AI and Ollama do not auto-start (needs a startup task or a decision to drop the fallback).
+- Video: no working clip yet; the video routes are on B since 31 Oct but the Wan model (34 GB) is not copied there.
+- JASPREET's local AI and Ollama start with `limelight-workspace\start-all.ps1` (needs its .vbs in the Startup folder - owner).
 - Confirm the "Ollama LAN" firewall rule and `OLLAMA_HOST=0.0.0.0` are really gone on B.
 - The password copy on JASPREET did not match B's file at last check.
 - Vision model sometimes answers Hinglish questions in English.
 - Not built (proposed): document search over folders/NAS, skill playbooks, memory across chats, calculator/date tools.
 - Bigger model (gpt-oss-120b) needs more RAM or new hardware; no decision.
+- **Fixed 31 Oct (later):** the Images page (`/api/images/generate?keepalive=1`) and Design's fill (`/api/images/inpaint`) send their headers at once and a space every 10 s until the JSON, so a cold model load no longer hits Cloudflare's 100 s cut; errors arrive as `{error, status, detail}`. Without `?keepalive=1` the replies are unchanged. Studio's own `/api/ai/image`, `/api/ai/edit` and `/api/ai/inpaint` do the same (always).
+- **Fixed 31 Oct:** JASPREET's local AI now has `data\workspace.key` (the same key as the workspace's `Datai.key`), so the fallback knows who is signed in and keeps each person's chats apart.

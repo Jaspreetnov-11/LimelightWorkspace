@@ -3,7 +3,7 @@
 These hold for every change to the workspace and its apps, by any developer or AI assistant.
 
 ## Security and privacy
-1. **Never type passwords or credentials.** The owner (or each person) signs in themselves. The Limelight AI password is typed by an admin in the account menu (and Studio's AI settings), never sent in chat.
+1. **Never type passwords or credentials.** The owner (or each person) signs in themselves. Limelight AI signs people in with the workspace key (no password box in the account menu since 31 Oct); Studio's AI settings still take the AI password if ever needed, never sent in chat.
 2. **Keep salary, bank details, ID numbers and phone numbers out of anything shown** (profiles, decks, notes, docs). Print field names only, never salary values.
 3. **Private folders are never printed, copied or sent:** `limelight-office\data\`, `limelight-workspace\Data\`, `config.json` secrets, the Cloudflare credentials, SSH keys, `password.txt`.
 4. **Confidential data never goes to cloud AI.** Only non-confidential prompts were used for comparisons with Claude.

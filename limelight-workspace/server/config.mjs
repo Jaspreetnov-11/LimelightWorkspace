@@ -1,5 +1,5 @@
 // Settings: config.json (with the defaults below), the command line (--open, --lan), the port and the folders.
-// Read once at startup; /api/settings/ai (areas/ai.mjs) saves config.json again.
+// Read once at startup.
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';

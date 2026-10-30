@@ -24,7 +24,7 @@ This covers signing in, accounts and sessions, the Home dashboard, clock-in, the
 - **Wrong password** shows "Wrong email or password" (the HR server returns an error object; it used to show "[object Object]").
 - **Paths that need no login** (`OPEN` in `server/core.mjs`): `/login`, `/api/login`, `/api/health`, `css/`, `fonts/`, `img/`, `js/theme-boot.js`, `js/frame.js`, `manifest.webmanifest`, `sw.js`, `offline.html`.
 - **Sign-in log:** `server.log` records each sign-in (email, accepted or not, host, browser) and each "not signed in" visit to `/` or `/api/me` with whether a cookie was sent. Passwords are never logged.
-- `GET /api/me` returns name, email, role, `admin`, `owner`, `aiReady`, the HR id and the owners' names.
+- `GET /api/me` returns name, email, role, `admin`, `owner`, the HR id and the owners' names (`aiReady` is still sent but no longer used by the page).
 
 ### Sessions (decided rules)
 | Rule | Detail |

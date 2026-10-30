@@ -693,7 +693,13 @@ $("#imgForm").onsubmit = async e => {
   $("#imgMsg").textContent = "Generating… (first run loads the model, can take a few minutes)";
   const t0 = Date.now();
   try {
-    await api("/api/images/generate", { method: "POST", body });
+    // keepalive: the server sends spaces while the picture is made (Cloudflare cuts a silent request at 100 s);
+    // an error then comes inside the JSON as { error, status, detail }
+    const out = await api("/api/images/generate?keepalive=1", { method: "POST", body });
+    if (out && out.error) {
+      if (out.status === 401) { showLogin(); throw new Error("login required"); }
+      throw new Error(out.detail || "Image failed");
+    }
     $("#imgMsg").textContent = `Done in ${Math.round((Date.now() - t0) / 1000)}s`;
     loadGallery();
   } catch (err) { $("#imgMsg").textContent = "Error: " + err.message; }

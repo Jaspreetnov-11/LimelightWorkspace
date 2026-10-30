@@ -39,13 +39,11 @@
 ## Design
 | Item | Who |
 |---|---|
-| Make Design put the open design in its address so Share opens the right design | Code |
 | Open exported CDR/AI in Illustrator and PSDs in real Photoshop to check them | Owner |
 | Delete the 3 broken "remove" layers in the owner's poster and the test designs ("Tabs test", "Instagram Post", "Big Announcement") | Owner |
 | Better generative fill: install the inpaint route on NAYA B (bigger GPU) | Code, deploy by Owner |
 | Re-test bottom tabs and live editing after the generative-fill rewrite; test the Color tab in the workspace and on other PCs | Code |
 | Not built: AI background removal, Magic Write, Magic Edit, adjustment layers, Liquify, undo for crop | Owner decides |
-| Update Studio's out-of-date `README.md` | Code |
 
 ## Office
 | Item | Who |
@@ -58,12 +56,10 @@
 | Rebuild in the new pages: assigning tasks to others, timers, adding/editing projects | Code |
 | Allow firewall ports 3443 and 3444 on JASPREET for team PCs | Owner |
 | Decide whether to edit the HR app's own code (needs explicit yes; it deploys live) | Owner |
-| Fix Office's `README.md` (mentions deleted `engine/google.mjs` and the old files folder) | Code |
 
 ## Limelight AI
 | Item | Who |
 |---|---|
-| Remove the AI password box from the workspace account menu (the key now works on NAYA B) | Code |
 | Fix the AI footer name in the AI's own frontend (outside the workspace) | Code, deploy by Owner |
 | JASPREET's local AI has no `data\workspace.key` (checked 31 Oct), so when the workspace falls back to it, people may see its unlock screen. Copy `Data\ai.key` there (Design's inpainting is not affected) | Code |
 | Confirm the "Ollama LAN" firewall rule and `OLLAMA_HOST` are gone on NAYA B | Owner |
@@ -77,8 +73,6 @@
 |---|---|
 | Test the phone layout with a real finger, typing and saving on a real phone | Owner |
 | Press "Install" on a real phone and Mac | Owner |
-| Rewrite the `dist\Lighthouse` read-me in English and drop the "Office only for admins" line | Code |
-| Raise `/api/health` version (still says 1.1.0) when convenient | Code |
 
 ## Servers
 | Item | Who |
@@ -103,5 +97,6 @@
 | Copy `limelight-workspace\Limelight Workspace (start all).vbs` into the Startup folder (Win+R, `shell:startup`) so a restart of JASPREET brings every app back | Owner |
 | Cloudflare: Caching -> Configuration -> Browser Cache TTL -> "Respect Existing Headers" (now 4 hours, it overrides the server's "always check" for files without a version stamp, e.g. `sw.js`) | Owner |
 | JASPREET is still the only PC serving limelightcorp.net: a real standby would need Lighthouse on NAYA B with Data kept in sync and a second tunnel connector | Owner + code |
-| Leave balance on Profile > Overview ("policy not set") differs from the Leaves frame ("12 left") | Code |
 | Test the Office "Leave without saving?" pop-up after real edits, and the installable app with Install on a real phone | Owner |
+
+| Copy the new `dist\Lighthouse - doosre PC ke liye.zip` (English read-me) to the NAS where staff get Lighthouse.exe | Owner |

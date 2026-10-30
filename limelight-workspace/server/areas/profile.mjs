@@ -14,14 +14,48 @@ async function punch(user) {
     selfieIn: st?.selfieOnClockIn !== false, selfieOut: !!st?.selfieOnClockOut };
 }
 
+// Leave balance worked out the same way as the HR app's own Leaves page (leaveBalance in its src/lib/format.js):
+// quota = settings.leavesPerYear (12 when not set); approved / pending 'leave' and 'half_day' requests count, WFH does
+// not; days are counted inside this calendar year and the person's week-off days are skipped.
+const weekOffOf = (e, fallback) => {
+  const raw = e && e.week_off != null ? String(e.week_off).trim() : '';
+  const days = raw ? raw.split(',').map((x) => Number(x.trim())).filter((n) => Number.isInteger(n) && n >= 0 && n <= 6) : [];
+  return days.length ? days : (Array.isArray(fallback) && fallback.length ? fallback.map(Number) : [0]);
+};
+function leaveDaysIn(l, year, weekOff) {
+  if (!l || l.kind === 'wfh') return 0;
+  const factor = l.kind === 'half_day' || l.kind === 'half' ? 0.5 : 1;
+  const s = new Date(String(l.from_date).slice(0, 10) + 'T00:00:00Z'), e = new Date(String(l.to_date).slice(0, 10) + 'T00:00:00Z');
+  let n = 0;
+  for (const d = new Date(s); d <= e; d.setUTCDate(d.getUTCDate() + 1)) if (d.getUTCFullYear() === year && !weekOff.includes(d.getUTCDay())) n += factor;
+  return n;
+}
+function leaveBalance(leaves, empId, quota, weekOff, year) {
+  let used = 0, pending = 0;
+  for (const l of leaves) {
+    if (l.emp !== empId || l.kind === 'wfh') continue;
+    const st = l.status || 'approved';
+    if (st === 'approved') used += leaveDaysIn(l, year, weekOff);
+    else if (st === 'pending') pending += leaveDaysIn(l, year, weekOff);
+  }
+  return { quota, used, pending, left: Math.max(0, quota - used), year };
+}
+
 async function myProfile(user) {
   const me = await lighthouse(user, '/api/auth/me');
   const emp = SAFE(me?.employee) || { name: user.name, email: user.email, title: '', dept: '' };
   const month = new Date().toISOString().slice(0, 7);
-  const [stats, leaves] = await Promise.allSettled([lighthouse(user, `/api/attendance/stats/${emp.id}?month=${month}`), lighthouse(user, '/api/leaves')]);
+  const [stats, leaves, settings] = await Promise.allSettled([lighthouse(user, `/api/attendance/stats/${emp.id}?month=${month}`),
+    lighthouse(user, '/api/leaves'), lighthouse(user, '/api/settings')]);
   const s = stats.status === 'fulfilled' ? stats.value : null;
   const mine = leaves.status === 'fulfilled' && Array.isArray(leaves.value) ? leaves.value.filter((l) => l.emp === emp.id) : [];
-  return { ...emp, photo: fs.existsSync(photoFile(emp.email)),
+  // no balance when the leaves or the settings could not be read (the page then says so, instead of a wrong number)
+  const st = settings.status === 'fulfilled' ? settings.value || {} : null;
+  const quota = st && st.leavesPerYear !== undefined ? Number(st.leavesPerYear) : 12;
+  const balance = leaves.status === 'fulfilled' && st && emp.id
+    ? leaveBalance(mine, emp.id, quota, weekOffOf(me?.employee, st.weekOff), new Date(Date.now() + 5.5 * 3600e3).getUTCFullYear()) : null;
+  const { leave: _policy, ...pub } = emp; // general_info casual / sick: not what the HR app's Leaves page shows
+  return { ...pub, photo: fs.existsSync(photoFile(emp.email)), balance,
     month: s && { month, present: s.present, half: s.half, absent: s.absent, late: s.late, leave: s.leave, workdays: s.workdaysSoFar, avgMin: s.avgWorkingMinutes, workedMin: s.totalWorkedMinutes },
     leaves: mine.slice(0, 20).map((l) => ({ kind: l.kind, from: String(l.from_date).slice(0, 10), to: String(l.to_date).slice(0, 10), status: l.status || 'pending', reason: l.reason || '' })) };
 }
