@@ -6,7 +6,7 @@ import threading
 import time
 from pathlib import Path
 
-from config import ASPECTS, IMAGE_PRESETS, IMAGES_DIR, OLLAMA_URL, QWEN
+from config import ASPECTS, IMAGE_PRESETS, IMAGES_DIR, QWEN
 
 _lock = threading.Lock()
 _pipe = None
@@ -105,19 +105,16 @@ def busy():
 
 
 def _unload_llms():
-    """Wait for running chat replies, then make Ollama drop its models and confirm they are gone."""
+    """Wait for running chat replies, then make the AI engine drop its models and confirm they are gone."""
     try:
-        import httpx
+        import llm
         for _ in range(240):  # a long reply can take a while; give up waiting after 2 minutes
             if llm_busy <= 0:
                 break
             time.sleep(0.5)
         for _ in range(20):
-            loaded = httpx.get(f"{OLLAMA_URL}/api/ps", timeout=3).json().get("models", [])
-            if not loaded:
+            if llm.unload_all():
                 break
-            for m in loaded:
-                httpx.post(f"{OLLAMA_URL}/api/generate", json={"model": m["name"], "keep_alive": 0}, timeout=30)
             time.sleep(0.5)
     except Exception:
         pass

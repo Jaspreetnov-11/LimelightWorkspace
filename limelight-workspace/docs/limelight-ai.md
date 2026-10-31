@@ -81,7 +81,7 @@ Model stays loaded 60 minutes; context 16384 tokens.
 | Frontend `web/` | Plain HTML/CSS/JS (`index.html`, `app.js`, `markdown.js`, `style.css`, `themes.css`), no CDN |
 | Backend `server/` | Python FastAPI + Uvicorn, SSE streaming. `app.py` (routes, auth, `who()`), `agent.py`, `tools.py`, `images.py` (GPU lock), `overlay.py`, `video.py` (not working), `db.py`, `config.py` |
 | Data | `data/limelight.db` (chats), `data/images/`, `data/uploads/`, `data/videos/` |
-| Engine | Ollama on `127.0.0.1:11434` only |
+| Engine | **llama.cpp** (`llama-server` router mode) on `127.0.0.1:8830` only, since 31 Oct (Ollama before). `server/llm.py` talks to it and keeps the rest of the app's Ollama-shaped messages. Models: `D:\AI Models\llama` + `models.ini` (`tools\llama\setup-models.py` hard-links Ollama's downloads; no extra space). Names have no `:` (`qwen3-8b`); old names in saved chats still work. Photos: Gemma 3 12B (`gemma3-12b`); Work/Chat: `gpt-oss-20b`; Code: `qwen3-coder-30b`; Fast: `qwen3-8b` |
 | GPU sharing | One GPU job at a time; picture models unloaded before every LLM step; LLMs unloaded before a picture job |
 
 Settings are environment variables: `LIMELIGHT_CHAT_MODEL`, `LIMELIGHT_AGENT_MODEL`, `LIMELIGHT_CODE_MODEL`, `LIMELIGHT_VISION_MODEL`, `LIMELIGHT_FAST_MODEL`, `LIMELIGHT_EMBED_MODEL`, `LIMELIGHT_NUM_CTX`, `LIMELIGHT_KEEP_ALIVE`, `LIMELIGHT_MAX_STEPS`, `LIMELIGHT_HOST`, `LIMELIGHT_PORT`, `LIMELIGHT_PASSWORD`, `LIMELIGHT_WORKSPACE`, `LIMELIGHT_MODELS_DIR`, `LIMELIGHT_IMAGE_FAST`, `LIMELIGHT_IMAGE_QUALITY`, `LIMELIGHT_VIDEO_MODEL`, `LIMELIGHT_DATA`.
@@ -93,7 +93,7 @@ Settings are environment variables: `LIMELIGHT_CHAT_MODEL`, `LIMELIGHT_AGENT_MOD
 - `schtasks /end` does **not** stop the hidden loop. Clean restart: kill processes whose command line contains `run-ai.ps1` or `LimelightAI\app\server\app.py`, plus `ollama` and `llama-server`, then `schtasks /run /tn "Limelight AI"`.
 
 **JASPREET (development and fallback):**
-- `cd "E:\Limelight Ai\limelight-ai"; .\start.ps1` (sets `OLLAMA_MODELS=D:\AI Models\ollama\models`, starts Ollama). LAN: `.\start.ps1 -Lan -Password "…"`.
+- `cd "E:\Limelight Ai\limelight-ai"; .\start.ps1` (starts the AI engine, `tools\llama\start-engine.ps1`, if it isn't running). LAN: `.\start.ps1 -Lan -Password "…"`.
 - Test instance on port 8811 (`E:\Limelight Ai\.claude\launch.json`, open http://127.0.0.1:8811).
 - **It does not start by itself after a reboot.**
 
@@ -138,7 +138,8 @@ NAYA B has **no internet**, and SMB to it fails. Reachable from JASPREET: SSH 22
 - **Fixed 31 Oct:** "cannot generate image". The picture was made on B, but the chat stream sent nothing while it ran (cold Qwen load + render = 150-200 s; the picture model is dropped before every chat step, so most chat pictures are cold). Cloudflare cuts a silent stream after 100 s, so users on `*.limelightcorp.net` got an error. `agent.py` now sends a keep-alive (`: ping` SSE comment) every 15 s while any tool runs. Still open: the Images page (`/api/images/generate`, one plain request) can still time out behind Cloudflare on a cold load.
 - The AI footer showed a fixed owner name outside the workspace (inside the workspace the proxy now sets the right name; the frontend itself is not fixed).
 - Video: no working clip yet; the video routes are on B since 31 Oct but the Wan model (34 GB) is not copied there.
-- JASPREET's local AI and Ollama start with `limelight-workspace\start-all.ps1` (needs its .vbs in the Startup folder - owner).
+- JASPREET's AI engine and local AI start with `limelight-workspace\start-all.ps1` (needs its .vbs in the Startup folder - owner).
+- NAYA B: run `deploy-naya-b\Switch NAYA B to llama.cpp.bat` once (copies the engine and models through the NAS, keeps backups). Then, after a few good days, remove Ollama on both PCs.
 - Confirm the "Ollama LAN" firewall rule and `OLLAMA_HOST=0.0.0.0` are really gone on B.
 - The password copy on JASPREET did not match B's file at last check.
 - Vision model sometimes answers Hinglish questions in English.

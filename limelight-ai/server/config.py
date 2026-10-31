@@ -4,7 +4,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 
-# All model engines live on D: (Ollama models are set via OLLAMA_MODELS; image/voice models via HF_HOME).
+# All model engines live on D: (language models in D:\AI Models\llama; image/voice models via HF_HOME).
 MODELS_DIR = Path(os.environ.get("LIMELIGHT_MODELS_DIR", r"D:\AI Models"))
 os.environ.setdefault("HF_HOME", str(MODELS_DIR / "huggingface"))  # Limelight only; other tools keep their own cache
 os.environ.setdefault("HF_HUB_DISABLE_TELEMETRY", "1")
@@ -21,17 +21,28 @@ WEB_DIR = ROOT / "web"
 for d in (DATA_DIR, IMAGES_DIR, UPLOADS_DIR, VIDEOS_DIR, DEFAULT_WORKSPACE):
     d.mkdir(parents=True, exist_ok=True)
 
-# Local LLM runtime (Ollama). Keep it on localhost so prompts never leave the machine.
-OLLAMA_URL = os.environ.get("LIMELIGHT_OLLAMA_URL", "http://127.0.0.1:11434")
-DEFAULT_CHAT_MODEL = os.environ.get("LIMELIGHT_CHAT_MODEL", "gpt-oss:20b")
-DEFAULT_AGENT_MODEL = os.environ.get("LIMELIGHT_AGENT_MODEL", "gpt-oss:20b")      # Cowork
-DEFAULT_CODE_MODEL = os.environ.get("LIMELIGHT_CODE_MODEL", "qwen3-coder:30b")     # Code mode
-VISION_MODEL = os.environ.get("LIMELIGHT_VISION_MODEL", "qwen2.5vl:7b")            # used when images are attached
-FAST_MODEL = os.environ.get("LIMELIGHT_FAST_MODEL", "qwen3:8b")                    # "Fastest" in the model picker
+# Local LLM engine: llama.cpp's server in router mode (tools/llama/start-engine.ps1), in place of Ollama.
+# Localhost only, so prompts never leave the machine. Models load on first use and unload after an idle hour.
+LLM_URL = os.environ.get("LIMELIGHT_LLM_URL", "http://127.0.0.1:8830")
+LLM_MODELS_DIR = Path(os.environ.get("LIMELIGHT_LLM_MODELS", MODELS_DIR / "llama"))   # the engine's model folder
+# Engine names (no ":"). Old Ollama names in saved chats ("qwen3:8b") are translated by llm.engine_name.
+DEFAULT_CHAT_MODEL = os.environ.get("LIMELIGHT_CHAT_MODEL", "gpt-oss-20b")
+DEFAULT_AGENT_MODEL = os.environ.get("LIMELIGHT_AGENT_MODEL", "gpt-oss-20b")      # Cowork
+DEFAULT_CODE_MODEL = os.environ.get("LIMELIGHT_CODE_MODEL", "qwen3-coder-30b")     # Code mode
+VISION_MODEL = os.environ.get("LIMELIGHT_VISION_MODEL", "gemma3-12b")              # used when images are attached
+FAST_MODEL = os.environ.get("LIMELIGHT_FAST_MODEL", "qwen3-8b")                    # "Fastest" in the model picker
 EMBED_MODEL = os.environ.get("LIMELIGHT_EMBED_MODEL", "nomic-embed-text")          # for document search
-NUM_CTX = int(os.environ.get("LIMELIGHT_NUM_CTX", "16384"))
-# How long a model stays in memory after use. Reloading gpt-oss:20b from disk costs 10-40s.
-KEEP_ALIVE = os.environ.get("LIMELIGHT_KEEP_ALIVE", "60m")
+# When a chosen model isn't on this PC (not downloaded yet), the first of these that is answers instead.
+FALLBACK_MODELS = ["gpt-oss-20b", "qwen3-8b", "qwen3-30b-a3b", "qwen3-coder-30b"]
+# Models the app can download into the engine's folder (Models > Download): name -> files (vision: + mmproj-*).
+LLM_CATALOG = {
+    "gpt-oss-20b": ["https://huggingface.co/ggml-org/gpt-oss-20b-GGUF/resolve/main/gpt-oss-20b-MXFP4.gguf"],   # OpenAI, Apache 2.0
+    # photos: Google's Gemma 3 12B (Gemma licence; runs only here, nothing goes to Google) + its picture reader
+    "gemma3-12b": ["https://huggingface.co/ggml-org/gemma-3-12b-it-GGUF/resolve/main/gemma-3-12b-it-Q4_K_M.gguf",
+                   "https://huggingface.co/ggml-org/gemma-3-12b-it-GGUF/resolve/main/mmproj-model-f16.gguf"],
+    "qwen3-8b": ["https://huggingface.co/Qwen/Qwen3-8B-GGUF/resolve/main/Qwen3-8B-Q4_K_M.gguf"],
+}
+NUM_CTX = int(os.environ.get("LIMELIGHT_NUM_CTX", "16384"))   # (the engine's own setting: models.ini "c")
 MAX_AGENT_STEPS =int(os.environ.get("LIMELIGHT_MAX_STEPS", "40"))
 
 # Optional password. When set, the web UI asks for it (useful when sharing on office LAN).

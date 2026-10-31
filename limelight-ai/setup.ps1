@@ -1,7 +1,9 @@
 # Limelight AI one-time setup.
-#   .\setup.ps1            -> app + local LLM engine + default model
+#   .\setup.ps1            -> app + the local LLM engine's model folder
 #   .\setup.ps1 -Images    -> also installs local image generation (GPU)
-param([switch]$Images, [string]$Model = "qwen3:8b")
+# The engine itself is llama.cpp in ..\tools\llama (llama-server.exe from github.com/ggml-org/llama.cpp releases,
+# Windows CUDA 12.4 build + its cudart zip). Language models live in D:\AI Models\llama.
+param([switch]$Images)
 $ErrorActionPreference = "Stop"
 Set-Location $PSScriptRoot
 
@@ -21,19 +23,13 @@ if ($Images) {
     & $py -m pip install -r requirements-images.txt -q
 }
 
-if (-not (Get-Command ollama -ErrorAction SilentlyContinue)) {
-    Write-Host "Installing Ollama (local model engine)..."
-    winget install --id Ollama.Ollama -e --accept-source-agreements --accept-package-agreements
-    $env:Path += ";$env:LOCALAPPDATA\Programs\Ollama"
+$engine = Join-Path (Split-Path -Parent $PSScriptRoot) 'tools\llama'
+if (-not (Test-Path "$engine\llama-server.exe")) {
+    Write-Host "Put llama.cpp's Windows build in $engine first (see the top of this file)." -ForegroundColor Red; exit 1
 }
-
-# Keep the model engine on localhost only.
-[Environment]::SetEnvironmentVariable("OLLAMA_HOST", "127.0.0.1:11434", "User")
-$env:OLLAMA_HOST = "127.0.0.1:11434"
-try { Invoke-WebRequest http://127.0.0.1:11434/api/tags -UseBasicParsing -TimeoutSec 2 | Out-Null }
-catch { Start-Process ollama -ArgumentList "serve" -WindowStyle Hidden; Start-Sleep 4 }
-
-Write-Host "Downloading model $Model (one time)..."
-ollama pull $Model
+# The model folder: models Ollama downloaded earlier are reused (hard links, no extra space) + models.ini
+& $py "$engine\setup-models.py"
+& "$engine\start-engine.ps1"
+Write-Host "More models: Limelight AI > Models > Download, or put a .gguf in D:\AI Models\llama."
 
 Write-Host "`nSetup complete. Run .\start.ps1 to launch Limelight AI." -ForegroundColor Green

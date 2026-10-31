@@ -86,19 +86,22 @@ function fmtTime(t) {
   return isNaN(d) ? String(t) : d.toLocaleString('en-IN', { timeZone: load().timeZone, dateStyle: 'medium', timeStyle: 'short' });
 }
 
-// ---------- model server ----------
+// ---------- model server: the Limelight AI engine (llama.cpp router, OpenAI-style API) ----------
+// engine names have no ":" ("qwen3-8b"); settings saved in Ollama days ("qwen3:8b", ":11434") still mean the same
+const engineName = (m) => String(m || '').trim().toLowerCase().replace(':', '-');
+const engineUrl = (u) => String(u || '').replace(/:11434\b/, ':8830').replace(/\/$/, '');
 let picked = null, pickedAt = 0;
 // what is known right now, without waiting (the check runs in the background)
 export const llmCached = () => { llmStatus().catch(() => {}); return picked || { online: false, checking: true, url: '', model: '', models: [] }; };
 export async function llmStatus(force = false) {
   if (!force && picked && Date.now() - pickedAt < 60e3) return picked;
   const { urls, model } = load().llm;
-  for (const url of urls) {
+  for (const url of [...new Set(urls.map(engineUrl))]) {
     try {
-      const r = await fetch(`${url}/api/tags`, { signal: AbortSignal.timeout(2500) });
-      const names = ((await r.json()).models || []).map((m) => m.name);
+      const r = await fetch(`${url}/models`, { signal: AbortSignal.timeout(2500) });
+      const names = ((await r.json()).data || []).map((m) => m.id);
       if (!names.length) continue;
-      const use = names.find((n) => n === model || n === `${model}:latest`) || names.find((n) => /qwen3|gpt-oss|qwen2\.5|llama3/.test(n) && !/embed|vl/.test(n));
+      const use = names.find((n) => n === engineName(model)) || names.find((n) => /qwen3|gpt-oss|sarvam|granite|llama3/.test(n) && !/embed|vl|coder/.test(n));
       if (use) { picked = { online: true, url, model: use, models: names }; pickedAt = Date.now(); return picked; }
     } catch {}
   }
@@ -128,17 +131,18 @@ const pending = new Map(); // id -> { name, args, user, at }
 
 export async function chat(messages, user) {
   const llm = await llmStatus();
-  if (!llm.online) throw new Error('AI model is offline. Start Ollama on NAYA B (or this PC), or set the address in Setup.');
+  if (!llm.online) throw new Error('AI model is offline. Start the Limelight AI engine on this PC (tools\\llama), or set the address in Setup.');
   const convo = [{ role: 'system', content: systemPrompt(user) }, ...messages.map(({ role, content }) => ({ role, content }))];
   const steps = [], actions = [];
   for (let turn = 0; turn < 8; turn++) {
-    const r = await fetch(`${llm.url}/api/chat`, {
+    const r = await fetch(`${llm.url}/v1/chat/completions`, {
       method: 'POST', headers: { 'content-type': 'application/json' }, signal: AbortSignal.timeout(240e3),
-      body: JSON.stringify({ model: llm.model, messages: convo, tools: TOOLS, stream: false, think: false, options: { num_ctx: 16384, temperature: 0.3 } }),
+      body: JSON.stringify({ model: llm.model, messages: convo, tools: TOOLS, stream: false, temperature: 0.3,
+        chat_template_kwargs: { enable_thinking: false } }),
     });
     if (!r.ok) throw new Error(`AI server error ${r.status}: ${(await r.text()).slice(0, 200)}`);
-    const msg = (await r.json()).message || {};
-    convo.push(msg);
+    const msg = (await r.json()).choices?.[0]?.message || {};
+    convo.push({ role: 'assistant', content: msg.content || '', ...(msg.tool_calls?.length ? { tool_calls: msg.tool_calls } : {}) });
     const calls = msg.tool_calls || [];
     if (!calls.length) {
       let reply = (msg.content || '').replace(/<think>[\s\S]*?<\/think>/g, '').trim();
@@ -159,7 +163,7 @@ export async function chat(messages, user) {
         try { out = await exec(name, args, user); steps.push({ tool: name, summary: describe(name, args), ok: true, file: out?.file, pdf: out?.pdf }); }
         catch (e) { out = { error: e.message }; steps.push({ tool: name, summary: describe(name, args), ok: false, error: e.message }); }
       }
-      convo.push({ role: 'tool', tool_name: name, content: JSON.stringify(out).slice(0, 7000) });
+      convo.push({ role: 'tool', tool_call_id: c.id, content: JSON.stringify(out).slice(0, 7000) });
     }
   }
   return { reply: 'I stopped after several steps. Tell me what to do next.', steps, actions, model: llm.model };
@@ -196,13 +200,13 @@ export const reject = (id) => pending.delete(id);
 // ---------- Chatbot and AI Assistance: plain model calls, no tools ----------
 async function plain(messages, { temperature = 0.6 } = {}) {
   const llm = await llmStatus();
-  if (!llm.online) throw new Error('AI model is offline. Start Ollama on NAYA B (or this PC), or set the address in Setup.');
-  const r = await fetch(`${llm.url}/api/chat`, {
+  if (!llm.online) throw new Error('AI model is offline. Start the Limelight AI engine on this PC (tools\\llama), or set the address in Setup.');
+  const r = await fetch(`${llm.url}/v1/chat/completions`, {
     method: 'POST', headers: { 'content-type': 'application/json' }, signal: AbortSignal.timeout(240e3),
-    body: JSON.stringify({ model: llm.model, messages, stream: false, think: false, options: { num_ctx: 16384, temperature } }),
+    body: JSON.stringify({ model: llm.model, messages, stream: false, temperature, chat_template_kwargs: { enable_thinking: false } }),
   });
   if (!r.ok) throw new Error(`AI server error ${r.status}: ${(await r.text()).slice(0, 200)}`);
-  const msg = (await r.json()).message || {};
+  const msg = (await r.json()).choices?.[0]?.message || {};
   return { reply: (msg.content || '').replace(/<think>[\s\S]*?<\/think>/g, '').trim(), model: llm.model };
 }
 

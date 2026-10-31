@@ -11,9 +11,10 @@ import httpx
 
 import db
 import images as image_gen
+import llm
 import tools
-from config import (DEFAULT_AGENT_MODEL, DEFAULT_CHAT_MODEL, DEFAULT_CODE_MODEL, KEEP_ALIVE, MAX_AGENT_STEPS, NUM_CTX,
-                    OLLAMA_URL, VISION_MODEL)
+from config import (DEFAULT_AGENT_MODEL, DEFAULT_CHAT_MODEL, DEFAULT_CODE_MODEL, FALLBACK_MODELS, MAX_AGENT_STEPS,
+                    VISION_MODEL)
 
 # approval id -> Future[bool]
 PENDING: dict[str, asyncio.Future] = {}
@@ -182,8 +183,10 @@ def _needs_approval(name, perm, args=None):
     return False
 
 
-async def _ollama_stream(model, messages, tool_schemas, think):
-    opts = {"num_ctx": NUM_CTX, "num_predict": 4096}
+async def _llm_stream(model, messages, tool_schemas, think):
+    """The engine's reply as Ollama-shaped chunks (llm.py translates both ways)."""
+    model = llm.engine_name(model)
+    opts = {"num_predict": 4096}
     if "coder" in model:
         # Qwen3-Coder guidance; a strong presence penalty would hurt code that legitimately repeats.
         opts.update(temperature=0.7, top_p=0.8, top_k=20, repeat_penalty=1.05)
@@ -192,27 +195,16 @@ async def _ollama_stream(model, messages, tool_schemas, think):
         opts.update(temperature=0.7, top_p=0.8, top_k=20, presence_penalty=1.5)
     elif "gpt-oss" in model:
         opts.update(temperature=1.0, top_p=1.0)
-    body = {"model": model, "messages": messages, "stream": True, "options": opts, "keep_alive": KEEP_ALIVE}
-    if tool_schemas:
-        body["tools"] = tool_schemas
-    if "gpt-oss" in model:
-        # gpt-oss always reasons; "low" keeps simple replies fast, the Think toggle raises it.
-        body["think"] = "high" if think else "low"
-    elif think is not None and not ("coder" in model or is_vision(model)):
-        body["think"] = think  # coder and vision models have no thinking mode; Ollama rejects the flag
+    # gpt-oss always reasons ("low" keeps simple replies fast, the Think toggle raises it: llm.py);
+    # coder and vision models have no thinking mode, so they get no switch at all.
+    if "gpt-oss" not in model and ("coder" in model or is_vision(model)):
+        think = None
     image_gen.llm_busy += 1  # a picture job waits for this reply before it takes the GPU
     try:
-        async with httpx.AsyncClient(timeout=None) as c:
-            async with c.stream("POST", f"{OLLAMA_URL}/api/chat", json=body) as r:
-                if r.status_code != 200:
-                    txt = (await r.aread()).decode(errors="replace")
-                    raise RuntimeError(f"Ollama error {r.status_code}: {txt}")
-                async for line in r.aiter_lines():
-                    if line.strip():
-                        chunk = json.loads(line)
-                        yield chunk
-                        if chunk.get("done"):  # end here so the busy count drops as soon as the reply is complete
-                            break
+        async for chunk in llm.chat_stream(model, messages, opts, think, tool_schemas):
+            yield chunk
+            if chunk.get("done"):  # end here so the busy count drops as soon as the reply is complete
+                break
     finally:
         image_gen.llm_busy -= 1
 
@@ -227,9 +219,7 @@ async def warm(model):
         return  # a picture is being made; the chat model loads on the next message instead
     try:
         image_gen.unload()
-        async with httpx.AsyncClient(timeout=300) as c:
-            await c.post(f"{OLLAMA_URL}/api/generate",
-                         json={"model": model, "keep_alive": KEEP_ALIVE, "options": {"num_ctx": NUM_CTX}})
+        await llm.load(model)
     except Exception:
         pass
 
@@ -242,6 +232,12 @@ async def run(conv_id, user_text, images=None, model=None, perm="ask", think=Non
     auto = model == "auto"
     if auto:  # "Auto" in the picker: the best model for this mode; attached images switch to the vision model below
         model = {"chat": DEFAULT_CHAT_MODEL, "code": DEFAULT_CODE_MODEL}.get(mode, DEFAULT_AGENT_MODEL)
+    model = llm.engine_name(model)
+    have = (await llm.amodels())["models"]
+    if have and model not in have:
+        stand_in = next((m for m in FALLBACK_MODELS if m in have), have[0])
+        yield {"type": "notice", "text": f"{model} isn't on this PC yet, so {stand_in} answers"}
+        model = stand_in
     ws = Path(conv["workspace"]).resolve()
     ws.mkdir(parents=True, exist_ok=True)
     history = conv["messages"]
@@ -269,9 +265,14 @@ async def run(conv_id, user_text, images=None, model=None, perm="ask", think=Non
         user_msg.pop("images", None)
         user_msg["content"] += "\n\n[Attached photo: " + ", ".join(saved) + "]"
         images = None
+    if images and not is_vision(model) and have and llm.engine_name(VISION_MODEL) not in have:
+        # the photo model isn't downloaded on this PC yet: answer from the text, say why the picture was skipped
+        user_msg.pop("images", None)
+        images = None
+        yield {"type": "notice", "text": "The photo model isn't on this PC yet, so the picture is skipped (Models > Download)"}
     if images and not is_vision(model):
         # The text models can't see images; answer this turn with the local vision model.
-        model, schemas, steps = VISION_MODEL, None, 1
+        model, schemas, steps = llm.engine_name(VISION_MODEL), None, 1
         if not auto:
             yield {"type": "notice", "text": "Reading the image with the photo model"}
     # Text-only models reject image payloads, so old images stay out of their context.
@@ -287,7 +288,7 @@ async def run(conv_id, user_text, images=None, model=None, perm="ask", think=Non
             # A picture made in the previous step still holds the GPU; Ollama crashes loading next to it.
             await asyncio.to_thread(image_gen.unload)
             content, thinking, calls = "", "", []
-            async for chunk in _ollama_stream(model, msgs, schemas, think):
+            async for chunk in _llm_stream(model, msgs, schemas, think):
                 if STOP.get(conv_id):
                     break
                 m = chunk.get("message", {})
@@ -384,7 +385,7 @@ async def run(conv_id, user_text, images=None, model=None, perm="ask", think=Non
                 history.append({"role": "assistant", "content": done})
                 break
     except httpx.ConnectError:
-        yield {"type": "error", "text": "Ollama is not running. Start it (run start.ps1) and try again."}
+        yield {"type": "error", "text": "The AI engine is not running. Start it (run start.ps1) and try again."}
     except Exception as e:
         yield {"type": "error", "text": str(e)}
     finally:

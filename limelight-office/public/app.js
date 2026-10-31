@@ -1030,8 +1030,8 @@ async function setupConnections(host) {
     </div></div>
     <div class="card sstep ${s.llm.online ? 'ok' : ''}"><div class="num">${s.llm.online ? '✓' : '2'}</div><div>
       <h2>AI — Agent, Chatbot, AI Assistance <span class="pill ${s.llm.online ? 'ok' : 'bad'}">${s.llm.online ? `${esc(s.llm.model)} @ ${esc(s.llm.url)}` : 'Offline'}</span></h2>
-      <p class="muted">A local model through Ollama — NAYA B first, then this PC. Use a model with tool support (qwen3:8b recommended).</p>
-      <div class="row"><label class="f"><span>Ollama addresses (one per line, tried in order)</span><textarea class="input mono" id="l-urls" style="min-height:64px">${esc(set.llm.urls.join('\n'))}</textarea></label><label class="f" style="flex:.5"><span>Model</span><input class="input mono" id="l-model" value="${esc(set.llm.model)}"></label></div>
+      <p class="muted">A local model through the Limelight AI engine (llama.cpp) on this PC. Use a model with tool support (qwen3-8b recommended).</p>
+      <div class="row"><label class="f"><span>AI engine addresses (one per line, tried in order)</span><textarea class="input mono" id="l-urls" style="min-height:64px">${esc(set.llm.urls.join('\n'))}</textarea></label><label class="f" style="flex:.5"><span>Model</span><input class="input mono" id="l-model" value="${esc(set.llm.model)}"></label></div>
       ${s.llm.models?.length ? `<p class="faint" style="font-size:12.5px;margin-top:-6px">Available: ${s.llm.models.map(esc).join(', ')}</p>` : ''}
       <button class="btn" id="s-save">Save settings</button>
     </div></div>

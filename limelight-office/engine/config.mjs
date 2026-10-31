@@ -17,8 +17,9 @@ const DEFAULTS = {
   storageDir: '\\\\192.168.0.99\\Team Editing\\Limelight Storage',
   timeZone: 'Asia/Kolkata',
   lighthouseUrl: 'https://lighthouse.limelightcorp.in',
-  // Ollama-compatible servers, tried in order (NAYA B first, then this PC)
-  llm: { urls: ['http://192.168.0.205:11434', 'http://127.0.0.1:11434'], model: 'qwen3:8b' },
+  // the Limelight AI engine (llama.cpp, tools/llama/start-engine.ps1), tried in order. 127.0.0.1 only: NAYA B's
+  // engine is local to NAYA B, like Ollama was. (Old saved ":11434" Ollama addresses are read as the engine's :8830.)
+  llm: { urls: ['http://127.0.0.1:8830'], model: 'qwen3-8b' },
   // mail stays on Limelight's own server: team mail only - no outside (Google / company) mailbox is used or can be added
   teamMailOnly: true,
 };

@@ -10,7 +10,7 @@ import uuid
 from pathlib import Path
 
 import images
-from config import FAST_MODEL, OLLAMA_URL, VIDEO, VIDEOS_DIR
+from config import FAST_MODEL, VIDEO, VIDEOS_DIR
 
 _pipes = {}           # "t2v" / "i2v" -> pipeline (they share all weights)
 JOBS: dict[str, dict] = {}
@@ -88,14 +88,13 @@ def unload():
 def _enhance(prompt):
     """Wan follows long, concrete English prompts best; let the fast local model write one (any input language)."""
     try:
-        import httpx
+        import llm
         ask = ("Rewrite this idea as one prompt for a text-to-video model. English only, 60-90 words, one continuous "
                "shot: subject, action, setting, lighting, camera movement, style. No lists, no quotes, no title.\n\n"
                f"Idea: {prompt}")
-        r = httpx.post(f"{OLLAMA_URL}/api/generate", timeout=120,
-                       json={"model": FAST_MODEL, "prompt": ask, "stream": False, "think": False, "keep_alive": 0,
-                             "options": {"temperature": 0.6, "num_predict": 200}})
-        text = r.json().get("response", "").strip().strip('"')
+        text = llm.complete(FAST_MODEL, [{"role": "user", "content": ask}],
+                            {"temperature": 0.6, "num_predict": 200}, think=False).strip('"')
+        llm.unload_all()   # (the video model needs the whole GPU next)
         return text if len(text) > 20 else prompt
     except Exception:
         return prompt

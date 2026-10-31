@@ -41,7 +41,8 @@ NAS 192.168.0.99 (Z:) ◄── per-person Office files, editor projects, exe up
 | 8787 | District Desk (Instagram automation) | Separate project |
 | 8800 | Limelight AI, local copy (fallback + SDXL inpainting for Design) | **Does not auto-start** |
 | 8811 | Limelight AI test instance | |
-| 11434 | Ollama (127.0.0.1 only) | `OLLAMA_MODELS=D:\AI Models\ollama\models`; started by hand |
+| 8830 | **Limelight AI engine** (llama.cpp router, 127.0.0.1 only) | `E:\Limelight Ai\tools\llama`, models `D:\AI Models\llama` (models.ini); started by start-all.ps1. Used by Office's Agent and the local Limelight AI |
+| 11434 | Ollama (127.0.0.1 only) | **Being replaced by the engine (8830), 31 Oct**; nothing uses it on JASPREET any more. Remove after a few good days |
 | 3000 / 3100 | Video Editor local instance (tray) | Reserved |
 
 Hardware: Ryzen 9 5900X, 64 GB RAM, RTX 4060 8 GB. C: NVMe; **D: and E: share one slow HDD** (model cold loads 140-190 s).
@@ -55,7 +56,8 @@ Hardware: Ryzen 9 5900X, 64 GB RAM, RTX 4060 8 GB. C: NVMe; **D: and E: share on
 | Port | Service | Notes |
 |---|---|---|
 | 8800 | Limelight AI (`D:\LimelightAI\app`) | Firewall "Limelight AI 8800" allows 192.168.0.0/24 only |
-| 11434 | Ollama, **127.0.0.1 only** | Program `D:\LimelightAI\ollama\prog`, models `D:\LimelightAI\ollama\models` |
+| 8830 | Limelight AI engine (llama.cpp), **127.0.0.1 only** | After `Switch NAYA B to llama.cpp.bat`: `D:\LimelightAI\llama\bin`, models `D:\LimelightAI\llama\models`; task "Limelight AI Engine" (`engine-guard.ps1`: stops while the standby editor holds 3100) |
+| 11434 | Ollama, **127.0.0.1 only** | Program `D:\LimelightAI\ollama\prog`, models `D:\LimelightAI\ollama\models`. Replaced by the engine once the switch has run |
 | 3100 | Standby editor | When it opens, the AI stops by itself |
 | 22 / 3389 | SSH / RDP | SMB `\\192.168.0.205\D$` does not work (error 53) |
 
@@ -75,7 +77,7 @@ Hardware: Ryzen 9 5900X, 64 GB RAM, RTX 4060 8 GB. C: NVMe; **D: and E: share on
 The other 10-20 PCs have not been surveyed.
 
 ### All ports (do not reuse)
-3000, 3100, 3200, 3300, 3301, 3330, 3341-3345, 3350, 3443, 3444, 8787, 8800 (plus 8811 test, 11434 Ollama).
+3000, 3100, 3200, 3300, 3301, 3330, 3341-3345, 3350, 3443, 3444, 8787, 8800, 8830 (plus 8811 test, 11434 Ollama until removed).
 
 ---
 
@@ -170,7 +172,7 @@ The editor's own standby script describes a line of standby PCs (JASPREET first,
 1. Never install or run Ollama or any AI model on NAYA A.
 2. AI lives on NAYA B; check B's helper and standby state first; if B is the standby editor, the AI stays stopped.
 3. NAYA B stays off render-helper duty; JASPREET is the render helper.
-4. Ollama on B listens on 127.0.0.1 only; no `OLLAMA_HOST=0.0.0.0`, no "Ollama LAN" rule.
+4. The AI engine (llama.cpp, and Ollama while it is still there) on B listens on 127.0.0.1 only; no `OLLAMA_HOST=0.0.0.0`, no "Ollama LAN" rule.
 5. Anything public must sit behind a password or the workspace login.
 6. One login only; apps trust the workspace through shared keys.
 7. NAYA B has no internet: download on JASPREET, copy over, `pip --no-deps`.

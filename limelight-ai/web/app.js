@@ -122,7 +122,7 @@ async function refreshStatus() {
   try {
     S.status = await api("/api/status");
   } catch { return; }
-  const o = S.status.ollama;
+  const o = S.status.engine || S.status.ollama;
   $("#statusLine").innerHTML = o.running
     ? `<span class="dot ok-dot" title="Engine ready"></span>`
     : `<span class="dot bad-dot" title="Engine offline"></span>`;
@@ -142,19 +142,22 @@ const ROLES = [
   { key: "code", label: "Best for code", hint: "Reading and writing code", icon: "code" },
   { key: "vision", label: "Best for photos", hint: "Reads images you attach", icon: "image" },
 ];
-const KNOWN = { "gpt-oss:20b": { label: "Deep thinking", hint: "Slower, careful answers", icon: "chat" } };
+const KNOWN = { "gpt-oss-20b": { label: "Deep thinking", hint: "Slower, careful answers", icon: "chat" } };
+// Engine names have no ":"; picks saved before the switch from Ollama ("qwen3:8b") mean the same model.
+const norm = v => !v || v === "auto" ? v : v.toLowerCase().replace(":", "-");
 function pickerOptions() {
-  const d = S.status?.defaults || {}, have = S.status?.ollama.models || [];
+  const d = S.status?.defaults || {}, have = (S.status?.engine || S.status?.ollama)?.models || [];
   const seen = new Set();  // one row per model: when two roles share a model, the first role names it
   const opts = ROLES.map(r => ({ ...r, value: r.key === "auto" ? "auto" : d[r.key] }))
     .filter(o => (o.value === "auto" || have.includes(o.value)) && !seen.has(o.value) && seen.add(o.value));
   // Anything else that was downloaded (embedding models can't chat, so they stay out).
-  for (const m of have) if (!seen.has(m) && !/embed/i.test(m)) opts.push({ ...(KNOWN[m] || { label: m.replace(":", " "), hint: "Other model", icon: "chat" }), value: m });
+  for (const m of have) if (!seen.has(m) && !/embed/i.test(m)) opts.push({ ...(KNOWN[m] || { label: m.replace(/-/g, " "), hint: "Other model", icon: "chat" }), value: m });
   return opts;
 }
 function renderModelPicker(cur) {
+  cur = norm(cur);
   const opts = pickerOptions();
-  if (!opts.some(o => o.value === cur)) opts.push({ label: cur.split(":")[0], hint: "Not downloaded", icon: "warn", value: cur });
+  if (!opts.some(o => o.value === cur)) opts.push({ label: cur, hint: "Not downloaded", icon: "warn", value: cur });
   $("#modelSel").innerHTML = opts.map(o => `<option value="${esc(o.value)}" ${o.value === cur ? "selected" : ""}></option>`).join("");
   const sel = opts.find(o => o.value === cur);
   $("#mpickLabel").textContent = sel.label;
@@ -183,14 +186,14 @@ document.addEventListener("keydown", e => { if (e.key === "Escape") closePicker(
 // Everything here is a per-browser preference (localStorage); it fills the same controls the chat screen uses.
 const defaultModel = () => localStorage.getItem("ll_defmodel") || "auto";
 function renderSettings() {
-  const def = defaultModel(), opts = pickerOptions();
-  if (!opts.some(o => o.value === def)) opts.unshift({ label: def.split(":")[0], hint: "Not installed", icon: "warn", value: def });
+  const def = norm(defaultModel()), opts = pickerOptions();
+  if (!opts.some(o => o.value === def)) opts.unshift({ label: def, hint: "Not installed", icon: "warn", value: def });
   $("#setModel").innerHTML = opts.map(o => `<button type="button" role="option" class="mpick-opt${o.value === def ? " sel" : ""}" data-v="${esc(o.value)}" aria-selected="${o.value === def}">
       ${ic(o.icon)}<span class="mpick-txt"><b>${esc(o.label)}</b><small>${esc(o.hint)}</small></span>${o.value === def ? ic("check") : ""}</button>`).join("");
   $("#setThink").checked = $("#thinkChk").checked;
   document.querySelectorAll("#setPerm button").forEach(b => b.classList.toggle("on", b.dataset.v === $("#permSel").value));
   $("#setWs").value = localStorage.getItem("ll_ws") || S.status?.default_workspace || "";
-  const o = S.status?.ollama, im = S.status?.images;
+  const o = S.status?.engine || S.status?.ollama, im = S.status?.images;
   const chatModels = (o?.models || []).filter(m => !/embed/i.test(m)).length;
   $("#setInfo").innerHTML = [
     `<span class="dot ${o?.running ? "ok-dot" : "bad-dot"}"></span>AI engine ${o?.running ? "ready" : "offline"}`,

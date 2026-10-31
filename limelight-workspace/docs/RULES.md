@@ -8,7 +8,7 @@ These hold for every change to the workspace and its apps, by any developer or A
 3. **Private folders are never printed, copied or sent:** `limelight-office\data\`, `limelight-workspace\Data\`, `config.json` secrets, the Cloudflare credentials, SSH keys, `password.txt`.
 4. **Confidential data never goes to cloud AI.** Only non-confidential prompts were used for comparisons with Claude.
 5. **Anything public (`*.limelightcorp.net`) must sit behind a password or the workspace login**, because Work and Build modes can run commands on NAYA B.
-6. **Ollama on NAYA B listens on 127.0.0.1 only.** No `OLLAMA_HOST=0.0.0.0`, no "Ollama LAN" firewall rule.
+6. **The AI engine on NAYA B listens on 127.0.0.1 only** (llama.cpp on :8830 since 31 Oct; Ollama before it). No `OLLAMA_HOST=0.0.0.0`, no `--host 0.0.0.0`, no "Ollama LAN" firewall rule.
 
 ## One window, one login
 7. **One login only (the HR account).** No per-app logins, no "connect accounts", no new accounts made in Edit, Office or AI. Inside the workspace, Edit, Office and AI trust the workspace through shared keys (`x-lh-key`).

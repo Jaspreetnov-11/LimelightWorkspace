@@ -125,7 +125,7 @@ Put into framed HTML pages only (requests with `sec-fetch-dest: iframe`); re-rea
 | Needs | Node.js 24 (uses `node:sqlite`) and Microsoft Office installed. npm: imapflow, mailparser, nodemailer |
 | Start | `Start Limelight Office.bat` or `Limelight Office (no window).vbs` (also the workspace's Start button). Restart: stop port 3300, run the `.vbs` |
 | CLI for Claude | `node engine/otool.mjs <command>` and the **office-agent** skill. Anything that goes out (send, event with guests, upload) needs the user's yes first |
-| AI | Ollama at NAYA B (`192.168.0.205:11434`) first, then JASPREET (`127.0.0.1:11434`), model `qwen3:8b`. The Agent's send/add/delete/upload actions always wait for an Approve click |
+| AI | The Limelight AI engine (llama.cpp) on this PC, `127.0.0.1:8830` (OpenAI-style API, tool calls), model `qwen3-8b`. Old saved `:11434` addresses are read as `:8830`. Check: `node engine/test-llm.mjs`. The Agent's send/add/delete/upload actions always wait for an Approve click |
 | Private | `data/` (office.db with everyone's mail, `secret.key`, ssl key, `workspace.key`). Never print, copy or send |
 
 ### Where Office data is saved

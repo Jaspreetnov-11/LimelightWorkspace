@@ -7,3 +7,11 @@
 !/limelight-office/
 !/limelight-studio/
 !/limelight-ai/
+# the AI engine's own scripts (tools\llama); its program files (llama-server.exe, dlls) stay out
+!/tools/
+/tools/*
+!/tools/llama/
+/tools/llama/*
+!/tools/llama/setup-models.py
+!/tools/llama/start-engine.ps1
+!/tools/llama/Limelight AI Engine (no window).vbs

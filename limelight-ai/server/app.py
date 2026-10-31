@@ -22,6 +22,7 @@ import faulthandler
 
 import agent
 import db
+import llm
 from config import DATA_DIR
 
 # A native crash (torch/CUDA) kills the process silently; leave its stack trace in data/crash.log.
@@ -30,7 +31,7 @@ import images
 import video
 import tools
 from config import (DEFAULT_AGENT_MODEL, DEFAULT_CHAT_MODEL, DEFAULT_CODE_MODEL, DEFAULT_WORKSPACE, FAST_MODEL, HOST,
-                    IMAGES_DIR, OLLAMA_URL, PASSWORD, PORT, UPLOADS_DIR, VIDEOS_DIR, VISION_MODEL, WEB_DIR)
+                    IMAGES_DIR, LLM_CATALOG, LLM_MODELS_DIR, PASSWORD, PORT, UPLOADS_DIR, VIDEOS_DIR, VISION_MODEL, WEB_DIR)
 
 @asynccontextmanager
 async def lifespan(_app):
@@ -119,14 +120,10 @@ def logout():
 
 @app.get("/api/status")
 async def status():
-    ollama = {"running": False, "models": []}
-    try:
-        async with httpx.AsyncClient(timeout=3) as c:
-            r = await c.get(f"{OLLAMA_URL}/api/tags")
-            ollama = {"running": True, "models": [m["name"] for m in r.json().get("models", [])]}
-    except Exception:
-        pass
-    return {"ollama": ollama, "images": images.status(), "video": video.status(), "default_workspace": str(DEFAULT_WORKSPACE),
+    engine = await llm.amodels()
+    engine["downloadable"] = sorted(n for n in LLM_CATALOG if n not in engine["models"])
+    # ("ollama" kept as a second name for the same thing, so older copies of the web page keep working)
+    return {"engine": engine, "ollama": engine, "images": images.status(), "video": video.status(), "default_workspace": str(DEFAULT_WORKSPACE),
             "defaults": {"chat": DEFAULT_CHAT_MODEL, "cowork": DEFAULT_AGENT_MODEL, "code": DEFAULT_CODE_MODEL,
                          "agent": DEFAULT_AGENT_MODEL, "fast": FAST_MODEL, "vision": VISION_MODEL}}
 
@@ -143,16 +140,45 @@ async def warm(body: Pull):
 
 @app.post("/api/models/pull")
 async def pull(body: Pull):
+    """Downloads a catalog model (config.LLM_CATALOG) into its own folder in the engine's model folder; the engine
+    picks it up by itself. Progress as {status, total, completed}, the shape the page already shows."""
+    name = llm.engine_name(body.model)
+
+    def event(obj):
+        return f"data: {json.dumps(obj)}\n\n"
+
     async def gen():
+        files = LLM_CATALOG.get(name)
+        if not files:
+            yield event({"error": f"{name} is not in the download list"})
+            yield event({"status": "done"})
+            return
+        folder = LLM_MODELS_DIR / name
+        folder.mkdir(parents=True, exist_ok=True)
         try:
-            async with httpx.AsyncClient(timeout=None) as c:
-                async with c.stream("POST", f"{OLLAMA_URL}/api/pull", json={"model": body.model, "stream": True}) as r:
-                    async for line in r.aiter_lines():
-                        if line.strip():
-                            yield f"data: {line}\n\n"
+            async with httpx.AsyncClient(timeout=None, follow_redirects=True) as c:
+                for url in files:
+                    target = folder / url.rsplit("/", 1)[-1]
+                    if target.exists():
+                        continue
+                    part = target.with_suffix(target.suffix + ".part")
+                    async with c.stream("GET", url) as r:
+                        if r.status_code != 200:
+                            raise RuntimeError(f"download failed ({r.status_code}): {target.name}")
+                        total, done, last = int(r.headers.get("content-length") or 0), 0, 0
+                        with part.open("wb") as f:
+                            async for chunk in r.aiter_bytes(1 << 20):
+                                f.write(chunk)
+                                done += len(chunk)
+                                if done - last > 50 << 20 or done == total:
+                                    last = done
+                                    yield event({"status": f"downloading {target.name}", "total": total, "completed": done})
+                    part.replace(target)
+            await llm.refresh()
+            yield event({"status": "success"})
         except Exception as e:
-            yield f"data: {json.dumps({'error': str(e)})}\n\n"
-        yield "data: {\"status\":\"done\"}\n\n"
+            yield event({"error": str(e)})
+        yield event({"status": "done"})
     return StreamingResponse(gen(), media_type="text/event-stream")
 
 
@@ -429,14 +455,13 @@ async def _describe(im):
     import io
     small = im.convert("RGB"); small.thumbnail((512, 512))
     buf = io.BytesIO(); small.save(buf, "JPEG", quality=85)
-    body = {"model": VISION_MODEL, "stream": False, "keep_alive": 0, "options": {"temperature": 0.2, "num_predict": 60},
-            "messages": [{"role": "user", "images": [base64.b64encode(buf.getvalue()).decode()],
-                          "content": "Describe this picture in one short line for an image generator: the scene, subject, "
-                                     "colours, style and lighting. No intro, just the description."}]}
+    msgs = [{"role": "user", "images": [base64.b64encode(buf.getvalue()).decode()],
+             "content": "Describe this picture in one short line for an image generator: the scene, subject, "
+                        "colours, style and lighting. No intro, just the description."}]
     try:
-        async with httpx.AsyncClient(timeout=90) as c:
-            r = await c.post(f"{OLLAMA_URL}/api/chat", json=body)
-        return (r.json().get("message", {}).get("content") or "").strip().strip('"').splitlines()[0][:300] if r.status_code == 200 else ""
+        text = await llm.acomplete(VISION_MODEL, msgs, {"temperature": 0.2, "num_predict": 60}, timeout=90)
+        await asyncio.to_thread(llm.unload_all)   # (the fill model needs the GPU next)
+        return text.strip('"').splitlines()[0][:300] if text else ""
     except Exception:
         return ""
 
