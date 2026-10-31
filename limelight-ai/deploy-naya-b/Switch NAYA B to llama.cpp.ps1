@@ -12,8 +12,14 @@ $ai = Split-Path -Parent $here
 $root = Split-Path -Parent $ai
 Start-Transcript -Path (Join-Path $here 'switch-log.txt') -Force | Out-Null
 $B = 'limelight-b'; $drop = 'D:/LimelightAI/llama-switch'
-function OnB($cmd) { $cmd | ssh -o BatchMode=yes $B "powershell -NoProfile -Command -" 2>&1 | ForEach-Object { "$_" } }
-function Send($files, $to) { scp -q -B -r @($files) "${B}:$drop/$to/"; if ($LASTEXITCODE) { throw "copy to NAYA B failed: $to" } }
+# (the leading empty line: the first line piped into ssh arrives garbled; ssh's own notices on stderr are not errors)
+function OnB($cmd) { $ErrorActionPreference = 'Continue'; ("`r`n" + $cmd) | ssh -o BatchMode=yes $B "powershell -NoProfile -Command -" 2>&1 | ForEach-Object { "$_" } }
+function Send($files, $to) {
+  $ErrorActionPreference = 'Continue'
+  # -O: the classic copy mode (B's SFTP side closes the connection)
+  scp -O -q -B -r @($files) "${B}:$drop/$to/" 2>&1 | ForEach-Object { "$_" }
+  if ($LASTEXITCODE) { throw "copy to NAYA B failed: $to" }
+}
 foreach ($m in 'gpt-oss-20b', 'gemma3-12b') {
   if (-not (Test-Path "D:\AI Models\llama\$m")) { throw "D:\AI Models\llama\$m is missing - download it on JASPREET first" }
 }

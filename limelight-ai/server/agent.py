@@ -111,8 +111,19 @@ def _latest_image(history):
     return ""
 
 
+# A question about the photo ("What colour is this?", "background mein kya hai?") is not an edit, unless it also
+# asks for a change ("can you change the colour?").
+# ("is" at the start is Hinglish for "this", so English yes/no questions are known by their "?" instead)
+QUESTION = re.compile(r"\?\s*$|^\s*(what|which|who|where|why|how|kya|kaun|kaunsa|kahan|kaise|kitn\w*)\b", re.I)
+ACTION_WORDS = re.compile(r"\b(edit|change|replace|remove|erase|add|make it|turn|badal\w*|badl\w*|hata\w*|laga\w*|jod\w*|"
+                          r"kar\s*do|kardo|bana\s*do|banado)\b", re.I)
+
+
 def _wants_edit(text):
-    return bool(EDIT_WORDS.search(text.split("\n\n<file name=")[0]))
+    own = text.split("\n\n<file name=")[0]
+    if QUESTION.search(own) and not ACTION_WORDS.search(own):
+        return False
+    return bool(EDIT_WORDS.search(own))
 
 
 def _save_upload(b64):

@@ -15,3 +15,5 @@
 !/tools/llama/setup-models.py
 !/tools/llama/start-engine.ps1
 !/tools/llama/Limelight AI Engine (no window).vbs
+# NAYA B deploy run logs
+limelight-ai/deploy-naya-b/switch-log.txt
