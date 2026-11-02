@@ -39,6 +39,13 @@ Tested at phone, tablet and desktop widths with the test account. **Not yet** te
 - **Why:** Cloudflare kept stylesheets for 4 hours despite `no-cache`, so phones ran old code. From home one stylesheet took 2.1 s; now about 0.45 s, and not fetched at all on repeat visits.
 - Other speed-ups: the 423 KB Hindi web font was dropped (phones use their built-in Hindi font); logos shrunk from 62 KB to about 5 KB (originals in `archive/originals/`).
 - Home: each data source capped at 3 s and cached (see [home.md](home.md)).
+
+### Fewer trips at the start (2 Nov)
+- Through limelightcorp.net every trip costs about **0.6-0.9 s** (up to 1.9 s), while the server itself answers in about 1 ms. Cloudflare serves Indian phones from Marseille (`/cdn-cgi/trace` → `colo=MRS`) and the tunnel connects in Mumbai, so each trip goes India → France → Mumbai → JASPREET. Choosing a Cloudflare plan or region is the owner's call. The code's job is to make fewer trips.
+- **Before:** page → files → `/api/me` + `/api/apps` → `/api/apps/status` → Home's 4 calls, plus `/api/chat/people` → `/api/chat/list` one after the other. That is about **5 trips in a row (≈ 3.5-4.5 s)** before Home is full on a first visit.
+- **Now:** a small script at the top of `index.html` asks for the first screen's data (`me`, `apps`, `apps/status`, `chat/people`, `chat/list`, `punch`, `profile`, and on Home `dashboard`, `projects`, `library`) the moment the page arrives, side by side, while the styles and scripts download. `api()` in `workspace.js` takes those answers (`window.PRE`: each one once, `chat/list` twice, all gone after 20 s; later calls always ask the server). Chats loads people and chats side by side. This is **about 2 trips (≈ 1.5-2 s)** on a first visit, and on a repeat open only the page and the data (files come from the phone, see `sw.js` below).
+- Home opens no other app's frame: apps load only when opened, and Profile's Attendance/Leaves frames only when their tab is opened.
+- Scripts stay at the end of `<body>`: the browser already finds and downloads them at once, and `defer` would not save a trip.
 - **Remaining limit:** everything is served from JASPREET through the office internet. If that PC or its upload is slow or off, everyone feels it.
 
 ---
@@ -49,7 +56,7 @@ Tested at phone, tablet and desktop widths with the test account. **Not yet** te
 |---|---|
 | `public/manifest.webmanifest` | Name "Limelight", black, opens on Home, standalone window |
 | `public/img/` | Icon set: rounded icons for computers, full-bleed squares for iPhone/Android, a maskable icon |
-| `public/sw.js` | Service worker. Its only jobs: make the app installable and show `offline.html` ("No connection — Try again") when there is no internet. **It never serves an old copy**: every page load goes to the server |
+| `public/sw.js` | Service worker. Makes the app installable, shows `offline.html` ("No connection — Try again") when there is no internet, and keeps the versioned files (`css/`/`js/` with a `?v=` stamp) in its own cache `lh-assets-1`: a repeat open takes them from the phone (about 30 ms, no trip). A new stamp means a new file, so a kept copy is never old; older versions of a file are dropped. Only real answers are kept (not the login page a signed-out visit is sent to). **Pages are never served from it**: every page load goes to the server |
 | `public/offline.html` | The no-connection page |
 
 How to install (no app stores - they cost money, need reviews and rebuilds):

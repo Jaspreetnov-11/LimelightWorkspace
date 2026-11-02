@@ -278,8 +278,8 @@ $('#info').addEventListener('click', async (e) => {
 
 // ---------- boot ----------
 ready.then(async () => {
-  await loadPeople().catch(() => {});
-  await loadChats();
+  await Promise.all([loadPeople().catch(() => {}), loadChats()]); // (side by side: one trip instead of two)
+  renderList();
   connect();
   if (CURRENT === 'home') loadHome();
   if ('Notification' in window && Notification.permission === 'default') document.addEventListener('click', () => Notification.requestPermission(), { once: true });

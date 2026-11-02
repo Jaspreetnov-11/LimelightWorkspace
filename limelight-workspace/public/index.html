@@ -13,6 +13,17 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Limelight">
+<!-- speed: ask for the first screen's data now, side by side, while the styles and scripts are still downloading
+     (through Cloudflare each trip costs 0.6-0.9 s; api() in workspace.js takes these answers instead of asking again) -->
+<script>
+(function () {
+  var home = !location.hash || location.hash === '#home', uses = { '/api/chat/list': 2 }, pre = window.PRE = {};
+  var list = ['/api/me', '/api/apps', '/api/apps/status', '/api/chat/people', '/api/chat/list', '/api/punch', '/api/profile'];
+  if (home) list.push('/api/dashboard', '/api/projects', '/api/library');
+  list.forEach(function (u) { pre[u] = { r: fetch(u, { credentials: 'same-origin' }), n: uses[u] || 1 }; });
+  setTimeout(function () { window.PRE = {}; }, 20000); // (only for the start; later calls always ask the server)
+})();
+</script>
 <link rel="stylesheet" href="css/workspace.css?v=20261030v">
 <link rel="stylesheet" href="css/profile.css?v=20261030v">
 <link rel="stylesheet" href="css/library.css?v=20261102r">

@@ -2,7 +2,10 @@
 const $ = (s, el = document) => el.querySelector(s);
 const $$ = (s, el = document) => [...el.querySelectorAll(s)];
 const esc = (s) => String(s ?? '').replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
-const api = (p, body, method) => fetch(p, body || method ? { method: method || 'POST', headers: { 'Content-Type': 'application/json' }, body: body && JSON.stringify(body) } : {})
+// (a GET the page already asked for at the start - window.PRE, index.html - takes that answer, each only once)
+const preTake = (p) => { const e = window.PRE?.[p]; if (!e || e.n < 1) return null; e.n--; return e.r.then((r) => r.clone()); };
+const api = (p, body, method) => ((body || method) ? fetch(p, { method: method || 'POST', headers: { 'Content-Type': 'application/json' }, body: body && JSON.stringify(body) })
+  : preTake(p) || fetch(p, {}))
   .then(async (r) => {
     if (r.status === 401) { location.href = '/login'; throw new Error('login needed'); }
     const j = await r.json(); if (!r.ok) throw new Error(j.error || r.status); return j;
