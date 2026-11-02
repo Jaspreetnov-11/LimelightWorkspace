@@ -166,3 +166,7 @@ Every update from the five raw notes in `_notes/`, merged into one list, oldest 
 - 04:50 [Design] Studio's AI routes (image, edit, generative fill) keep the connection alive the same way; pages read errors from the reply.
 - 04:50 [App] Desktop-shortcut message in the Windows app in English (folder and zip).
 - [Limelight AI] [Office] Ollama replaced by the Limelight AI engine (llama.cpp router, 127.0.0.1:8830) on JASPREET: `server/llm.py`, Office's agent on the OpenAI-style API; Ollama's models reused through hard links (0 extra GB); photos move to Gemma 3 12B; same speed (27 vs 26.5 tokens/s). NAYA B: `Switch NAYA B to llama.cpp.bat` (owner).
+
+## 2 Nov 2026
+
+- [Office] New admin page **Attendance** (its own menu item, between Salary and Payroll; a first try put Salary, Attendance and Payroll as tabs on one page - the owner wanted them separate): everyone's month day by day (P / W / ½ / A / L / H, late ring, hours on hover), totals and CSV, from the HR team summary (`GET /api/salary/attendance`). Workspace restarted to load the route.

@@ -60,6 +60,16 @@ export async function route(req, res, { u, p, user }) {
       const [pay, st] = await Promise.all([lighthouse(user, `/api/payroll?month=${month}`), lighthouse(user, '/api/settings').catch(() => ({}))]);
       return send(res, 200, salary.compute(pay, st, month, (e) => isOwner(e), overtime.approvedByEmp(month)));
     }
+    // Payroll › Attendance: everyone's month, day by day (the HR app's team summary + holidays; owners left out)
+    if (p === '/api/salary/attendance') {
+      const [sum, hol] = await Promise.all([lighthouse(user, `/api/attendance/team-summary?month=${month}`), lighthouse(user, '/api/holidays').catch(() => [])]);
+      const holidays = (hol || []).map((h) => ({ date: String(h.date || '').slice(0, 10), name: h.name || h.title || '' })).filter((h) => h.date.startsWith(month));
+      const staff = (sum?.staff || []).filter((s) => !isOwner(s)).map((s) => ({ id: s.id, name: s.name, dept: s.dept, empId: s.emp_id, weekOff: s.weekOff,
+        present: s.present, half: s.half, absent: s.absent, leave: s.leave, late: s.late, otHours: s.otHours, avgMins: s.avgWorkingMinutes,
+        days: (s.days || []).map((d) => ({ date: String(d.date).slice(0, 10), status: d.status, late: d.late, mode: d.mode, mins: d.mins, open: d.open })),
+        missed: (s.missedDays || []).map((d) => String(d).slice(0, 10)) }));
+      return send(res, 200, { month, workdaysSoFar: sum?.workdaysSoFar, workdaysTotal: sum?.workdaysTotal, holidays, staff });
+    }
   }
   // ---------- Office's new Home, Tasks and Projects pages (public/js/office-pages.js): the HR data, as this person ----------
   // Reads from a short list; writes only to tasks, to-dos and projects (the HR server checks who may do what).

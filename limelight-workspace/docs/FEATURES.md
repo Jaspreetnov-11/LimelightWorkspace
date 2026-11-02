@@ -184,6 +184,9 @@ The Limelight Workspace (online at **limelightcorp.net**) is Limelight's own all
 - Month's pay for everyone from attendance and payroll: absences, half days, extra leave, late marks (every 3 = ½ day), OT pay and adjustments.
 - Editable rules, totals and CSV download. Staff are refused by the server.
 
+**Attendance (admins and owners only)**
+- Everyone's month day by day (present, WFH, half day, absent, leave, holiday, late), with totals and CSV.
+
 **Admin pages**: Payroll, Payments, Clients, Reports, Performance (admins only).
 
 **Benefits**
