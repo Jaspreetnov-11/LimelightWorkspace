@@ -187,6 +187,9 @@ The Limelight Workspace (online at **limelightcorp.net**) is Limelight's own all
 **Attendance (admins and owners only)**
 - Everyone's month day by day (present, WFH, half day, absent, leave, holiday, late), with totals and CSV.
 
+**Leave approvals (admins and owners only)**
+- Pending leave, half-day and WFH requests with each person's leave balance; Approve or Reject with a note, and the person is told.
+
 **Admin pages**: Payroll, Payments, Clients, Reports, Performance (admins only).
 
 **Benefits**

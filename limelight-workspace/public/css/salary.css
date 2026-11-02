@@ -37,3 +37,19 @@
 .att i.l, .att-key i.l { background: rgb(90 160 255 / .18); color: #5aa0ff; }
 .att i.off, .att-key i.off { color: var(--dim); }
 .att i.late, .att-key i.late { box-shadow: inset 0 0 0 1.5px #ff8a3d; }
+/* Office › Leave approvals (public/js/leave-approvals.js) */
+.lva-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(320px, 100%), 1fr)); gap: 12px; }
+.lva-card { padding: 14px 16px; display: flex; flex-direction: column; gap: 8px; }
+.lva-who b { display: block; font-size: 15px; } .lva-who small { color: var(--muted); font-size: 12px; }
+.lva-what { display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap; } .lva-what small { color: var(--muted); }
+.lva-what em { font-style: normal; font-size: 11.5px; font-weight: 700; padding: 2px 8px; border-radius: 99px; background: rgb(90 160 255 / .18); color: #5aa0ff; }
+.lva-what em.k-half_day { background: rgb(255 204 0 / .18); color: #e0b400; } .lva-what em.k-wfh { background: rgb(52 199 89 / .18); color: #34c759; }
+.lva-why { margin: 0; font-size: 13px; } .lva-why small { color: var(--muted); }
+.lva-bal { font-size: 12.5px; color: var(--muted); } .lva-bal b { color: var(--text); }
+.lva-acts { display: flex; gap: 8px; align-items: center; margin-top: 2px; } .lva-acts input { flex: 1; min-width: 0; padding: 6px 10px; }
+.lva-no { color: #ff6369; }
+.lva-empty { padding: 18px; text-align: center; }
+.lva-h { margin: 8px 0 0; font-size: 15px; }
+.lva-reason { max-width: 280px; overflow: hidden; text-overflow: ellipsis; }
+.lva-st { font-size: 12px; font-weight: 600; } .lva-st.approved { color: #34c759; } .lva-st.rejected { color: #ff6369; }
+.lva-yes { background: var(--acc); color: var(--acc-ink); border-color: var(--acc); font-weight: 650; }

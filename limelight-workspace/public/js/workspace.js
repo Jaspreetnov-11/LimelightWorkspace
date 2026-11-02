@@ -129,7 +129,7 @@ const OFFICE_MENU = [
   ['Team', ['staff', 'Staff', 'people', 'lh', '/staff'],
     ['departments', 'Departments', 'build', 'lh', '/departments'], ['events', 'Events', 'flag', 'lh', '/events'], ['news', 'News', 'news', 'o', '#news'],
     ['alerts', 'Notifications', 'bell', 'lh', '/notifications']],
-  ['Admin', ['salary', 'Salary', 'money', 'ws', 'openSalary', true], ['team-attendance', 'Attendance', 'clock', 'ws', 'openAttendance', true], ['payroll', 'Payroll', 'money', 'lh', '/payroll', true],['payments', 'Payments', 'file', 'lh', '/payments', true], ['clients', 'Clients', 'brief', 'lh', '/clients', true],
+  ['Admin', ['salary', 'Salary', 'money', 'ws', 'openSalary', true], ['team-attendance', 'Attendance', 'clock', 'ws', 'openAttendance', true], ['leave-approvals', 'Leave approvals', 'check', 'ws', 'openLeaveApprovals', true], ['payroll', 'Payroll', 'money', 'lh', '/payroll', true],['payments', 'Payments', 'file', 'lh', '/payments', true], ['clients', 'Clients', 'brief', 'lh', '/clients', true],
     ['reports', 'Reports', 'chart', 'lh', '/reports', true], ['performance', 'Performance', 'flag', 'lh', '/performance', true]],
   ['', ['settings', 'Settings', 'gear', 'lh', '/settings'], ['setup', 'Office setup', 'gear', 'o', '#setup']],
 ];

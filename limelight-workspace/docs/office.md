@@ -10,7 +10,7 @@ Office is the work part of the workspace: mail, calendar, meetings, files, Word/
 |---|---|---|---|
 | **Limelight Office** (own app) | Mail, Calendar, Meetings, Files, Document / Grid / Deck, News, Office setup (also Agent and AI Assistance when used on its own) | `E:\Limelight Ai\limelight-office`, Node, JASPREET port **3300** | proxy **3342**, `lh-office.limelightcorp.net` |
 | **HR app** (internally "Lighthouse") | Staff, Departments, Events, Notifications, Settings, admin pages (Payroll, Payments, Clients, Reports, Performance), classic Dashboard/Tasks/Projects, Attendance, Leaves | Next.js app online at lighthouse.limelightcorp.in; repo `D:\LimelightWebapp` (GitHub `Jaspreetnov-11/lighthouse`) | proxy **3343** ("Team"), `lh-team.limelightcorp.net` |
-| **Workspace pages** | Dashboard (new Home), Tasks, Projects, Overtime, Salary, Attendance | Drawn by the workspace itself (`public/js/office-pages.js`, `public/js/salary.js`) | menu items of type `ws` |
+| **Workspace pages** | Dashboard (new Home), Tasks, Projects, Overtime, Salary, Attendance, Leave approvals | Drawn by the workspace itself (`public/js/office-pages.js`, `public/js/salary.js`) | menu items of type `ws` |
 
 Limelight Office also runs **on its own** without the workspace, with its own copy of the menu and its own HR proxy (ports 3301 local / 3444 LAN).
 
@@ -23,7 +23,7 @@ Defined in `OFFICE_MENU` in `public/js/workspace.js`. Each item is `[key, label,
 | Work | **Dashboard** (ws, default first page), Mail (o), Calendar (o), Meetings (o), Tasks (ws), Projects (ws), Overtime (ws), Files (o) |
 | Create | Document (o), Grid (o), Deck (o) |
 | Team | Staff (lh), Departments (lh), Events (lh), News (o), Notifications (lh) |
-| Admin (admins only) | Salary (ws), **Attendance** (ws, key `team-attendance`), Payroll, Payments, Clients, Reports, Performance (lh) |
+| Admin (admins only) | Salary (ws), **Attendance** (ws, key `team-attendance`), **Leave approvals** (ws), Payroll, Payments, Clients, Reports, Performance (lh) |
 | (bottom) | Settings (lh, HR settings), Office setup (o) |
 | Hidden | Dashboard (classic) `/dashboard`, Tasks (classic) `/tasks`, Projects (classic) `/projects` (linked from the new pages) |
 
@@ -67,6 +67,11 @@ A separate menu item beside Salary; both pages share the chosen month. (Menu key
 - Everyone's month as a grid: one row per person, one column per day, then Present / ½ / Absent / Leave / Late / OT hours totals. Five summary cards (staff, working days so far, absent days, late marks, OT hours) and a colour key.
 - Day marks: **P** present, **W** work from home, **½** half day, **A** absent, **L** leave, **H** holiday (name on hover), blank = week off or a future day; an orange ring = late. Hover shows hours worked or "not clocked out".
 - Data: the HR app's `/api/attendance/team-summary` (per-day punches, missed days, week off) + `/api/holidays`, through `GET /api/salary/attendance?month=`. A past working day with no punch is shown as **L** only when those days add up to the person's leave count, otherwise "–" (no record, e.g. before joining). Owners left out. CSV download (late days marked `*`).
+
+### Leave approvals (admins and owners only, `openLeaveApprovals`, `public/js/leave-approvals.js`)
+- Pending leave, half-day (with slot) and work-from-home requests as cards: who, dates, number of days, reason, and the person's leave balance this year (days left of the quota, other pending days; worked out like Profile's balance; WFH does not count).
+- **Approve** / **Reject** with an optional note. It goes to the HR app as the signed-in admin (`PATCH /api/leaves/<id>/decide`), which saves the note in the remarks and notifies the person, exactly as the HR Leaves page does.
+- Below: the last 40 decided requests. Owners' requests are left out.
 
 ### Limelight Office pages
 | Page | What it does |
@@ -116,7 +121,7 @@ Put into framed HTML pages only (requests with `sec-fetch-dest: iframe`); re-rea
 | `/api/hr/<part>` GET | Read HR data as the person: tasks, projects, todos, activity, employees, departments, productivity, performance, attendance, holidays, clients | everyone (HR decides what they see) |
 | `/api/hr/<part>` POST/PUT/PATCH/DELETE | Write only tasks, todos, projects | everyone (HR checks rights) |
 | `GET /api/ot` (`?all=1` for admins), `POST /api/ot`, `/api/ot/remove`, `/api/ot/review` | Overtime register | review: admins only |
-| `GET /api/salary?month=`, `POST /api/salary/input`, `POST /api/salary/rules`, `GET /api/salary/attendance?month=` | Salary and Attendance pages | admins only |
+| `GET /api/salary?month=`, `POST /api/salary/input`, `POST /api/salary/rules`, `GET /api/salary/attendance?month=`, `GET /api/salary/leaves`, `POST /api/salary/leaves/decide` | Salary, Attendance and Leave approvals pages | admins only |
 
 - Overtime store: `overtime.mjs`, data `Data/overtime/<YYYY-MM>.json`.
 - Salary store: `salary.mjs` (`compute`, `setInput`, `setRules`), data `Data/salary/rules.json` and `Data/salary/<YYYY-MM>.json`.
@@ -179,6 +184,7 @@ Put into framed HTML pages only (requests with `sec-fetch-dest: iframe`); re-rea
 ## 8. Known issues / pending
 - The owner links his Office account to the HR email once (Office setup → My account).
 - Office → Attendance checked only with sample data and a staff login (refused, as it should be); needs one look with an owner login.
+- Leave approvals checked only with sample data and a staff login (refused); Approve / Reject not clicked on a real request yet (it notifies the person).
 - Salary Approve buttons and OT numbers need one check with an owner login; Salary not yet checked against real payroll. Admin Home and the OT team view were checked only in a preview.
 - Status changes, Approve and Quick task on the new pages were not clicked (they write live HR data).
 - Real camera call between two PCs not tested (WebRTC verified between two tabs).

@@ -4,6 +4,7 @@ import fs from 'node:fs';
 import { NEXT, send, readJson } from '../core.mjs';
 import { auth, salary, overtime, isOwner, isAdmin } from '../state.mjs';
 import { lighthouse, lighthouseSend, jwtId } from '../hr.mjs';
+import { weekOffOf, leaveBalance, leaveDaysIn } from './profile.mjs';
 
 const dayAttendance = new Map(); // day -> { at, rows }: everyone's clock for a day, for the Overtime check (a minute)
 
@@ -69,6 +70,29 @@ export async function route(req, res, { u, p, user }) {
         days: (s.days || []).map((d) => ({ date: String(d.date).slice(0, 10), status: d.status, late: d.late, mode: d.mode, mins: d.mins, open: d.open })),
         missed: (s.missedDays || []).map((d) => String(d).slice(0, 10)) }));
       return send(res, 200, { month, workdaysSoFar: sum?.workdaysSoFar, workdaysTotal: sum?.workdaysTotal, holidays, staff });
+    }
+    // Leave approvals: the HR app's leave / half-day / WFH requests - pending ones with the person's balance this year,
+    // and the last ones decided; Approve / Reject goes to the HR app as this admin (it notifies the person)
+    if (p === '/api/salary/leaves' && req.method === 'GET') {
+      const [all, emps, st] = await Promise.all([lighthouse(user, '/api/leaves'), lighthouse(user, '/api/employees?limit=500').catch(() => []), lighthouse(user, '/api/settings').catch(() => ({}))]);
+      const byId = new Map((emps || []).map((e) => [e.id, e])), year = new Date(Date.now() + 5.5 * 3600e3).getUTCFullYear();
+      const quota = st?.leavesPerYear !== undefined ? Number(st.leavesPerYear) : 12, list = (all || []).filter((l) => !isOwner(byId.get(l.emp) || {}));
+      const row = (l) => {
+        const e = byId.get(l.emp) || {}, wo = weekOffOf(e, st?.weekOff);
+        return { id: l.id, name: e.name || 'Staff', dept: e.dept || '', empId: e.emp_id || '', kind: l.kind || 'leave', slot: l.half_day_slot || '',
+          from: String(l.from_date).slice(0, 10), to: String(l.to_date).slice(0, 10), days: leaveDaysIn(l, year, wo) || (l.kind === 'wfh' ? null : 0),
+          reason: l.reason || '', remarks: l.remarks || '', status: l.status || 'approved', at: l.updated_at || l.created_at || '',
+          balance: l.kind === 'wfh' ? null : leaveBalance(list, l.emp, quota, wo, year) };
+      };
+      const pending = list.filter((l) => (l.status || 'approved') === 'pending').map(row).sort((a, b) => a.from.localeCompare(b.from));
+      const decided = list.filter((l) => ['approved', 'rejected'].includes(l.status)).map(row).sort((a, b) => b.from.localeCompare(a.from)).slice(0, 40);
+      return send(res, 200, { pending, decided });
+    }
+    if (p === '/api/salary/leaves/decide' && req.method === 'POST') {
+      const b = await readJson(req);
+      if (!/^[\w-]{1,64}$/.test(String(b.id || '')) || !['approved', 'rejected'].includes(b.status)) return send(res, 400, { error: 'Bad request' });
+      try { return send(res, 200, await lighthouseSend(user, 'PATCH', `/api/leaves/${b.id}/decide`, { status: b.status, note: String(b.note || '').slice(0, 300) })); }
+      catch (err) { return send(res, err.status || 500, { error: err.message }); }
     }
   }
   // ---------- Office's new Home, Tasks and Projects pages (public/js/office-pages.js): the HR data, as this person ----------

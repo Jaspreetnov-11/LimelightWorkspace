@@ -17,12 +17,12 @@ async function punch(user) {
 // Leave balance worked out the same way as the HR app's own Leaves page (leaveBalance in its src/lib/format.js):
 // quota = settings.leavesPerYear (12 when not set); approved / pending 'leave' and 'half_day' requests count, WFH does
 // not; days are counted inside this calendar year and the person's week-off days are skipped.
-const weekOffOf = (e, fallback) => {
+export const weekOffOf = (e, fallback) => {
   const raw = e && e.week_off != null ? String(e.week_off).trim() : '';
   const days = raw ? raw.split(',').map((x) => Number(x.trim())).filter((n) => Number.isInteger(n) && n >= 0 && n <= 6) : [];
   return days.length ? days : (Array.isArray(fallback) && fallback.length ? fallback.map(Number) : [0]);
 };
-function leaveDaysIn(l, year, weekOff) {
+export function leaveDaysIn(l, year, weekOff) {
   if (!l || l.kind === 'wfh') return 0;
   const factor = l.kind === 'half_day' || l.kind === 'half' ? 0.5 : 1;
   const s = new Date(String(l.from_date).slice(0, 10) + 'T00:00:00Z'), e = new Date(String(l.to_date).slice(0, 10) + 'T00:00:00Z');
@@ -30,7 +30,7 @@ function leaveDaysIn(l, year, weekOff) {
   for (const d = new Date(s); d <= e; d.setUTCDate(d.getUTCDate() + 1)) if (d.getUTCFullYear() === year && !weekOff.includes(d.getUTCDay())) n += factor;
   return n;
 }
-function leaveBalance(leaves, empId, quota, weekOff, year) {
+export function leaveBalance(leaves, empId, quota, weekOff, year) {
   let used = 0, pending = 0;
   for (const l of leaves) {
     if (l.emp !== empId || l.kind === 'wfh') continue;
