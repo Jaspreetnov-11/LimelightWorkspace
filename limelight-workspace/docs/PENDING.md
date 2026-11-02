@@ -100,3 +100,4 @@
 | Test the Office "Leave without saving?" pop-up after real edits, and the installable app with Install on a real phone | Owner |
 
 | Copy the new `dist\Lighthouse - doosre PC ke liye.zip` (English read-me) to the NAS where staff get Lighthouse.exe | Owner |
+| The old Lighthouse site (lighthouse.limelightcorp.in) is closed to direct visits since 2 Nov - reopen by deleting the TEMPORARY script in `D:\LimelightWebapp\src\app\layout.js` (pushes to main go live in ~2 min) | Owner decides |

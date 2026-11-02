@@ -170,3 +170,4 @@ Every update from the five raw notes in `_notes/`, merged into one list, oldest 
 ## 2 Nov 2026
 
 - [Office] New admin page **Attendance** (its own menu item, between Salary and Payroll; a first try put Salary, Attendance and Payroll as tabs on one page - the owner wanted them separate): everyone's month day by day (P / W / ½ / A / L / H, late ring, hours on hover), totals and CSV, from the HR team summary (`GET /api/salary/attendance`). Workspace restarted to load the route.
+- 2 Nov 2026 [Office] [Servers] Old Lighthouse site closed for now (owner's yes): opening lighthouse.limelightcorp.in directly goes to limelightcorp.net. Its API (workspace sign-in and data), the HR pages inside Office and the public /careers and /signup pages still work. HR app commit 5468918 (`src/app/layout.js`); delete that script to open the old site again.

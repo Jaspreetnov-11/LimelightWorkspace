@@ -31,8 +31,10 @@ const AREAS = [accountArea, aiArea, profileArea, homeArea, chatsArea, officeArea
 // ---------- router ----------
 const server = http.createServer(async (req, res) => {
   if (toHttps(req, res)) return;
-  const u = new URL(req.url, 'http://x');
-  const p = decodeURIComponent(u.pathname);
+  // (a link with a broken %-code, like /%E0%A4, used to throw here outside the try and take the whole server down)
+  let u, p;
+  try { u = new URL(req.url, 'http://x'); p = decodeURIComponent(u.pathname); }
+  catch { res.writeHead(400, { 'Content-Type': 'text/plain' }); return res.end('bad link'); }
   try {
     if (p === '/api/health') return send(res, 200, { ok: true, app: 'Lighthouse', version: '1.2.0' });
     if (p === '/api/login' && req.method === 'POST') {
