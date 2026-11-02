@@ -68,7 +68,7 @@ A **Reels-style feed of every finished output** in the workspace (2 Nov; before 
 - Wheel, arrow keys and swipe move one item; videos autoplay muted and stop off screen; Range seeking (206); downloads for Edit, AI, Create and a Design zip; Share opens; Mine; phone (375 px, above the bottom tab bar), laptop (1366×768) and desktop layouts.
 
 ### Known issues / pending
-- Not yet tried on a real phone and with the live server (it needs a restart to load the new routes).
+- Live since the restart on 2 Nov (156 items on the live server). Not yet tried on a real phone.
 - The first open after 90 s waits about 4-5 s while Edit's projects are read.
 
 ---

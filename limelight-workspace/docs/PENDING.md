@@ -20,7 +20,7 @@
 |---|---|
 | Text-to-video engine (Wan 2.2 5B or LTX-Video on NAYA B) - currently stopped by the owner | Owner decides, then code |
 | Ideas: "Send to Design" for AI images, AI video → Edit timeline, Brand Kit, image edit / background removal, voice-over | Owner decides |
-| Restart the workspace to load the new Library (Reels feed), then try it on a real phone | Owner |
+| Try the new Library (Reels feed) on a real phone (live since the 2 Nov restart) | Owner |
 
 ## Profile
 | Item | Who |
