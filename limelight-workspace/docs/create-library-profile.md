@@ -59,10 +59,12 @@ A **Reels-style feed of every finished output** in the workspace (2 Nov; before 
 ### How it works
 | Part | Detail |
 |---|---|
-| Feed | `GET /api/feed` (`server/areas/library.mjs`): all sources together, newest first. The same for everyone, so kept 90 s for all (`?fresh=1` skips it). A source that does not answer is left out and named (`down`); the page shows a short note |
+| Feed | `GET /api/feed` (`server/areas/library.mjs`): all sources together, newest first. The same for everyone, so one list for all (`?fresh=1` builds a new one and waits for it). A source that does not answer is left out and named (`down`); the page shows a short note |
 | Files | Edit and Limelight AI files come through `GET /api/feed/file?from=edit|ai&u=<path>`, which fetches them with the Edit / AI key and passes HTTP Range through (videos seek). Only render files and thumbnails of Edit, and `img_*` / `vid_*` files of the AI, are allowed. `&dl=1` adds a download file name. Design files come through the normal Studio pass-through (`/library/`, and `/exports/`, added to `server/areas/design.mjs`) |
 | Studio folder | `config.json` `studioDir` (default `../limelight-studio`) |
-| Page | `public/js/library.js` (feed drawn in batches of 12 - `reelsMore`, `moreObs` -, filters, swipe / wheel / keys, play on screen), `public/css/library.css`, `#v-library` in `public/index.html`. Files load only when an item comes near the screen; videos let go of theirs when far away |
+| Picture previews | `GET /api/feed/preview?from=studio|ai&u=<path>[&t=<change time>]`: the picture at 1080 px on the long side as WebP (quality 78, ~15-200 KB instead of 1-2 MB), made once with ffmpeg (`config.json` `ffmpeg`, default `ffmpeg` on PATH) two at a time and kept in `cache/feed-previews/` (git-ignored; delete it to remake them). Made in the background after each new list, so nobody waits. Only Create / Design AI pictures, 3D renders, exports and the AI's `img_*` / video posters are allowed. If ffmpeg fails, it sends the original picture instead. **Download** still gives the original (`dl`) |
+| Speed of the list | `/api/feed` answers at once from the last list; when that is over 90 s old a new one is built in the background for the next person. The list is also built 4 s after the server starts |
+| Page | `public/js/library.js` (feed drawn in batches of 12 - `reelsMore`, `moreObs` -, filters, swipe / wheel / keys, play on screen), `public/css/library.css`, `#v-library` in `public/index.html`. Only the item on screen loads its file; the next one loads once that is ready (a picture, or a video's poster); videos two or more away let go of theirs |
 | Older route | `GET /api/renders` (one person's own Edit renders) is kept but no page uses it now |
 
 ### Tested (2 Nov, on a copy on port 3399, as a staff test login)
@@ -71,9 +73,12 @@ A **Reels-style feed of every finished output** in the workspace (2 Nov; before 
 
 - Infinite scroll and the docked bottom bar: checked at 375×812 and 1366×768 on the live server (batches add at item 10 of 12; filter resets; end card).
 
+- Speed (2 Nov, phone width, on this PC): first 3 items 4,046 KB → 429 KB; first picture 3.8 s → 5 ms after the list (the original came through Studio, which takes ~1.8 s for a 2 MB PNG even locally); the list 4 ms either way from the cache, and no longer a 4-5 s wait after 90 s. Through Cloudflare each request also costs ~0.6 s.
+
 ### Known issues / pending
+- No light 720p copy of videos yet: Edit renders are full quality from NAYA A. Making one would mean pulling each render once from NAYA A and encoding it on this PC (102 renders); not built.
 - Live since the restart on 2 Nov (156 items on the live server). Not yet tried on a real phone.
-- The first open after 90 s waits about 4-5 s while Edit's projects are read.
+- A new output shows up on the next open after the background rebuild (one open later than before).
 
 ---
 

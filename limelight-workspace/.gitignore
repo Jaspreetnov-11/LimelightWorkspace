@@ -19,3 +19,5 @@ node_modules/
 tls/bin/
 # certificate script output
 tls/last-run.log
+# Library picture previews (remade by themselves)
+cache/

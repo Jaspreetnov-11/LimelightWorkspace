@@ -2,6 +2,7 @@
 // exports, Limelight AI pictures and videos) - everyone sees everything (/api/feed). One item fills the screen: swipe on
 // a phone, wheel or arrow keys on a computer. Videos play muted while on screen (the sound button turns sound on for all).
 // The feed is drawn a batch at a time: the next batch is added before you reach the end (infinite scroll).
+// Only the item on screen loads its file (pictures come as small previews); the next one loads once that is ready.
 // Uses workspace.js ($, $$, api, esc, icon, toast, show, openApp, ME) and share.js (openShare, openShared).
 let REELS = [], REELS_ON = [], reelsAt = 0, RF = 'all', SOUND = false, reelsShown = 0;
 const REEL_BATCH = 12;
@@ -34,7 +35,7 @@ function drawFeed() {
   REELS_ON = REELS.filter((v) => (RF === 'all' || v.kind === RF || v.app === RF || (RF === 'mine' && reelMine(v)))
     && (!q || [v.title, v.project, v.by, REEL_APP[v.app]].some((s) => String(s || '').toLowerCase().includes(q))));
   const box = $('#reels');
-  reelsShown = 0;
+  reelsShown = 0; reelCur = -1;
   box.innerHTML = REELS_ON.length ? '' : `<div class="reels-empty">${REELS.length ? 'Nothing matches' : 'Nothing here yet. Finished renders, AI pictures and design exports show up here.'}</div>`;
   box.scrollTop = 0;
   $('#reelCount').textContent = REELS_ON.length ? `1 / ${REELS_ON.length}` : '';
@@ -50,8 +51,8 @@ function reelsMore(all) {
     const i = from + n;
     const tall = v.aspect === '9:16' ? ' tall' : '';
     const media = v.kind === 'video'
-      ? `<video data-src="${esc(v.src)}" ${v.poster ? `poster="${esc(v.poster)}"` : ''} playsinline loop muted preload="none"></video><div class="reel-bar"><i></i></div>`
-      : `<img data-src="${esc(v.src)}" alt="">`;
+      ? `<video data-src="${esc(v.src)}" ${v.poster ? `data-poster="${esc(v.poster)}"` : ''} playsinline loop muted preload="none"></video><div class="reel-bar"><i></i></div>`
+      : `<img data-src="${esc(v.src)}" alt="" decoding="async">`;
     const sub = [v.project, v.by && `by ${v.by}`, v.note, rSize(v.size)].filter(Boolean).map(esc).join(' · ');
     return `<article class="reel" data-ri="${i}">
       <div class="reel-stage${tall}">${media}
@@ -67,7 +68,7 @@ function reelsMore(all) {
   }).join(''));
   reelsShown = to;
   const added = $$('.reel', box).slice(from);
-  added.forEach((el) => { nearObs.observe(el); playObs.observe(el); });
+  added.forEach((el) => playObs.observe(el));
   if (to < REELS_ON.length) moreObs.observe(added[added.length - 1]);
   else box.insertAdjacentHTML('beforeend', `<div class="reels-end"><span>That's everything - ${REELS_ON.length} ${REELS_ON.length === 1 ? 'item' : 'items'}</span><button data-r="top">Back to the top</button></div>`);
 }
@@ -78,25 +79,45 @@ const moreObs = new IntersectionObserver((list) => list.forEach((en) => {
   if (+en.target.dataset.ri === reelsShown - 1) reelsMore();
 }), { root: $('#reels'), rootMargin: '0px 0px 200% 0px' });
 
-// files load when an item comes near the screen (and videos let go of theirs when far away again)
-const nearObs = new IntersectionObserver((list) => list.forEach((en) => {
-  const m = en.target.querySelector('[data-src]'); if (!m) return;
-  if (en.isIntersecting && !m.getAttribute('src')) {
-    m.src = m.dataset.src;
-    if (m.tagName === 'IMG') m.onload = () => { const s = m.closest('.reel-stage'); s.classList.toggle('tall', m.naturalHeight > m.naturalWidth * 1.15); s.classList.toggle('wide', m.naturalWidth > m.naturalHeight * 1.3); };
-  } else if (!en.isIntersecting && m.tagName === 'VIDEO' && m.getAttribute('src')) { m.pause(); m.removeAttribute('src'); m.load(); }
-}), { root: $('#reels'), rootMargin: '150% 0px' });
+// one item's file: a picture, or a video's poster (and the video itself when `play`). Resolves when it can be seen.
+function reelLoad(el, play) {
+  const m = el?.querySelector('[data-src]'); if (!m) return Promise.resolve();
+  if (m.tagName === 'IMG') {
+    if (!m.getAttribute('src')) {
+      m.onload = () => { const s = m.closest('.reel-stage'); s.classList.toggle('tall', m.naturalHeight > m.naturalWidth * 1.15); s.classList.toggle('wide', m.naturalWidth > m.naturalHeight * 1.3); };
+      m.src = m.dataset.src;
+    }
+    return m.complete ? Promise.resolve() : new Promise((r) => { m.addEventListener('load', r, { once: true }); m.addEventListener('error', r, { once: true }); });
+  }
+  if (m.dataset.poster && !m.getAttribute('poster')) m.poster = m.dataset.poster;
+  if (play && !m.getAttribute('src')) m.src = m.dataset.src;
+  if (!m.dataset.poster || play) return Promise.resolve();
+  const img = new Image(); img.src = m.dataset.poster;
+  return img.complete ? Promise.resolve() : new Promise((r) => { img.onload = img.onerror = r; });
+}
+// the item on screen loads first; then the next one (a picture, or a video's poster); videos two or more away let go
+let reelCur = -1;
+async function reelShow(i) {
+  if (i === reelCur) return; reelCur = i;
+  const els = $$('#reels .reel');
+  els.forEach((el, n) => { const vid = el.querySelector('video'); if (vid?.getAttribute('src') && Math.abs(n - i) > 1) { vid.pause(); vid.removeAttribute('src'); vid.load(); } });
+  await reelLoad(els[i], true);
+  if (reelCur === i) reelLoad(els[i + 1], false);
+}
 // the item on screen plays (muted unless sound is on); the others stop
 const playObs = new IntersectionObserver((list) => list.forEach((en) => {
   const v = en.target.querySelector('video');
-  if (en.isIntersecting) $('#reelCount').textContent = `${+en.target.dataset.ri + 1} / ${REELS_ON.length}`;
+  if (en.isIntersecting) { $('#reelCount').textContent = `${+en.target.dataset.ri + 1} / ${REELS_ON.length}`; if (!$('#v-library').classList.contains('hidden')) reelShow(+en.target.dataset.ri); }
   if (!v) return;
   if (en.isIntersecting && !$('#v-library').classList.contains('hidden')) { v.muted = !SOUND; v.play().catch(() => { v.muted = true; v.play().catch(() => {}); }); }
   else v.pause();
 }), { root: $('#reels'), threshold: 0.6 });
 
 // back on the Library: the item on screen plays again
-function reelResume() { const v = $$('#reels .reel')[reelIndex()]?.querySelector('video'); if (v?.getAttribute('src')) { v.muted = !SOUND; v.play().catch(() => {}); } }
+function reelResume() {
+  const i = reelIndex(); reelCur = -1; reelShow(i);
+  const v = $$('#reels .reel')[i]?.querySelector('video'); if (v) { v.muted = !SOUND; v.play().catch(() => {}); }
+}
 const reelIndex = () => Math.round($('#reels').scrollTop / ($('#reels').clientHeight || 1));
 function reelGo(i) { const box = $('#reels'); i = Math.max(0, Math.min(reelsShown - 1 + (reelsShown >= REELS_ON.length ? 1 : 0), i)); box.scrollTo({ top: i * box.clientHeight, behavior: 'smooth' }); }
 function setSound(on) {
