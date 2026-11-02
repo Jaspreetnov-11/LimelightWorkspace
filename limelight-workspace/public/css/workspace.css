@@ -172,11 +172,14 @@ button:focus-visible, a:focus-visible { outline: 2px solid color-mix(in srgb, va
 
 /* Home uses the whole screen: logo + search + apps on top, widgets and the "Aaj" feed fill the rest */
 #v-home { padding-bottom: 16px; }
-#v-home > .inner { max-width: none; height: 100%; min-height: 560px; display: flex; flex-direction: column; padding: 0 2px; }
+/* Home fills the screen on a big monitor and grows (the page scrolls) on a shorter laptop screen - never cut off */
+#v-home > .inner { max-width: none; min-height: 100%; display: flex; flex-direction: column; padding: 0 2px; }
 #v-home .apps { flex: none; margin-bottom: 22px; }
 .home-lower { flex: 1; min-height: 0; display: grid; grid-template-columns: minmax(280px, 26%) 1fr; gap: 14px; }
 /* dashboard: glass bento tiles, each tinted with its app's colour (--c) */
-.dash { flex: 1; min-height: 0; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); grid-template-rows: auto minmax(220px, 1fr) auto; gap: 14px; }
+.dash { flex: 1 0 auto; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); grid-template-rows: auto max(260px, calc(100vh - 830px)) minmax(112px, auto); gap: 14px; }
+/* (the middle row - Today, Projects, Team updates - keeps a steady height and scrolls inside; on a tall monitor it
+   stretches to fill the screen; everything above and below it is about 830 px) */
 .dt { position: relative; overflow: hidden; min-width: 0; min-height: 0; text-align: left; color: var(--text); font: inherit; border-radius: 22px; padding: 18px 20px;
   background: radial-gradient(circle at 100% 0, color-mix(in srgb, var(--c) 26%, transparent), transparent 62%), var(--glass);
   border: 1px solid var(--edge); backdrop-filter: var(--blur); -webkit-backdrop-filter: var(--blur); display: flex; flex-direction: column; transition: transform .18s, border-color .18s; }
