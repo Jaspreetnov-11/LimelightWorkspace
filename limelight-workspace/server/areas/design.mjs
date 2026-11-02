@@ -1,5 +1,5 @@
 // Design (Limelight Studio): designs (/api/projects, /projects/), the picture Library (/api/library, /library/)
-// and AI images (/api/ai/...) are passed straight through to Studio.
+// AI images (/api/ai/...) and the exported files (/exports/, for the Library feed) are passed straight through to Studio.
 import http from 'node:http';
 import https from 'node:https';
 import { config } from '../config.mjs';
@@ -16,6 +16,6 @@ function forward(req, res, base, extraHeaders = {}) {
 
 export async function route(req, res, { u, p, user }) {
   // Studio owns designs, the picture library and AI images
-  if (/^\/api\/(projects|library|ai\/)/.test(p) || /^\/(projects|library)\//.test(p)) return forward(req, res, config.studioUrl);
+  if (/^\/api\/(projects|library|ai\/)/.test(p) || /^\/(projects|library|exports)\//.test(p)) return forward(req, res, config.studioUrl);
   return NEXT;
 }

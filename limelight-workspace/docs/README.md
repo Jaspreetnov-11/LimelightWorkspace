@@ -15,7 +15,7 @@
 | **Home** | Greeting, clock-in, app cards, numbers, Today feed; login; themes | Workspace, JASPREET, 3350 | `server/areas/home.mjs`, `server/areas/account.mjs`, `auth.mjs`, `public/js/workspace.js`, `public/js/profile.js`, `public/js/search.js`, `public/js/theme-boot.js` → [home.md](home.md) |
 | **Chats** | Office chat: 1-to-1, groups, files, share cards | Workspace, JASPREET, 3350 | `chat.mjs`, `server/areas/chats.mjs`, `server/areas/share.mjs`, `public/js/chats.js`, `public/js/share.js` → [chats.md](chats.md) |
 | **Create** | AI Image (works), AI Video (screen only) | Workspace 3350; images made by Limelight AI through Design (Studio 3330) | `server/areas/create.mjs`, `server/areas/design.mjs`, `public/js/workspace.js` → [create-library-profile.md](create-library-profile.md) |
-| **Library** | Videos (Edit renders) and Images (AI images) | Workspace 3350; videos from Edit, images from Studio | `server/areas/library.mjs`, `public/js/library.js` → [create-library-profile.md](create-library-profile.md) |
+| **Library** | Reels-style feed of every finished output (Edit renders, Create / Design / AI pictures, Design exports, AI videos), for everyone | Workspace 3350; from Edit, Studio and Limelight AI | `server/areas/library.mjs`, `public/js/library.js` → [create-library-profile.md](create-library-profile.md) |
 | **Profile** | Own details, attendance, leaves, Time, Team | Workspace 3350; data from the HR app | `server/areas/profile.mjs`, `server/hr.mjs`, `activity.mjs`, `public/js/profile.js`, `public/js/activity.js` → [create-library-profile.md](create-library-profile.md) |
 | **Edit** | The video editor | NAYA A (192.168.0.200), standby NAYA B :3100; proxy **3341** | `server/areas/edit.mjs`, `server/apps-proxy.mjs`; editor code in `D:\Video Editor Agent` → [edit.md](edit.md) |
 | **Design** | Limelight Studio (design tool) | JASPREET, port 3330; proxy **3345** | `server/areas/design.mjs`; app code in `E:\Limelight Ai\limelight-studio` → [design.md](design.md) |
@@ -92,7 +92,7 @@ Most data sits on JASPREET, so back it up regularly (see [PENDING.md](PENDING.md
 |---|---|
 | [home.md](home.md) | Login and accounts, sessions, roles, Home dashboard, clock-in, app bar, search, themes |
 | [chats.md](chats.md) | Chats, forward, share cards, the Share button |
-| [create-library-profile.md](create-library-profile.md) | Create (AI image/video), Library (videos, images), Profile (attendance, Time, Team) |
+| [create-library-profile.md](create-library-profile.md) | Create (AI image/video), Library (the Reels feed of every output), Profile (attendance, Time, Team) |
 | [edit.md](edit.md) | Edit inside the workspace, no-second-login, release flow |
 | [design.md](design.md) | Design (Limelight Studio) and how the workspace uses it |
 | [office.md](office.md) | Office: menu, pages, Overtime, Salary, embed styling |

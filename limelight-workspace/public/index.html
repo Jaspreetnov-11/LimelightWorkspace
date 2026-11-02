@@ -15,7 +15,7 @@
 <meta name="apple-mobile-web-app-title" content="Limelight">
 <link rel="stylesheet" href="css/workspace.css?v=20261030v">
 <link rel="stylesheet" href="css/profile.css?v=20261030v">
-<link rel="stylesheet" href="css/library.css?v=20261030v">
+<link rel="stylesheet" href="css/library.css?v=20261102r">
 <link rel="stylesheet" href="css/salary.css?v=20261102s">
 <link rel="stylesheet" href="css/office-pages.css?v=20261030v">
 <link rel="stylesheet" href="css/mobile.css?v=20261030v">
@@ -230,25 +230,21 @@
     </div></section>
 
     <!-- LIBRARY -->
-    <section class="view hidden" id="v-library"><div class="inner">
-      <header class="vh"><div><h1>Library</h1><p>Finished renders from Edit, and AI images — all in one place.</p></div>
-        <div class="seg libtabs" id="libTabs"><button class="on" data-v="videos">Videos</button><button data-v="images">Images</button></div></header>
-      <div class="yt" id="libVideos">
-        <div class="yt-main">
-          <div class="yt-stage" id="ytStage"><video id="ytVideo" controls playsinline preload="metadata"></video><div class="yt-empty" id="ytEmpty">Loading renders…</div></div>
-          <h2 class="yt-title" id="ytTitle"></h2>
-          <div class="yt-meta" id="ytMeta"></div>
+    <section class="view hidden" id="v-library">
+      <header class="reels-top">
+        <h1>Library</h1>
+        <div class="reels-chips" id="reelChips">
+          <button class="on" data-rf="all">All</button><button data-rf="video">Videos</button><button data-rf="image">Pictures</button>
+          <span class="reels-sep"></span>
+          <button data-rf="edit">Edit</button><button data-rf="design">Design</button><button data-rf="create">Create</button><button data-rf="ai">AI</button>
+          <span class="reels-sep"></span>
+          <button data-rf="mine">Mine</button>
         </div>
-        <aside class="yt-side glass">
-          <div class="yt-tools">
-            <label class="search" style="margin:0;flex:1"><i data-i="search"></i><input id="ytSearch" placeholder="Search renders or projects"></label>
-            <label class="yt-auto" title="Play the next video when one ends"><input type="checkbox" id="ytAuto" checked><span>Autoplay</span></label>
-          </div>
-          <div class="yt-list" id="ytList"></div>
-        </aside>
-      </div>
-      <div class="lib hidden" id="libGrid"></div>
-    </div></section>
+        <label class="search reels-search"><i data-i="search"></i><input id="reelSearch" placeholder="Search the Library"></label>
+        <span class="reels-count" id="reelCount"></span>
+      </header>
+      <div class="reels" id="reels" tabindex="-1"><div class="reels-empty">Loading the Library…</div></div>
+    </section>
 
     <!-- APP (every app runs inside this window; frames stay alive while you switch) -->
     <section class="view hidden" id="v-app">
@@ -310,7 +306,7 @@
 <script src="js/search.js?v=20261030v"></script>
 <script src="js/profile.js?v=20261030v"></script>
 <script src="js/share.js?v=20261030v"></script>
-<script src="js/library.js?v=20261030v"></script>
+<script src="js/library.js?v=20261102r"></script>
 <script src="js/activity.js?v=20261030v"></script>
 <script src="js/salary.js?v=20261102q"></script>
 <script src="js/leave-approvals.js?v=20261102s"></script>

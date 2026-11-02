@@ -397,12 +397,7 @@ async function loadJobs() {
 }
 
 // ---------- library + viewer ----------
-async function loadLibrary() {
-  window.loadVideos?.();
-  const lib = await api('/api/library').catch(() => []);
-  $('#libGrid').innerHTML = lib.length ? lib.map((f) => `<button data-img="${f.url}" title="${esc(f.name)}"><img src="${f.url}" alt="" loading="lazy"></button>`).join('')
-    : '<p style="color:var(--muted)">Library is empty.</p>';
-}
+function loadLibrary() { window.loadFeed?.(); } // (the Reels-style feed: library.js)
 function openViewer(url) { $('#viewerImg').src = url; $('#viewerDl').href = url; $('#viewer').classList.remove('hidden'); }
 document.addEventListener('click', (e) => { const b = e.target.closest('[data-img]'); if (b) openViewer(b.dataset.img); });
 $('#viewerClose').onclick = () => $('#viewer').classList.add('hidden');

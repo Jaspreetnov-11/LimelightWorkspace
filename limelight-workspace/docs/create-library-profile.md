@@ -29,23 +29,47 @@ Three workspace pages that are drawn by the workspace itself (no app frame).
 
 ## 2. Library
 
+A **Reels-style feed of every finished output** in the workspace (2 Nov; before that it was a YouTube-style player for Edit renders plus an Images grid).
+
 ### What users can do
-- **Videos tab (opens first):** a YouTube-style player for **finished Edit renders only**. Big player with title, project, who rendered it, date and size. Buttons: **Download**, **Share** (to people/groups in Chats), **Open in Edit** (opens the project). On the right: a searchable list (by render, project or person), newest first, with project thumbnails and a "Playing" badge. **Autoplay next** is on by default and remembered per PC. 9:16 reels get a taller player. On a phone the list goes under the player.
-- **Images tab:** the AI image library from Studio.
-- Someone without an Edit account sees a note to ask for Edit access.
+- One item fills the screen. **Phone:** swipe up / down. **Laptop / desktop:** mouse wheel (one item per turn), arrow keys / Page Up / Page Down / J / K, Home / End.
+- **Videos** play muted while on screen and stop when scrolled away. Tap a video to pause / play; tap its thin bar at the bottom to jump. The **sound** button (or M) turns sound on for every video and is remembered per device.
+- **Pictures** are shown whole (fitted, never cropped); tall and wide pictures get a matching card.
+- Each item shows the app it came from (Edit, Design, Create, Limelight AI), how long ago, the name, and the project, who made it and size where known.
+- Buttons on each item: **Download**, **Share** (to people or groups in Chats), **Open** (Edit project, Design, the Create page, or Limelight AI).
+- Top bar: filters **All / Videos / Pictures**, **Edit / Design / Create / AI**, **Mine**, a search box, and "3 / 156" (where you are).
+
+### Who sees what (owner, 2 Nov: "sabko dikhe")
+- **Every signed-in person sees every output from everyone.** It stays inside the workspace login; nothing is public.
+- This **opens up Edit renders**: until now each person saw only the renders of the Edit projects they could open. The feed now asks Edit as an owner (Edit shows an owner every project) and streams the files itself, so nobody needs Edit access to watch or download a render. **Open** on someone else's project still follows Edit's own rules (Edit may say no access).
+- Design and Limelight AI pictures were already shared with everyone; they now show in the feed.
+- **Mine** works for Edit renders only (the only source that records who made it). Design and AI pictures have no maker recorded.
+- **Not in the feed:** raw uploads in Design's Library, the AI fill options (`genfill_*`), design and project files, chats, HR, salary, and AI video requests (no video is made yet).
+
+### Sources
+| Source | What | Where it is read |
+|---|---|---|
+| Edit | Finished renders (`.mp4`, `.mov`, `.webm`; no previews, audio or image sequences) of every project | Edit's `/api/projects` + `/api/renders?p=`, asked as an owner's Edit name (the first owner signed in on this PC who has Edit), six projects at a time. Falls back to the viewer's own Edit name |
+| Create / Design | AI pictures `ai_*` (Create and Design's AI tool) and 3D renders `3d-render_*` | Studio's `Library` folder on JASPREET |
+| Design | Exports: each "all formats" folder (shown by its PNG/JPG, **Download** gives its `.zip`), and single exported pictures | Studio's `Exports` folder |
+| Limelight AI | Pictures and videos from its galleries | NAYA B `/api/images`, `/api/videos` with the workspace AI key |
 
 ### How it works
 | Part | Detail |
 |---|---|
-| Render list | `GET /api/renders` (`server/areas/library.mjs`). The workspace asks Edit **as that person** (Edit key + their Edit name), so Edit's own access rules decide which renders each person sees. It reads Edit's project list, then each project's renders, six projects at a time |
-| Filter | Only finished `.mp4`, `.mov`, `.webm`. No render-bar previews, audio-only files or image sequences |
-| Caching | Server keeps the list 2 minutes per person (`?fresh=1` skips it). The page re-asks at most once a minute |
-| Playback | Videos stream through the Edit proxy (port 3341) with HTTP Range (`206 Partial Content`), so seeking works |
-| Images | `GET /api/library` (passed to Studio) |
-| Files | `public/js/library.js`, `public/css/library.css`, `#libTabs` / `#libVideos` in `public/index.html`. No editor change was needed |
+| Feed | `GET /api/feed` (`server/areas/library.mjs`): all sources together, newest first. The same for everyone, so kept 90 s for all (`?fresh=1` skips it). A source that does not answer is left out and named (`down`); the page shows a short note |
+| Files | Edit and Limelight AI files come through `GET /api/feed/file?from=edit|ai&u=<path>`, which fetches them with the Edit / AI key and passes HTTP Range through (videos seek). Only render files and thumbnails of Edit, and `img_*` / `vid_*` files of the AI, are allowed. `&dl=1` adds a download file name. Design files come through the normal Studio pass-through (`/library/`, and `/exports/`, added to `server/areas/design.mjs`) |
+| Studio folder | `config.json` `studioDir` (default `../limelight-studio`) |
+| Page | `public/js/library.js` (feed, filters, swipe / wheel / keys, play on screen), `public/css/library.css`, `#v-library` in `public/index.html`. Files load only when an item comes near the screen; videos let go of theirs when far away |
+| Older route | `GET /api/renders` (one person's own Edit renders) is kept but no page uses it now |
+
+### Tested (2 Nov, on a copy on port 3399, as a staff test login)
+- 156 items: 102 Edit renders (that login saw 18 before), 34 AI pictures, 14 Design, 6 Create. First load about 4.5 s, then from the cache.
+- Wheel, arrow keys and swipe move one item; videos autoplay muted and stop off screen; Range seeking (206); downloads for Edit, AI, Create and a Design zip; Share opens; Mine; phone (375 px, above the bottom tab bar), laptop (1366×768) and desktop layouts.
 
 ### Known issues / pending
-- The Download button and the phone layout have not been tested live.
+- Not yet tried on a real phone and with the live server (it needs a restart to load the new routes).
+- The first open after 90 s waits about 4-5 s while Edit's projects are read.
 
 ---
 

@@ -1,41 +1,62 @@
-/* Lighthouse - Library > Videos: YouTube-style player (left) and list of Edit renders (right) */
-.yt { display: grid; grid-template-columns: minmax(0, 1fr) 380px; gap: 18px; align-items: start; }
-.yt.hidden { display: none; }
-.yt-main { min-width: 0; }
-.yt-stage { position: relative; aspect-ratio: 16 / 9; background: #000; border-radius: 16px; overflow: hidden; box-shadow: 0 18px 50px -20px #000c; }
-.yt-stage.tall { aspect-ratio: auto; height: min(72vh, 760px); }
-.yt-stage video { width: 100%; height: 100%; display: block; object-fit: contain; background: #000; }
-.yt-empty { position: absolute; inset: 0; display: grid; place-items: center; text-align: center; padding: 24px; color: #b9b9c2; font-size: 14px; background: #0b0b0e; }
-.yt-empty.hidden { display: none; }
-.yt-title { margin: 14px 2px 10px; font-size: 20px; line-height: 1.3; letter-spacing: -.2px; }
-.yt-meta { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; justify-content: space-between; }
-.yt-who { display: flex; align-items: center; gap: 10px; min-width: 0; }
-.yt-who b { display: block; font-size: 14px; } .yt-who small { color: var(--muted); font-size: 12.5px; }
-.yt-av { width: 38px; height: 38px; border-radius: 50%; display: grid; place-items: center; font-weight: 700; background: var(--acc); color: var(--acc-ink); flex: none; }
-.yt-acts { display: flex; gap: 8px; flex-wrap: wrap; }
-.yt-acts .btn { display: inline-flex; align-items: center; gap: 6px; }
-.yt-acts .i { width: 15px; height: 15px; }
+/* Limelight - Library: a Reels-style feed, one finished output per screen (library.js) */
+#v-library { display: flex; flex-direction: column; overflow: hidden; padding-bottom: 12px; }
+.reels-top { flex: none; display: flex; align-items: center; gap: 14px; margin: 4px 0 10px; min-width: 0; }
+.reels-top h1 { font-size: 24px; margin: 0; letter-spacing: -.4px; flex: none; }
+.reels-chips { display: flex; align-items: center; gap: 6px; overflow-x: auto; scrollbar-width: none; min-width: 0; }
+.reels-chips::-webkit-scrollbar { display: none; }
+.reels-chips button { flex: none; border: 1px solid rgb(var(--ink) / .14); background: rgb(var(--ink) / .05); color: var(--muted); font: inherit;
+  font-size: 13px; font-weight: 600; padding: 6px 12px; border-radius: 999px; cursor: pointer; }
+.reels-chips button:hover { color: inherit; }
+.reels-chips button.on { background: var(--acc); border-color: var(--acc); color: var(--acc-ink); }
+.reels-sep { flex: none; width: 1px; height: 18px; background: rgb(var(--ink) / .16); margin: 0 2px; }
+.reels-search { margin: 0 0 0 auto !important; flex: 0 1 260px; min-width: 150px; }
+.reels-count { flex: none; color: var(--muted); font-size: 12.5px; font-variant-numeric: tabular-nums; min-width: 56px; text-align: right; }
 
-.yt-side { padding: 12px; display: flex; flex-direction: column; gap: 10px; max-height: calc(100vh - 170px); position: sticky; top: 12px; }
-.yt-tools { display: flex; align-items: center; gap: 10px; }
-.yt-auto { display: flex; align-items: center; gap: 6px; font-size: 12.5px; color: var(--muted); cursor: pointer; white-space: nowrap; }
-.yt-auto input { accent-color: var(--acc); }
-.yt-list { overflow-y: auto; display: flex; flex-direction: column; gap: 4px; margin: 0 -4px; padding: 0 4px; min-height: 120px; }
-.yt-item { display: flex; gap: 10px; padding: 6px; border-radius: 12px; border: 0; background: none; color: inherit; text-align: left; cursor: pointer; font: inherit; }
-.yt-item:hover { background: rgb(var(--ink) / .06); }
-.yt-item.on { background: var(--acc-soft); }
-.yt-th { position: relative; flex: none; width: 150px; aspect-ratio: 16 / 9; border-radius: 9px; overflow: hidden; background: #111 center / cover; display: grid; place-items: center; color: #777; }
-.yt-th.tall img { object-fit: contain; background: #000; }
-.yt-th img { width: 100%; height: 100%; object-fit: cover; display: block; }
-.yt-th .i { width: 26px; height: 26px; }
-.yt-now { position: absolute; left: 6px; bottom: 6px; font-style: normal; font-size: 10.5px; font-weight: 700; padding: 2px 6px; border-radius: 5px; background: var(--acc); color: var(--acc-ink); }
-.yt-tx { min-width: 0; display: flex; flex-direction: column; gap: 2px; }
-.yt-tx b { font-size: 13.5px; line-height: 1.3; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
-.yt-tx small { color: var(--muted); font-size: 12px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.reels { flex: 1; min-height: 0; overflow-y: auto; scroll-snap-type: y mandatory; overscroll-behavior: contain; scrollbar-width: none; outline: none; }
+.reels::-webkit-scrollbar { display: none; }
+.reels-empty { height: 100%; display: grid; place-items: center; text-align: center; color: var(--muted); padding: 24px; }
+.reel { height: 100%; scroll-snap-align: start; scroll-snap-stop: always; display: flex; align-items: center; justify-content: center; gap: 16px;
+  padding: 6px 0; box-sizing: border-box; position: relative; }
 
-@media (max-width: 1000px) {
-  .yt { grid-template-columns: 1fr; }
-  .yt-side { position: static; max-height: none; }
-  .yt-stage.tall { height: 70vh; }
+.reel-stage { position: relative; height: 100%; aspect-ratio: 16 / 9; max-width: calc(100% - 96px); background: #000; border-radius: 18px;
+  overflow: hidden; box-shadow: 0 18px 50px -22px #000; }
+.reel-stage:has(img) { aspect-ratio: 1; }
+.reel-stage.tall { aspect-ratio: 9 / 16; }
+.reel-stage.wide { aspect-ratio: 16 / 9; }
+.reel-stage video, .reel-stage img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; display: block; background: #000; }
+.reel-stage video { cursor: pointer; }
+
+.reel-info { position: absolute; left: 0; right: 0; bottom: 0; padding: 48px 18px 18px; color: #fff; pointer-events: none;
+  background: linear-gradient(transparent, #000000d0); display: flex; flex-wrap: wrap; align-items: center; gap: 4px 10px; }
+.reel-info b { flex-basis: 100%; font-size: 17px; line-height: 1.3; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.reel-info small { color: #ffffffb8; font-size: 12.5px; }
+.reel-info .reel-sub { flex-basis: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.reel-app { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 700; padding: 4px 10px 4px 8px; border-radius: 999px;
+  background: #ffffff26; backdrop-filter: blur(8px); }
+.reel-app .i { width: 14px; height: 14px; }
+.reel-bar { position: absolute; left: 0; right: 0; bottom: 0; height: 14px; cursor: pointer; display: flex; align-items: flex-end; z-index: 2; }
+.reel-bar::before { content: ''; position: absolute; left: 0; right: 0; bottom: 0; height: 3px; background: #ffffff38; }
+.reel-bar i { position: relative; display: block; height: 3px; width: 0; background: var(--acc); }
+
+.reel-acts { flex: none; display: flex; flex-direction: column; gap: 14px; align-self: flex-end; padding-bottom: 14px; }
+.reel-acts > * { display: flex; flex-direction: column; align-items: center; gap: 4px; border: 0; background: none; color: inherit; font: inherit;
+  font-size: 11.5px; font-weight: 600; cursor: pointer; text-decoration: none; }
+.reel-acts .i { width: 46px; height: 46px; padding: 12px; box-sizing: border-box; border-radius: 50%; background: rgb(var(--ink) / .09);
+  border: 1px solid rgb(var(--ink) / .12); transition: background .15s; }
+.reel-acts > *:hover .i { background: var(--acc-soft); color: var(--acc); }
+
+@media (max-width: 760px) {
+  #v-library { padding-bottom: calc(84px + env(safe-area-inset-bottom)); } /* (clear of the bottom tab bar) */
+  .reels-top { flex-wrap: wrap; gap: 8px; margin: 0 0 8px; }
+  .reels-top h1 { display: none; }
+  .reels-chips { order: 2; flex-basis: 100%; }
+  .reels-search { order: 1; flex: 1 1 auto; margin: 0 !important; }
+  .reels-count { order: 1; min-width: 0; }
+  .reel { padding: 0 0 6px; }
+  .reel-stage, .reel-stage.tall, .reel-stage.wide, .reel-stage:has(img) { aspect-ratio: auto; width: 100%; max-width: 100%; border-radius: 16px; }
+  .reel-info { padding: 60px 74px 16px 14px; }
+  .reel-info b { font-size: 15.5px; }
+  .reel-acts { position: absolute; right: 8px; bottom: 26px; padding: 0; gap: 12px; color: #fff; z-index: 3; }
+  .reel-acts .i { width: 44px; height: 44px; padding: 11px; background: #00000059; border-color: #ffffff2e; backdrop-filter: blur(8px); }
+  .reel-acts span { text-shadow: 0 1px 4px #000; }
 }
-@media (max-width: 520px) { .yt-th { width: 120px; } .yt-title { font-size: 17px; } }
