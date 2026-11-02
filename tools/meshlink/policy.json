@@ -1,0 +1,6 @@
+{
+  "rules": [
+    { "from": ["tag:staff"], "to": ["tag:hub"], "ports": ["tcp:3350", "tcp:3341-3345", "icmp"] },
+    { "from": ["tag:owner"], "to": ["*"], "ports": ["*"] }
+  ]
+}

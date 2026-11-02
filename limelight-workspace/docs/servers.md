@@ -26,7 +26,7 @@ NAS 192.168.0.99 (Z:) ◄── per-person Office files, editor projects, exe up
 | PC | IP | Role | Rule |
 |---|---|---|---|
 | **JASPREET** (owner's PC) | 192.168.0.210 | Workspace + proxies, Design, Office, Cloudflare tunnel, CorelDRAW exports, local fallback Limelight AI, editor source, editor render helper and standby | Must stay on and signed in |
-| **NAYA A** (DESKTOP-39S6OC2) | 192.168.0.200 | Live Edit server for the team (renders, 4 workers, Whisper, NVENC); MeshLink VPN server (not finished) | **Never run Ollama or any AI here** |
+| **NAYA A** (DESKTOP-39S6OC2) | 192.168.0.200 | Live Edit server for the team (renders, 4 workers, Whisper, NVENC); still runs the **old** MeshLink server on :8080 (moving to JASPREET, see section 9) | **Never run Ollama or any AI here** |
 | **NAYA B** (NAYA-B) | 192.168.0.205 | Limelight AI server; standby editor on :3100; trial target for every editor release | No internet; AI pauses while standby editor runs |
 | NAS | 192.168.0.99 | Share "Team Editing" (Z:) | Cannot delete top-level folders from a PC |
 | HR app | online | https://lighthouse.limelightcorp.in (source `D:\LimelightWebapp`) | Don't change without the owner's yes |
@@ -46,6 +46,9 @@ NAS 192.168.0.99 (Z:) ◄── per-person Office files, editor projects, exe up
 | 8830 | **Limelight AI engine** (llama.cpp router, 127.0.0.1 only) | `E:\Limelight Ai\tools\llama`, models `D:\AI Models\llama` (models.ini); started by start-all.ps1. Used by Office's Agent and the local Limelight AI |
 | 11434 | Ollama (127.0.0.1 only) | **Being replaced by the engine (8830), 31 Oct**; nothing uses it on JASPREET any more. Remove after a few good days |
 | 3000 / 3100 | Video Editor local instance (tray) | Reserved |
+| 8443 (TCP), 3478 (UDP) | MeshLink server, public side (devices join, peer map, address discovery) | `tools\meshlink`; **not running yet** (needs first setup, certificate, router forwarding) |
+| 8444 | MeshLink dashboard, **127.0.0.1 only** | Password + authenticator code |
+| 41641 (UDP) | MeshLink WireGuard, when JASPREET joins as the "hub" device | |
 
 ### JASPREET start-up (at sign-in)
 | Startup entry (`shell:startup`) | Starts |
@@ -88,7 +91,7 @@ Hardware: Ryzen 9 5900X, 64 GB RAM, RTX 4060 8 GB. C: NVMe; **D: and E: share on
 The other 10-20 PCs have not been surveyed.
 
 ### All ports (do not reuse)
-3000, 3100, 3200, 3300, 3301, 3330, 3341-3345, 3350, 3443, 3444, 8787, 8800, 8830 (plus 8811 test, 11434 Ollama until removed).
+3000, 3100, 3200, 3300, 3301, 3330, 3341-3345, 3350, 3443, 3444, 8443, 8444, 8787, 8800, 8830 (plus 8811 test, 11434 Ollama until removed; UDP 3478 and 41641 for MeshLink).
 
 ---
 
@@ -193,3 +196,31 @@ The editor's own standby script describes a line of standby PCs (JASPREET first,
 See [PENDING.md](PENDING.md). Main ones: NAYA A health after the 29 Oct outage; JASPREET's local AI start-up task; firewall rule for 3443/3444; confirm Ollama LAN exposure removed on B; confirm old quick tunnels (`*.trycloudflare.com`, "LimelightTunnel") are stopped; reserve .210/.200/.205 on the router; survey the other PCs; backups of JASPREET's data.
 
 Not confirmed: the editor's own README names `editor.limelightcorp.in` as its office link, while the tunnel serves `editor.limelightcorp.net`. Which one staff use was not checked.
+---
+
+## 9. MeshLink (private network for staff outside the office)
+
+**What it is:** Limelight's own mesh VPN, built like Tailscale (source `D:\Claude Projects\MeshLink`, Go, local git history only). A laptop that has joined reaches JASPREET directly over WireGuard (about 30-100 ms per trip instead of 0.6-0.9 s through Cloudflare's Marseille route). It does not replace Cloudflare: public links, careers/signup and people without MeshLink still use the tunnel.
+
+**Security (hardened 2 Nov 2026)** - full table in MeshLink's `README.md`:
+- **Owner key:** every device and the access rules must be signed with the owner's key (`%USERPROFILE%\.meshlink\owner.key`, sealed with its own passphrase; keep a copy on a USB stick). Even someone who takes over the server cannot add a device or open access.
+- **Locked by default:** each device drops mesh traffic that no signed rule allows. `tools\meshlink\policy.json`: staff → JASPREET ("hub") on 3350, 3341-3345 and ping; "owner" devices → everything.
+- **Invites expire** (1 h to 7 days), one device by default; a joined device waits until the owner approves it; approvals last 30 days.
+- **Dashboard** on `http://127.0.0.1:8444` only (JASPREET itself), password + authenticator code, closes for 15 min after 5 wrong tries.
+- **https** for the public side (`mesh.limelightcorp.net:8443`, its own Let's Encrypt certificate); plain http is refused.
+- **Signed path pings**, keys and tokens stored as hashes only.
+- Not built yet: phone apps, a relay for CGNAT on both sides, MagicDNS. No outside security review yet.
+
+**Files on JASPREET** (`E:\Limelight Ai\tools\meshlink`; scripts in git, `bin\` and `data\` not):
+| File | What |
+|---|---|
+| `MeshLink first setup.bat` | Once: dashboard password + authenticator app, then the owner key (two different secrets, typed by the owner) |
+| `Get MeshLink certificate.bat` (`mesh-cert.mjs`, `renew-mesh-cert.cmd`) | DNS `mesh.limelightcorp.net` → office public IP (DNS only) + certificate in `data\tls`; weekly renewal task. Reuses the workspace's Cloudflare token and lego |
+| `MeshLink Server.bat` | Runs the server (log `data\server.log`). Not in start-all yet |
+| `MeshLink approve devices.bat` | Approve new devices / renew approvals (owner key passphrase) |
+| `MeshLink set access rules.bat` + `policy.json` | Sign and send the access rules |
+| `Join MeshLink (run as Administrator).bat` | For each staff PC/laptop (copy the folder with `bin\` and `wintun.dll`) |
+| `bin\` | `meshlink-server.exe`, `meshlink.exe` (from MeshLink's `dist\windows-amd64`); `wintun.dll` must be added from wintun.net |
+
+**Owner steps to switch it on** (in order): 1) look at the router's WAN address and compare it with the public IP that `Get MeshLink certificate.bat` prints - if they differ, the provider uses CGNAT and port forwarding cannot work (then use Tailscale or Cloudflare Access instead); 2) `MeshLink first setup.bat`; 3) `Get MeshLink certificate.bat`; 4) router: forward TCP 8443 and UDP 3478 (and UDP 41641) to 192.168.0.210; 5) Windows Firewall on JASPREET: allow 8443/TCP and 3478, 41641/UDP inbound, and 3350, 3341-3345/TCP from `100.64.0.0/10`; 6) `MeshLink Server.bat`; 7) join JASPREET itself (invite with tag `hub`) and approve it; 8) `MeshLink set access rules.bat`; 9) stop the old MeshLink server on NAYA A (port 8080) - its devices and the old client in `D:\Video Editor Agent\tools\meshlink` do not work with the new server.
+

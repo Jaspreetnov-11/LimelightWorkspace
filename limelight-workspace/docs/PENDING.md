@@ -81,7 +81,9 @@
 | Reserve .210, .200 and .205 on the router (Lighthouse.exe uses .210) | Owner |
 | Collect specs and network speed of the other PCs | Owner |
 | Delete the empty `.dirtest` folder in `Z:\Limelight Storage` on the NAS | Owner |
-| Finish MeshLink VPN (client setup, router forwarding) or drop it | Owner |
+| MeshLink (hardened, moving to JASPREET): check the router WAN address for CGNAT, first setup, certificate, router forwarding, firewall, start, join JASPREET as "hub", sign the access rules, stop the old server on NAYA A - steps in [servers.md](servers.md) section 9 | Owner |
+| MeshLink: add `wintun.dll` (wintun.net) to `tools\meshlink\bin`; add the server to start-all once it runs well | Owner, then code |
+| MeshLink: phone apps, a relay for CGNAT, an outside security review | Owner decides |
 | Optional upgrades: RAM for NAYA B, bigger GPU or Mac Studio | Owner decides |
 | Confirm which editor link staff use (`editor.limelightcorp.in` in the editor README vs `editor.limelightcorp.net` on the tunnel) | Owner |
 
