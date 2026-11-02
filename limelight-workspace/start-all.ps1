@@ -25,3 +25,8 @@ $ai = Join-Path $root 'limelight-ai'
 if (Test-Path (Join-Path $ai '.venv\Scripts\python.exe')) {
   Start-Hidden 'Limelight AI (local)' 8800 $ai '.venv\Scripts\python.exe server\app.py >> data\server.log 2>&1'
 }
+# Limelight Search (SearXNG :8888 here only + LAN relay :8890): the web search of Limelight AI on NAYA B and here
+if (Test-Path (Join-Path $root 'tools\searxng\.venv\Scripts\python.exe')) {
+  if (Up 8890) { Note 'Limelight Search already running on :8890' }
+  else { & (Join-Path $ai 'search\start-search.ps1'); Note 'Limelight Search started (:8890)' }
+}

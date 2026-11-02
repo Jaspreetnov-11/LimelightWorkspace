@@ -298,6 +298,47 @@ def add_text_to_image(ws, texts, image="", path=""):
     return _deliver(ws, images.add_text(_image_ref(ws, image), texts), path, "with text")
 
 
+# ---------------------------------------------------------------- web (through Limelight Search on JASPREET)
+
+def _relay(path, params, timeout=40):
+    import httpx
+    from config import SEARCH_URL
+    try:
+        r = httpx.get(SEARCH_URL + path, params=params, timeout=timeout)
+    except httpx.HTTPError:
+        raise ToolError("Web search is not reachable right now (Limelight Search on JASPREET is off). "
+                        "Answer from what you know and say the web could not be checked.")
+    data = r.json()
+    if data.get("error"):
+        raise ToolError(data["error"])
+    return data
+
+
+def web_search(ws, query, max_results=6):
+    data = _relay("/search", {"q": query, "n": max(4, min(int(max_results or 6), 10))})
+    if not data["results"]:
+        return f"No results for: {query}"
+    out = "\n\n".join(f"[{i}] {x['title']}\n{x['url']}" + (f"\n{x['date'][:10]}" if x.get("date") else "")
+                      + f"\n{x['snippet']}" for i, x in enumerate(data["results"], 1))
+    # Small local models answer from the snippets and rarely open a page, so the top two readable pages come along.
+    from concurrent.futures import ThreadPoolExecutor
+    def grab(x):
+        try:
+            return x["url"], _relay("/page", {"url": x["url"]}, timeout=20)["text"][:3000]
+        except ToolError:
+            return x["url"], ""
+    with ThreadPoolExecutor(4) as pool:
+        pages = [p for p in pool.map(grab, data["results"][:4]) if len(p[1]) > 300][:2]
+    for url, text in pages:
+        out += f"\n\n--- Page text: {url}\n{text}"
+    return _clip(out)
+
+
+def read_webpage(ws, url):
+    data = _relay("/page", {"url": url})
+    return _clip(f"{data['title']}\n{data['url']}\n\n{data['text']}" + ("\n...[page cut]" if data.get("truncated") else ""))
+
+
 # ---------------------------------------------------------------- schemas
 
 def _fn(name, desc, props, required):
@@ -348,6 +389,13 @@ SCHEMAS = [
         {"texts": {"type": "array", "items": {"type": "object", "properties": {
             "text": S, "position": S, "size": S, "style": S, "color": S, "background": S}}},
          "image": S, "path": S}, ["texts"]),
+    _fn("web_search",
+        "Search the internet for current or outside facts: news, prices, rates, schemes, dates, results, people, "
+        "companies, anything after your training or that you're unsure of. query: a short search like a person types "
+        "(English usually finds most). Returns numbered titles, links and snippets.",
+        {"query": S, "max_results": I}, ["query"]),
+    _fn("read_webpage", "Read the text of one web page (a link from web_search or one the user gave).",
+        {"url": S}, ["url"]),
     _fn("todo_write", "Write the task list for this job. Send the whole list each time. status: pending|in_progress|completed.",
         {"todos": {"type": "array", "items": {"type": "object", "properties": {"content": S, "status": S}}}}, ["todos"]),
 ]
@@ -356,11 +404,18 @@ IMPLS = {
     "list_dir": list_dir, "read_file": read_file, "write_file": write_file, "edit_file": edit_file,
     "glob": glob_files, "grep": grep, "run_command": run_command, "create_docx": create_docx,
     "create_xlsx": create_xlsx, "generate_image": gen_image, "edit_image": edit_image,
-    "add_text_to_image": add_text_to_image,
+    "add_text_to_image": add_text_to_image, "web_search": web_search, "read_webpage": read_webpage,
 }
-# Chat mode gets only the picture tools (they write to the gallery, not the workspace).
+# Chat mode gets only the picture and web tools (nothing in a workspace folder).
 IMAGE_TOOLS = {"generate_image", "edit_image", "add_text_to_image"}
-CHAT_SCHEMAS = [s for s in SCHEMAS if s["function"]["name"] in IMAGE_TOOLS]
+WEB_TOOLS = {"web_search", "read_webpage"}
+
+
+def schemas_for(mode, pictures):
+    from config import SEARCH_URL
+    names = None if mode != "chat" else (IMAGE_TOOLS if pictures else set()) | WEB_TOOLS
+    return [s for s in SCHEMAS if (names is None or s["function"]["name"] in names)
+            and (SEARCH_URL or s["function"]["name"] not in WEB_TOOLS)] or None
 
 
 def execute(ws: Path, name: str, args: dict) -> str:

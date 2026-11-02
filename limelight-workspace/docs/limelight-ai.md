@@ -27,6 +27,7 @@ Visible names changed on 29 Oct (the old ones looked like a copy of Claude). Int
 - Agent tools: read, write, edit, glob, grep, shell, docx/xlsx, todo list, image tools. Permission modes: Ask first, Auto-accept edits, Full auto (Allow/Deny cards). Only files inside the given folder can be touched.
 - Slash commands `/init`, `/review`, `/compact`, `/clear`, `/image`, `/help`; history, Stop, "Think" toggle; up to 40 agent steps.
 - **Language rule:** the reply matches the user's language (English → English, Hindi → Devanagari, Hinglish → Roman Hinglish).
+- **Roman letters for Hinglish (since 2 Nov):** in Ask and Work, a Hinglish reply can't contain non-Latin letters at all. `llm.latin_only_bias` reads the model's vocabulary from its GGUF file (once, about 0.3 s) and bans every token holding a Greek, Cyrillic, Arabic, Indic, South-East Asian or CJK letter (about 49,000 of qwen3-8b's 152,000; ₹, punctuation and emoji stay allowed), sent as llama.cpp `logit_bias`, which works with tools (a grammar does not). Blocking only Devanagari was not enough: qwen3-8b switched to Burmese. Skipped when the message asks for a script ("Hindi mein likho", "Punjabi", "Urdu"...) or quotes Devanagari (`SCRIPT_ASK`), in Build, and for models whose vocabulary isn't byte-level BPE (gemma3).
 - Answer rules: no invented facts or numbers; no LaTeX; the model's thinking is never shown.
 - Voice typing with local Whisper.
 - `/compare.html`: a blind comparison of local models against Claude on 10 non-confidential prompts.
@@ -54,6 +55,15 @@ Model stays loaded 60 minutes; context 16384 tokens.
 - Qwen runs only on cards with at least 11 GB (NAYA B). JASPREET (8 GB) uses SDXL Turbo and SDXL Base.
 - **SDXL Inpainting 0.1** on JASPREET's copy serves Design's generative fill (`/api/images/inpaint`).
 - No local model writes Hindi inside a picture, so text is a separate layer drawn by Edge.
+
+### Web search (since 2 Nov, live on NAYA B)
+- Ask, Work and Build can search the internet **by themselves** when a question needs current or outside facts (owner's choice: always on, the AI decides). Tools `web_search` (titles, links, snippets **plus the text of the top 2 pages**, because small models rarely open pages themselves) and `read_webpage`. Answers end with the sources as links. In the chat it shows as a globe card "Searching the web" / "Reading".
+- NAYA B has no internet, so searches go to **Limelight Search on JASPREET**: SearXNG (`E:\Limelight Ai\tools\searxng`, git clone + `.venv`, 127.0.0.1:8888 only) and a small relay `limelight-ai\search\relay.py` on LAN port **8890** (`/search`, `/page`; only JASPREET and NAYA B may call it; it refuses office-network addresses). Settings `limelight-ai\search\settings.yml`; secret key and logs in `tools\searxng-limelight\`. Started by `start-all.ps1` at sign-in, or by hand with `limelight-ai\search\start-search.ps1`.
+- The AI's address for it: `LIMELIGHT_SEARCH_URL` (default `http://192.168.0.210:8890`; empty = no web tools).
+- Privacy: only the model's search words and the links it opens leave the office; chats and files do not. The prompt tells it never to put client names, figures, document text or personal details in a search.
+- After every tool result the language rule is repeated at the end (`LANG_REMINDER`), because small models drift into the script of the pages they read.
+- If JASPREET or the relay is off, the tool says so and the AI answers from what it knows.
+- SearXNG on Windows needs a stand-in `pwd.py` in its `.venv\Lib\site-packages` (Unix-only module, used only in an error message); re-create it after reinstalling the venv. DuckDuckGo often answers with a CAPTCHA; Brave, Startpage and others fill in.
 
 ### Look
 - Locked: "Limelight" theme, Aurora background, Inter font (stored offline), logo style 29 "Glass Dot". No theme or logo pickers (the owner said "no more options").
@@ -104,6 +114,7 @@ NAYA B has **no internet**, and SMB to it fails. Reachable from JASPREET: SSH 22
 | `Deploy to NAYA B.ps1` / `Per-person AI chats (run once).bat` | Push `app.py`, `db.py` and `workspace.key`; back up B's files and database as `*.bak-<time>`; restart; log to `deploy-log.txt` |
 | `AI without password (run once).bat` | Push the office-key version of `app.py` |
 | `Restart AI on NAYA B.bat` | Restart the app and check the key |
+| `Web search (run once).bat` | Push `agent.py`, `tools.py`, `config.py`, `llm.py`, `app.js`, `index.html` (backups `*.bak-<time>`), check B reaches the search relay, restart |
 
 - They use the SSH alias `limelight-b` (`ssh -o BatchMode=yes limelight-b "powershell -NoProfile -Command -"`). **The owner runs them** (Claude's SSH kill commands were blocked).
 - Older way: copy files to `\\192.168.0.99\Team Editing\Limelight AI update\`, then `robocopy` on B.
@@ -122,6 +133,7 @@ NAYA B has **no internet**, and SMB to it fails. Reachable from JASPREET: SSH 22
 - **Kimi K3 not usable locally** (needs 4× H100 and about 1 TB RAM); a paid cloud option was offered and not chosen.
 - **Not splitting one model across PCs** (3-10 tok/s on 1 Gbps; fails if one PC drops).
 - **Video:** Wan 2.2 TI2V-5B tried on JASPREET and stopped by the owner on 30 Oct; files kept.
+- **Web search (2 Nov):** owner chose SearXNG on JASPREET (over a DuckDuckGo-only relay or paid Tavily) and "always on, the AI decides" (over a Web button). Only search words leave the office.
 - **Public access always behind a password or the workspace login**, because Work and Build can run commands on B.
 
 ## 4. Fixes worth knowing
@@ -135,6 +147,7 @@ NAYA B has **no internet**, and SMB to it fails. Reachable from JASPREET: SSH 22
 - (Full list in `docs/_notes/limelight-ai.md`.)
 
 ## 5. Known issues / pending
+- qwen3-8b (Ask) sometimes adds a line like "No tools needed", and its Hinglish wording can be clumsy (an 8B model); sometimes it answers a Hinglish request in English.
 - **Fixed 31 Oct:** "cannot generate image". The picture was made on B, but the chat stream sent nothing while it ran (cold Qwen load + render = 150-200 s; the picture model is dropped before every chat step, so most chat pictures are cold). Cloudflare cuts a silent stream after 100 s, so users on `*.limelightcorp.net` got an error. `agent.py` now sends a keep-alive (`: ping` SSE comment) every 15 s while any tool runs. Still open: the Images page (`/api/images/generate`, one plain request) can still time out behind Cloudflare on a cold load.
 - The AI footer showed a fixed owner name outside the workspace (inside the workspace the proxy now sets the right name; the frontend itself is not fixed).
 - Video: no working clip yet; the video routes are on B since 31 Oct but the Wan model (34 GB) is not copied there.

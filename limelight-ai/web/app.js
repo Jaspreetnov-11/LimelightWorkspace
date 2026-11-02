@@ -30,6 +30,7 @@ const ICONS = {
   lock: "M6 11h12v9H6z M8.5 11V8a3.5 3.5 0 0 1 7 0v3",
   eye: "M2.5 12S6 5.5 12 5.5 21.5 12 21.5 12 18 18.5 12 18.5 2.5 12 2.5 12z M12 9.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5z",
   arrowright: "M5 12h14 M13 6l6 6-6 6",
+  globe: "M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18z M3 12h18 M12 3c2.5 2.5 3.5 5.5 3.5 9s-1 6.5-3.5 9c-2.5-2.5-3.5-5.5-3.5-9s1-6.5 3.5-9z",
 };
 const ic = n => `<svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="${ICONS[n]}"/></svg>`;
 document.querySelectorAll("[data-ic]").forEach(el => el.outerHTML = ic(el.dataset.ic));
@@ -440,9 +441,10 @@ function addTool(turn, id, name, args) {
   const d = document.createElement("details");
   d.className = "tool";
   // Picture tools read as plain words; the full prompt stays inside the card for anyone curious.
-  const pic = PIC_TOOLS[name];
-  const arg = pic ? (args?.prompt || args?.instruction || (args?.texts || []).map(t => t.text).join(" · ") || "") : argSummary(name, args || {});
-  d.innerHTML = `<summary>${pic ? ic("image") : ""}<span class="name">${esc(pic || name)}</span><span class="arg">${esc(String(arg))}</span><span class="st run">${pic ? "working…" : "running…"}</span></summary><pre></pre>`;
+  const pic = PIC_TOOLS[name], web = WEB_TOOLS[name];
+  const arg = pic ? (args?.prompt || args?.instruction || (args?.texts || []).map(t => t.text).join(" · ") || "")
+    : web ? (args?.query || args?.url || "") : argSummary(name, args || {});
+  d.innerHTML = `<summary>${pic ? ic("image") : web ? ic("globe") : ""}<span class="name">${esc(pic || web || name)}</span><span class="arg">${esc(String(arg))}</span><span class="st run">${pic || web ? "working…" : "running…"}</span></summary><pre></pre>`;
   turn.root.appendChild(d);
   turn.tools[id] = d;
   return d;
@@ -457,6 +459,7 @@ function finishTool(el, ok, result) {
   if (img) el.insertAdjacentHTML("afterend", `<a class="chat-img" href="${img[0]}" target="_blank" rel="noopener" title="Open full size"><img src="${img[0]}" alt="Generated picture"></a>`);
 }
 const PIC_TOOLS = { generate_image: "Creating image", edit_image: "Editing image", add_text_to_image: "Adding text" };
+const WEB_TOOLS = { web_search: "Searching the web", read_webpage: "Reading" };
 
 function previewArgs(name, a) {
   if (name === "run_command") return a.command;

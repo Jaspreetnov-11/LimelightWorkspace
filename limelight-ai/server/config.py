@@ -50,6 +50,10 @@ PASSWORD = os.environ.get("LIMELIGHT_PASSWORD", "")
 HOST = os.environ.get("LIMELIGHT_HOST", "127.0.0.1")
 PORT = int(os.environ.get("LIMELIGHT_PORT", "8800"))
 
+# Web search: Limelight Search (SearXNG + relay, limelight-ai\search) on JASPREET, which has internet; NAYA B has
+# none. Only the model's search words and the links it reads go out; chats and files stay here. Empty = no web tools.
+SEARCH_URL = os.environ.get("LIMELIGHT_SEARCH_URL", "http://192.168.0.210:8890")
+
 # Image models are downloaded once from Hugging Face, then used fully offline.
 IMAGE_PRESETS = {
     "fast": {

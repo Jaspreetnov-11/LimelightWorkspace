@@ -68,6 +68,8 @@ def _body(model, messages, options=None, think=None, tools=None, stream=True):
             body[k] = o[k]
     if tools:
         body["tools"] = tools
+    if "logit_bias" in o:  # llama.cpp: [[token id, false], ...] = these tokens are never written
+        body["logit_bias"] = o["logit_bias"]
     name = engine_name(model)
     if "gpt-oss" in name:
         body["reasoning_effort"] = "high" if think else "low"       # gpt-oss always reasons, a little or a lot
@@ -173,6 +175,71 @@ def unload_all(timeout=30):
     for name in models().get("loaded", []):
         httpx.post(f"{LLM_URL}/models/unload", json={"model": name}, timeout=timeout)
     return not models().get("loaded")
+
+
+# ---------------------------------------------------------------- Roman letters only (Hinglish replies)
+
+# Small models answering Hinglish slide into Devanagari, and when that is blocked, into Burmese or other scripts. The
+# engine can't combine a grammar with tools, but it takes a token ban: every token holding a byte that starts a
+# Greek, Cyrillic, Hebrew, Arabic, Indic, South-East Asian or CJK letter is banned. Byte 0xE2 (punctuation, ₹, arrows)
+# and 0xF0 (emoji) stay allowed. The tokens are read from the model's GGUF file; byte-level BPE ("gpt2") vocabularies
+# write byte b (0xA1-0xFF) as chr(b), so a token holds such a byte exactly when it holds that character.
+_NON_LATIN = set(map(chr, [*range(0xCD, 0xE2), *range(0xE3, 0xF0)]))
+_LATIN_BIAS: dict[str, list] = {}
+
+
+def _gguf_tokens(path):
+    """(tokenizer model, token strings) from a GGUF file's header, without loading the model."""
+    import struct
+    sizes = {0: 1, 1: 1, 2: 2, 3: 2, 4: 4, 5: 4, 6: 4, 7: 1, 10: 8, 11: 8, 12: 8}
+    with open(path, "rb") as f:
+        rd = f.read
+        if rd(4) != b"GGUF":
+            raise ValueError("not a GGUF file")
+        rd(4)
+        _, n_kv = struct.unpack("<QQ", rd(16))
+
+        def text():
+            n, = struct.unpack("<Q", rd(8))
+            return rd(n)
+        kind = None
+        for _ in range(n_kv):
+            key = text().decode()
+            t, = struct.unpack("<I", rd(4))
+            if key == "tokenizer.ggml.model":
+                kind = text().decode()
+            elif key == "tokenizer.ggml.tokens":
+                _, n = struct.unpack("<IQ", rd(12))
+                return kind, [text().decode("utf-8", "replace") for _ in range(n)]
+            elif t == 8:
+                text()
+            elif t == 9:
+                it, n = struct.unpack("<IQ", rd(12))
+                if it == 8:
+                    for _ in range(n):
+                        text()
+                else:
+                    f.seek(sizes[it] * n, 1)
+            else:
+                f.seek(sizes[t], 1)
+    return kind, []
+
+
+def latin_only_bias(model):
+    """logit_bias that keeps a reply in Roman letters; [] when the model's vocabulary can't be read."""
+    name = engine_name(model)
+    if name not in _LATIN_BIAS:
+        bias = []
+        try:
+            data = httpx.get(f"{LLM_URL}/models", timeout=5).json().get("data", [])
+            args = next((m.get("status") or {}).get("args", []) for m in data if m["id"] == name)
+            kind, toks = _gguf_tokens(args[args.index("--model") + 1])
+            if kind == "gpt2":
+                bias = [[i, False] for i, t in enumerate(toks) if not _NON_LATIN.isdisjoint(t)]
+        except Exception:
+            pass
+        _LATIN_BIAS[name] = bias
+    return _LATIN_BIAS[name]
 
 
 async def refresh():

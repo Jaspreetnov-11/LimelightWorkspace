@@ -41,6 +41,8 @@ NAS 192.168.0.99 (Z:) ◄── per-person Office files, editor projects, exe up
 | 8787 | District Desk (Instagram automation) | Separate project |
 | 8800 | Limelight AI, local copy (fallback + SDXL inpainting for Design) | Started by `start-all.ps1` (if `limelight-ai\.venv` exists) |
 | 8811 | Limelight AI test instance | |
+| 8888 | Limelight Search: SearXNG (127.0.0.1 only) | `E:\Limelight Ai\tools\searxng`; started by start-all.ps1 |
+| 8890 | Limelight Search relay (LAN; only JASPREET and NAYA B allowed) | `limelight-ai\search\relay.py`; NAYA B's web search goes through it (B has no internet) |
 | 8830 | **Limelight AI engine** (llama.cpp router, 127.0.0.1 only) | `E:\Limelight Ai\tools\llama`, models `D:\AI Models\llama` (models.ini); started by start-all.ps1. Used by Office's Agent and the local Limelight AI |
 | 11434 | Ollama (127.0.0.1 only) | **Being replaced by the engine (8830), 31 Oct**; nothing uses it on JASPREET any more. Remove after a few good days |
 | 3000 / 3100 | Video Editor local instance (tray) | Reserved |

@@ -14,7 +14,7 @@ import images as image_gen
 import llm
 import tools
 from config import (DEFAULT_AGENT_MODEL, DEFAULT_CHAT_MODEL, DEFAULT_CODE_MODEL, FALLBACK_MODELS, MAX_AGENT_STEPS,
-                    VISION_MODEL)
+                    SEARCH_URL, VISION_MODEL)
 
 # approval id -> Future[bool]
 PENDING: dict[str, asyncio.Future] = {}
@@ -24,8 +24,8 @@ STOP: dict[str, bool] = {}
 PERM: dict[str, str] = {}
 
 BASE = (
-    "You are Limelight AI, a private assistant running entirely on the user's own computer. "
-    "No data leaves this machine. Always reply in the same language and script as the user's latest message. "
+    "You are Limelight AI, a private assistant running on the office's own computers. "
+    "Chats and files stay here; only your web search words go to the internet. Always reply in the same language and script as the user's latest message. "
     "Write maths in plain text (e.g. 434 × 0.4 = 173.6), never LaTeX. Don't invent facts or statistics; "
     "if you're unsure, say so. "
     f"Today is {date.today().isoformat()}."
@@ -41,6 +41,15 @@ PICTURES: you can make and change pictures yourself with tools.
 - Pick aspect from the use: Instagram post = square, story/reel/WhatsApp status = story, YouTube thumbnail/banner = wide, poster/flyer = portrait.
 - If the new picture needs text, call generate_image and add_text_to_image together in the same response (leave image empty in add_text_to_image).
 - Don't repeat the prompt or paste the image link; the picture is shown to the user automatically."""
+WEB_RULES = """
+
+WEB: you can search the internet with web_search and read pages with read_webpage.
+- Search by yourself, without asking, when the answer depends on current or outside facts: news, today's prices and rates, government schemes and orders, dates, results, laws, people and companies, or anything you're not sure of. Don't search for greetings, writing, maths, translation, or questions about the user's own files.
+- Search words must be general: never put client names, confidential figures, document contents or personal details (phone, ID, salary) from this chat into a search.
+- For "latest", "current", "abhi" or "this year" questions, put the current year in the search words. Check dates: a result about an older year is not the latest.
+- web_search already includes the text of the top pages; use read_webpage for more detail. Trust official and well-known sources first, and say when sources disagree.
+- Answer in the user's language (sources are often English; the LANGUAGE RULE still holds), then list the sources you used as markdown links: [title](url). Never invent a link.
+- Never talk about your tools or whether you searched; just answer."""
 # Said after picture tools in Chat mode instead of a model reply: the picture model has just pushed the language model
 # off the GPU, and reloading it (10-40 s) only to say "here it is" isn't worth it.
 PICTURE_DONE = {"english": "Here's your picture.", "hinglish": "Ye rahi aapki image.", "hindi": "यह रही आपकी तस्वीर।"}
@@ -70,13 +79,27 @@ HINGLISH_WORDS = set("""hai hain ho hoon hu hun tha thi kya kyu kyun kyon kaise 
 karna karke karte kiya kiye mein mai mera meri mere mujhe mujhko tum tumhe tera teri aap aapka aapki apna apni yeh ye
 woh vo wo toh bhi nahi nhi nahin ka ki ke ko se bana banao banado bata batao likh likho chahiye chaiye accha acha achha
 theek thik bhai yaar namaste namaskar haan ji dedo dede raha rahi rahe gaya gayi sakta sakti sakte wala wali wale abhi
-sab kuch bahut bhot bohot aur lekin kyunki matlab samjhao samjha jaldi isko usko isme usme hum humara""".split())
+sab kuch bahut bhot bohot aur lekin kyunki matlab samjhao samjha jaldi isko usko isme usme hum humara ek si chhota chhoti
+chota choti bada badi pe kitna kitni kitne aaj kal agli agla""".split())
 
 LANG_RULES = {
     "english": "LANGUAGE RULE: The user wrote in English. Reply only in English.",
     "hindi": "LANGUAGE RULE: The user wrote in Hindi (Devanagari script). Reply in Hindi, in Devanagari script.",
     "hinglish": "LANGUAGE RULE: The user wrote in Hinglish (Hindi words typed in English/Roman letters). "
                 "Reply in Hinglish using only Roman letters, the way they write. Never use Devanagari script.",
+}
+
+
+# A Hinglish message that asks for another script ("Hindi mein likho", "Punjabi mein translate karo") or quotes
+# Devanagari words keeps every script; other Hinglish replies are held to Roman letters (llm.latin_only_bias).
+SCRIPT_ASK = re.compile(r"\b(hindi|devanagari|sanskrit|marathi|punjabi|gurmukhi|gujarati|bengali|bangla|urdu|tamil|"
+                        r"telugu|kannada|malayalam|odia|oriya|assamese|nepali|arabic|chinese|japanese|korean|russian|"
+                        r"greek|script)\b|[ऀ-෿]", re.I)
+LANG_REMINDER = {
+    "english": "\n\n[Reminder: write your reply in English.]",
+    "hindi": "\n\n[Reminder: write your reply in Hindi, in Devanagari script.]",
+    "hinglish": "\n\n[Reminder: write your reply in Hinglish with Roman (English) letters only, like \"Aaj petrol ka rate "
+                "₹102 hai\". No Devanagari letters at all, even if the sources are in Hindi.]",
 }
 
 
@@ -140,9 +163,11 @@ def _save_upload(b64):
 
 
 def _system(mode, ws: Path, todos, lang="english"):
-    s = PROMPTS.get(mode, PROMPTS["chat"]) + "\n\n" + LANG_RULES[lang]
+    s = PROMPTS.get(mode, PROMPTS["chat"])
     if mode in ("chat", "cowork") and image_gen.status()["available"]:
         s += IMAGE_RULES
+    if SEARCH_URL:
+        s += WEB_RULES
     if mode != "chat":
         s += f"\n\nEnvironment: OS {platform.system()} {platform.release()}; workspace folder: {ws}. All relative paths are inside it."
         mem = ws / "LIMELIGHT.md"
@@ -150,7 +175,8 @@ def _system(mode, ws: Path, todos, lang="english"):
             s += "\n\nProject instructions from LIMELIGHT.md (follow them):\n" + mem.read_text(encoding="utf-8", errors="replace")[:6000]
         if todos:
             s += "\n\nCurrent todo list: " + json.dumps(todos, ensure_ascii=False)
-    return {"role": "system", "content": s}
+    # last, so English search results don't pull the reply out of the user's language
+    return {"role": "system", "content": s + "\n\n" + LANG_RULES[lang]}
 
 
 def _parse_inline_tool_calls(content: str):
@@ -194,10 +220,12 @@ def _needs_approval(name, perm, args=None):
     return False
 
 
-async def _llm_stream(model, messages, tool_schemas, think):
+async def _llm_stream(model, messages, tool_schemas, think, logit_bias=None):
     """The engine's reply as Ollama-shaped chunks (llm.py translates both ways)."""
     model = llm.engine_name(model)
     opts = {"num_predict": 4096}
+    if logit_bias:
+        opts["logit_bias"] = logit_bias
     if "coder" in model:
         # Qwen3-Coder guidance; a strong presence penalty would hurt code that legitimately repeats.
         opts.update(temperature=0.7, top_p=0.8, top_k=20, repeat_penalty=1.05)
@@ -268,8 +296,9 @@ async def run(conv_id, user_text, images=None, model=None, perm="ask", think=Non
         db.save(conv_id, title=user_text.strip().splitlines()[0][:60] or "New chat")
 
     pictures = image_gen.status()["available"]
-    schemas = tools.SCHEMAS if mode != "chat" else (tools.CHAT_SCHEMAS if pictures else None)
-    steps = MAX_AGENT_STEPS if mode != "chat" else (4 if pictures else 1)
+    schemas = tools.schemas_for(mode, pictures)
+    # Chat: a few tool rounds (search, read 1-2 pages or make a picture, then answer).
+    steps = MAX_AGENT_STEPS if mode != "chat" else (6 if schemas else 1)
     if images and pictures and _wants_edit(user_text):
         # "Is photo ka background badlo": keep the tool-using model and hand it the photo as the picture to edit.
         saved = [_save_upload(b) for b in images]
@@ -288,10 +317,21 @@ async def run(conv_id, user_text, images=None, model=None, perm="ask", think=Non
             yield {"type": "notice", "text": "Reading the image with the photo model"}
     # Text-only models reject image payloads, so old images stay out of their context.
     drop = {"thinking"} if is_vision(model) else {"thinking", "images"}
+    # Hinglish in Ask and Work: small models slide into Devanagari (or, when that is blocked, Burmese), so the reply
+    # is held to Roman letters unless the user asked for another script. (Build is left alone: code may need any text.)
+    bias = None
+    if lang == "hinglish" and mode in ("chat", "cowork") and not SCRIPT_ASK.search(user_text.split("\n\n<file name=")[0]):
+        bias = await asyncio.to_thread(llm.latin_only_bias, model)
 
     try:
-        for _ in range(steps):
+        for step in range(steps):
+            if mode == "chat" and step == steps - 1:
+                schemas = None  # the last Chat round answers with what it found instead of searching again
             msgs = [_system(mode, ws, todos, lang)] + _trim([{k: v for k, v in m.items() if k not in drop} for m in history])
+            if msgs[-1]["role"] == "tool":
+                # Small models drift into the script of the pages they just read (Hinglish turned into Devanagari),
+                # so the language rule is repeated right at the end. (Qwen's template allows no late system message.)
+                msgs[-1] = {**msgs[-1], "content": msgs[-1]["content"] + LANG_REMINDER[lang]}
             if image_gen.busy():  # the picture model has the GPU; loading the chat model now would crash both
                 yield {"type": "notice", "text": "A picture is being made on this PC; the reply starts right after it."}
                 while image_gen.busy():
@@ -299,7 +339,7 @@ async def run(conv_id, user_text, images=None, model=None, perm="ask", think=Non
             # A picture made in the previous step still holds the GPU; Ollama crashes loading next to it.
             await asyncio.to_thread(image_gen.unload)
             content, thinking, calls = "", "", []
-            async for chunk in _llm_stream(model, msgs, schemas, think):
+            async for chunk in _llm_stream(model, msgs, schemas, think, bias):
                 if STOP.get(conv_id):
                     break
                 m = chunk.get("message", {})
