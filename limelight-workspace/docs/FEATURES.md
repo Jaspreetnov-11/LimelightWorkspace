@@ -227,7 +227,7 @@ The Limelight Workspace (online at **limelightcorp.net**) is Limelight's own all
 
 - **One login for every app**: staff sign in once with their existing HR email and password; Edit, Design, Office, HR pages and Limelight AI open already signed in. No new accounts in any app.
 - **Sessions last 30 days from last use**; logout ends a session at once.
-- **Works on phone, tablet and computer**: bottom tab bar on phones, slide to clock in, Office pages and the Document / Grid / Deck editors adapted for small screens.
+- **Works on phone, tablet and computer**: bottom tab bar on phones (docked to the bottom edge), slide to clock in, Office pages and the Document / Grid / Deck editors adapted for small screens.
 - **Installable app**: add to the home screen on Android and iPhone, install on Mac and Windows - no app store needed. A "No connection" page shows when offline.
 - **Windows app**: a frameless Limelight window that prefers the office network for speed, handles "Open in Premiere / DaVinci", and updates itself from the NAS.
 - **Fast loading**: every file link carries an automatic version stamp, so files cache for a year but updates reach every device at once; a stylesheet that took 2.1 s now takes about 0.45 s and is not refetched on repeat visits.

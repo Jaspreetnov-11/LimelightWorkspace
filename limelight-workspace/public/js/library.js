@@ -1,8 +1,10 @@
 // Limelight - Library: one Reels-style feed of every finished output (Edit renders, Create and Design pictures, Design
 // exports, Limelight AI pictures and videos) - everyone sees everything (/api/feed). One item fills the screen: swipe on
 // a phone, wheel or arrow keys on a computer. Videos play muted while on screen (the sound button turns sound on for all).
+// The feed is drawn a batch at a time: the next batch is added before you reach the end (infinite scroll).
 // Uses workspace.js ($, $$, api, esc, icon, toast, show, openApp, ME) and share.js (openShare, openShared).
-let REELS = [], REELS_ON = [], reelsAt = 0, RF = 'all', SOUND = false;
+let REELS = [], REELS_ON = [], reelsAt = 0, RF = 'all', SOUND = false, reelsShown = 0;
+const REEL_BATCH = 12;
 const REEL_APP = { edit: 'Edit', design: 'Design', create: 'Create', ai: 'Limelight AI' };
 const REEL_ICON = { edit: 'editor', design: 'design', create: 'wand', ai: 'ai' };
 const rSize = (n) => (!n ? '' : n >= 1073741824 ? (n / 1073741824).toFixed(1) + ' GB' : n >= 1048576 ? (n / 1048576).toFixed(n > 1e8 ? 0 : 1) + ' MB' : Math.max(1, Math.round(n / 1024)) + ' KB');
@@ -32,7 +34,20 @@ function drawFeed() {
   REELS_ON = REELS.filter((v) => (RF === 'all' || v.kind === RF || v.app === RF || (RF === 'mine' && reelMine(v)))
     && (!q || [v.title, v.project, v.by, REEL_APP[v.app]].some((s) => String(s || '').toLowerCase().includes(q))));
   const box = $('#reels');
-  box.innerHTML = REELS_ON.length ? REELS_ON.map((v, i) => {
+  reelsShown = 0;
+  box.innerHTML = REELS_ON.length ? '' : `<div class="reels-empty">${REELS.length ? 'Nothing matches' : 'Nothing here yet. Finished renders, AI pictures and design exports show up here.'}</div>`;
+  box.scrollTop = 0;
+  $('#reelCount').textContent = REELS_ON.length ? `1 / ${REELS_ON.length}` : '';
+  reelsMore();
+}
+
+// the next batch of items (or all of them, for End); the last one drawn asks for more when it comes near the screen
+function reelsMore(all) {
+  const box = $('#reels'), from = reelsShown, to = all ? REELS_ON.length : Math.min(REELS_ON.length, from + REEL_BATCH);
+  if (from >= to) return;
+  box.querySelector('.reels-end')?.remove();
+  box.insertAdjacentHTML('beforeend', REELS_ON.slice(from, to).map((v, n) => {
+    const i = from + n;
     const tall = v.aspect === '9:16' ? ' tall' : '';
     const media = v.kind === 'video'
       ? `<video data-src="${esc(v.src)}" ${v.poster ? `poster="${esc(v.poster)}"` : ''} playsinline loop muted preload="none"></video><div class="reel-bar"><i></i></div>`
@@ -49,11 +64,19 @@ function drawFeed() {
         <button data-r="open" title="Open in ${REEL_APP[v.app]}">${icon(REEL_ICON[v.app] || 'expand')}<span>Open</span></button>
         ${v.kind === 'video' ? `<button data-r="sound" title="Sound on / off (M)">${SND(SOUND)}<span>${SOUND ? 'Sound' : 'Muted'}</span></button>` : ''}
       </div></article>`;
-  }).join('') : `<div class="reels-empty">${REELS.length ? 'Nothing matches' : 'Nothing here yet. Finished renders, AI pictures and design exports show up here.'}</div>`;
-  box.scrollTop = 0;
-  $('#reelCount').textContent = REELS_ON.length ? `1 / ${REELS_ON.length}` : '';
-  $$('.reel', box).forEach((el) => { nearObs.observe(el); playObs.observe(el); });
+  }).join(''));
+  reelsShown = to;
+  const added = $$('.reel', box).slice(from);
+  added.forEach((el) => { nearObs.observe(el); playObs.observe(el); });
+  if (to < REELS_ON.length) moreObs.observe(added[added.length - 1]);
+  else box.insertAdjacentHTML('beforeend', `<div class="reels-end"><span>That's everything - ${REELS_ON.length} ${REELS_ON.length === 1 ? 'item' : 'items'}</span><button data-r="top">Back to the top</button></div>`);
 }
+// two screens before the end of what is drawn, the next batch is added
+const moreObs = new IntersectionObserver((list) => list.forEach((en) => {
+  if (!en.isIntersecting) return;
+  moreObs.unobserve(en.target);
+  if (+en.target.dataset.ri === reelsShown - 1) reelsMore();
+}), { root: $('#reels'), rootMargin: '0px 0px 200% 0px' });
 
 // files load when an item comes near the screen (and videos let go of theirs when far away again)
 const nearObs = new IntersectionObserver((list) => list.forEach((en) => {
@@ -75,7 +98,7 @@ const playObs = new IntersectionObserver((list) => list.forEach((en) => {
 // back on the Library: the item on screen plays again
 function reelResume() { const v = $$('#reels .reel')[reelIndex()]?.querySelector('video'); if (v?.getAttribute('src')) { v.muted = !SOUND; v.play().catch(() => {}); } }
 const reelIndex = () => Math.round($('#reels').scrollTop / ($('#reels').clientHeight || 1));
-function reelGo(i) { const box = $('#reels'); i = Math.max(0, Math.min(REELS_ON.length - 1, i)); box.scrollTo({ top: i * box.clientHeight, behavior: 'smooth' }); }
+function reelGo(i) { const box = $('#reels'); i = Math.max(0, Math.min(reelsShown - 1 + (reelsShown >= REELS_ON.length ? 1 : 0), i)); box.scrollTo({ top: i * box.clientHeight, behavior: 'smooth' }); }
 function setSound(on) {
   SOUND = on; try { localStorage.setItem('lh-reel-sound', on ? '1' : '0'); } catch (e) { /* private window */ }
   $$('#reels video').forEach((v) => { v.muted = !on; });
@@ -83,6 +106,7 @@ function setSound(on) {
 }
 
 $('#reels').addEventListener('click', (e) => {
+  if (e.target.closest('[data-r="top"]')) return reelGo(0);
   const el = e.target.closest('.reel'), v = el && REELS_ON[+el.dataset.ri]; if (!v) return;
   const b = e.target.closest('[data-r]');
   if (!b) { // a tap on a video: pause / play; on its bar: jump there
@@ -123,7 +147,7 @@ document.addEventListener('keydown', (e) => {
   if (['ArrowDown', 'PageDown', 'j'].includes(k)) { e.preventDefault(); reelGo(reelIndex() + 1); }
   else if (['ArrowUp', 'PageUp', 'k'].includes(k)) { e.preventDefault(); reelGo(reelIndex() - 1); }
   else if (k === 'Home') { e.preventDefault(); reelGo(0); }
-  else if (k === 'End') { e.preventDefault(); reelGo(REELS_ON.length - 1); }
+  else if (k === 'End') { e.preventDefault(); reelsMore(true); reelGo(REELS_ON.length - 1); }
   else if (k === 'm' || k === 'M') setSound(!SOUND);
   else if (k === ' ') { const v = $$('.reel')[reelIndex()]?.querySelector('video'); if (v) { e.preventDefault(); v.paused ? v.play().catch(() => {}) : v.pause(); } }
 });

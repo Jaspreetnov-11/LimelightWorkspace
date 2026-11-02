@@ -49,12 +49,13 @@
   .swatches { grid-template-columns: repeat(4, minmax(0, 1fr)); }
   .menu-pop { position: fixed; right: 10px; top: 66px; width: min(280px, calc(100vw - 20px)); }
 
-  /* page tabs: an app-style bar fixed to the bottom of the screen */
+  /* page tabs: an app-style bar docked to the very bottom edge of the screen (room below for the iPhone home bar) */
   .pills.float, body.appwin .pills.float, body.focus .pills.float {
-    position: fixed; left: 10px; right: 10px; bottom: calc(10px + env(safe-area-inset-bottom)); margin: 0; z-index: 25;
+    position: fixed; left: 0; right: 0; bottom: 0; margin: 0; z-index: 25;
     justify-self: stretch; align-self: auto; width: auto;
-    display: flex; align-items: stretch; gap: 2px; padding: 5px; border-radius: 22px !important;
-    background: color-mix(in srgb, var(--bg) 82%, transparent); box-shadow: 0 12px 40px #0009, inset 0 1px 0 rgb(var(--ink) / .10); }
+    display: flex; align-items: stretch; gap: 2px; padding: 5px 8px calc(5px + env(safe-area-inset-bottom)); border-radius: 20px 20px 0 0 !important;
+    border-left: 0; border-right: 0; border-bottom: 0;
+    background: color-mix(in srgb, var(--bg) 90%, transparent); box-shadow: 0 -8px 30px #0006, inset 0 1px 0 rgb(var(--ink) / .10); }
   .pills.float .pill, body.appwin .pills.float .pill, body.focus .pills.float .pill {
     flex: 1 1 0; min-width: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px;
     padding: 7px 2px 6px; border-radius: 17px; font-size: 11px; font-weight: 600; letter-spacing: .1px; color: var(--muted); }
@@ -66,10 +67,10 @@
   body.appwin .pdock, body.focus .pdock, body.appwin .pacts, body.focus .pacts { display: none !important; }
 
   /* every page scrolls clear of the bottom bar */
-  .view { padding-bottom: calc(96px + env(safe-area-inset-bottom)); }
+  .view { padding-bottom: calc(80px + env(safe-area-inset-bottom)); }
   body.appwin .ws, body.focus .ws { padding: 6px 6px 0; }
-  body.appwin #v-app, body.focus #v-app { padding-bottom: calc(80px + env(safe-area-inset-bottom)); }
-  .toast { bottom: calc(92px + env(safe-area-inset-bottom)); max-width: calc(100vw - 32px); }
+  body.appwin #v-app, body.focus #v-app { padding-bottom: calc(64px + env(safe-area-inset-bottom)); }
+  .toast { bottom: calc(76px + env(safe-area-inset-bottom)); max-width: calc(100vw - 32px); }
 
   /* home: greeting */
   .hero.split { padding: 14px 4px 14px; }
@@ -239,7 +240,7 @@
 /* phone chats: room for the bottom bar under the chat list; inside an open conversation the bar steps aside
    (like WhatsApp), so the message box sits at the bottom - the conversation's own back arrow returns to the list */
 @media (max-width: 760px) {
-  #v-chats { padding-bottom: calc(84px + env(safe-area-inset-bottom)); }
+  #v-chats { padding-bottom: calc(68px + env(safe-area-inset-bottom)); }
   body:has(#v-chats:not(.hidden) .chatwrap.open) .pills.float { display: none; }
   body:has(#v-chats:not(.hidden) .chatwrap.open) #v-chats { padding-bottom: calc(8px + env(safe-area-inset-bottom)); }
 }

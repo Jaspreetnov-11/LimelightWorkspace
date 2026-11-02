@@ -255,7 +255,7 @@ Naming: it started as "Limelight Studio" → "Limelight Workspace" → "Lighthou
 
 ## 12. Phone / mobile UI
 
-- `public/css/mobile.css`: bottom tab bar with icons (Home, Chats, Create, Library, Profile, frosted glass); slim header (logo + round search/theme/account buttons; search expands across the bar); no sideways overflow; 16 px inputs so phones don't zoom.
+- `public/css/mobile.css`: bottom tab bar with icons (Home, Chats, Create, Library, Profile, frosted glass; docked full width to the very bottom edge with room for the iPhone home bar, since 2 Nov); slim header (logo + round search/theme/account buttons; search expands across the bar); no sideways overflow; 16 px inputs so phones don't zoom.
 - Home on phone: smaller left-aligned greeting, app cards two per row, number tiles three per row, lists show a few rows with "All →".
 - Slide to clock in (section 2).
 - Office on phone: the 17-icon rail becomes a swipeable labelled tab strip on top; Mail/Calendar/Meetings/News fit (they used to run off the edge); task board swipes per column; "← Workspace" floating button hidden; Staff/Events (old HR layout) fit but look narrow (can only be restyled from outside).

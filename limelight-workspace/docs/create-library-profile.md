@@ -38,6 +38,8 @@ A **Reels-style feed of every finished output** in the workspace (2 Nov; before 
 - Each item shows the app it came from (Edit, Design, Create, Limelight AI), how long ago, the name, and the project, who made it and size where known.
 - Buttons on each item: **Download**, **Share** (to people or groups in Chats), **Open** (Edit project, Design, the Create page, or Limelight AI).
 - Top bar: filters **All / Videos / Pictures**, **Edit / Design / Create / AI**, **Mine**, a search box, and "3 / 156" (where you are).
+- **Infinite scroll** (owner, 2 Nov: "scroll kare aur aate jaaye"): the feed is drawn 12 items at a time and the next 12 are added two screens before you reach the end, on phone and computer alike, with no button. After the last item a card says "That's everything - N items" with **Back to the top**. End jumps to the last item (draws the rest first). A filter or search starts again from the first batch.
+- **Phone:** the bottom tab bar is docked to the very bottom edge of the screen (full width, room for the iPhone home bar) and the feed stops just above it, so it never covers Download / Share / Open.
 
 ### Who sees what (owner, 2 Nov: "sabko dikhe")
 - **Every signed-in person sees every output from everyone.** It stays inside the workspace login; nothing is public.
@@ -60,12 +62,14 @@ A **Reels-style feed of every finished output** in the workspace (2 Nov; before 
 | Feed | `GET /api/feed` (`server/areas/library.mjs`): all sources together, newest first. The same for everyone, so kept 90 s for all (`?fresh=1` skips it). A source that does not answer is left out and named (`down`); the page shows a short note |
 | Files | Edit and Limelight AI files come through `GET /api/feed/file?from=edit|ai&u=<path>`, which fetches them with the Edit / AI key and passes HTTP Range through (videos seek). Only render files and thumbnails of Edit, and `img_*` / `vid_*` files of the AI, are allowed. `&dl=1` adds a download file name. Design files come through the normal Studio pass-through (`/library/`, and `/exports/`, added to `server/areas/design.mjs`) |
 | Studio folder | `config.json` `studioDir` (default `../limelight-studio`) |
-| Page | `public/js/library.js` (feed, filters, swipe / wheel / keys, play on screen), `public/css/library.css`, `#v-library` in `public/index.html`. Files load only when an item comes near the screen; videos let go of theirs when far away |
+| Page | `public/js/library.js` (feed drawn in batches of 12 - `reelsMore`, `moreObs` -, filters, swipe / wheel / keys, play on screen), `public/css/library.css`, `#v-library` in `public/index.html`. Files load only when an item comes near the screen; videos let go of theirs when far away |
 | Older route | `GET /api/renders` (one person's own Edit renders) is kept but no page uses it now |
 
 ### Tested (2 Nov, on a copy on port 3399, as a staff test login)
 - 156 items: 102 Edit renders (that login saw 18 before), 34 AI pictures, 14 Design, 6 Create. First load about 4.5 s, then from the cache.
 - Wheel, arrow keys and swipe move one item; videos autoplay muted and stop off screen; Range seeking (206); downloads for Edit, AI, Create and a Design zip; Share opens; Mine; phone (375 px, above the bottom tab bar), laptop (1366×768) and desktop layouts.
+
+- Infinite scroll and the docked bottom bar: checked at 375×812 and 1366×768 on the live server (batches add at item 10 of 12; filter resets; end card).
 
 ### Known issues / pending
 - Live since the restart on 2 Nov (156 items on the live server). Not yet tried on a real phone.
