@@ -41,6 +41,7 @@ Paths that are written into files (change them if you use another drive):
 | File | Path inside |
 |---|---|
 | `Lighthouse Server (no window).vbs` | `E:\Limelight Ai\limelight-workspace` |
+| `Limelight Workspace (start all).vbs` | `E:\Limelight Ai\limelight-workspace\start-all.ps1` (the script itself finds the other apps next to its own folder) |
 | `server/app-list.mjs` | Start buttons: `E:\Limelight Ai\limelight-studio\…vbs`, `E:\Limelight Ai\limelight-office\…vbs` |
 | `server/areas/office.mjs` | Office key: `E:/Limelight Ai/limelight-office/data/workspace.key`; Office address `127.0.0.1:3300` |
 | `publish/Publish Lighthouse online.bat` | `E:\Limelight Ai\tools\…`, the workspace `.vbs` |
@@ -114,7 +115,7 @@ Copying `edit.key` and `ai.key` to NAYA A and NAYA B: **Owner** (over SSH or the
 Then:
 1. **Owner:** sign in at http://localhost:3350 with the HR email and password.
 2. **Owner:** in Office (http://127.0.0.1:3300) → Office setup → My account → sign in with the HR account once (brings the staff list).
-3. Keep the workspace running after reboots: copy `Lighthouse Server (no window).vbs` into `shell:startup` (Win+R → `shell:startup`). Office and Design can be started from the workspace's Start button, or also put their `.vbs` in `shell:startup`.
+3. Keep everything running after reboots: copy `limelight-workspace\Limelight Workspace (start all).vbs` into `shell:startup` (Win+R → `shell:startup`). At sign-in it runs `start-all.ps1`, which starts the AI engine (8830, if `tools\llama` is set up), the workspace, Office, Design and the local AI (8800, if its `.venv` exists), each only if not already running. Check `limelight-workspace\start-all.log`. Do not also put `Lighthouse Server (no window).vbs` there (harmless, but not needed).
 
 ---
 

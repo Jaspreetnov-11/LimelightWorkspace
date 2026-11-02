@@ -34,16 +34,25 @@ NAS 192.168.0.99 (Z:) ◄── per-person Office files, editor projects, exe up
 ### JASPREET ports
 | Port | Service | Notes |
 |---|---|---|
-| 3350 | **Workspace** (`node server.mjs --lan`) | Runs hidden via `Lighthouse Server (no window).vbs` |
+| 3350 | **Workspace** (`node server.mjs --lan`) | Started hidden at sign-in by `start-all.ps1` (see below) |
 | 3341-3345 | Workspace app proxies | 3341 Edit, 3342 Office, 3343 HR pages ("Team"), 3344 Limelight AI, 3345 Design |
 | 3330 | Limelight Studio (Design) | |
 | 3300 | Limelight Office (127.0.0.1, owner auto-login) | LAN https **3443** (self-signed; firewall rule not added yet). Office's own HR proxy 3301 local / 3444 LAN |
 | 8787 | District Desk (Instagram automation) | Separate project |
-| 8800 | Limelight AI, local copy (fallback + SDXL inpainting for Design) | **Does not auto-start** |
+| 8800 | Limelight AI, local copy (fallback + SDXL inpainting for Design) | Started by `start-all.ps1` (if `limelight-ai\.venv` exists) |
 | 8811 | Limelight AI test instance | |
 | 8830 | **Limelight AI engine** (llama.cpp router, 127.0.0.1 only) | `E:\Limelight Ai\tools\llama`, models `D:\AI Models\llama` (models.ini); started by start-all.ps1. Used by Office's Agent and the local Limelight AI |
 | 11434 | Ollama (127.0.0.1 only) | **Being replaced by the engine (8830), 31 Oct**; nothing uses it on JASPREET any more. Remove after a few good days |
 | 3000 / 3100 | Video Editor local instance (tray) | Reserved |
+
+### JASPREET start-up (at sign-in)
+| Startup entry (`shell:startup`) | Starts |
+|---|---|
+| `Limelight Workspace (start all).vbs` → `limelight-workspace\start-all.ps1` | In this order, each only if its port is not already listening: AI engine 8830 (`tools\llama\start-engine.ps1`), workspace 3350, Office 3300, Design 3330, local Limelight AI 8800. Log `limelight-workspace\start-all.log` ("started" / "already running" per app) |
+| `Limelight AI Tunnel.vbs` | The Cloudflare tunnel |
+| `Ollama.lnk` | Ollama 11434 - no longer needed since the engine (8830) replaced it; remove after a few good days |
+
+The PC must still be **signed in** (Windows starts these at sign-in, not at boot). Run the `.vbs` by hand any time to bring back an app that stopped.
 
 Hardware: Ryzen 9 5900X, 64 GB RAM, RTX 4060 8 GB. C: NVMe; **D: and E: share one slow HDD** (model cold loads 140-190 s).
 
@@ -159,7 +168,7 @@ The editor's own standby script describes a line of standby PCs (JASPREET first,
 
 | What | From | To | How | Who runs it |
 |---|---|---|---|---|
-| Workspace | `E:\Limelight Ai\limelight-workspace` (JASPREET) | runs in place | Edit files, then restart (stop port 3350, run the `.vbs`). Pages pick up new CSS/JS by themselves (version stamps) | Claude or owner |
+| Workspace | `E:\Limelight Ai\limelight-workspace` (JASPREET) | runs in place | Edit files, then restart (stop port 3350, run `Limelight Workspace (start all).vbs`). Pages pick up new CSS/JS by themselves (version stamps) | Claude or owner |
 | Office, Design | their folders on JASPREET | run in place | Restart their port (3300 / 3330) and `.vbs`; users reload (Ctrl+F5 for Studio) | Claude or owner |
 | Edit | `D:\Video Editor Agent` (JASPREET) | NAYA B trial, then NAYA A `D:\Limelight Release\editor` | `tools\server\Deploy to server.bat` (tests → smoke trial on B → A takes it within about 15 s when idle). Run from PowerShell, never kill the editor | **Owner** |
 | Limelight AI | `limelight-ai\deploy-naya-b\` | NAYA B `D:\LimelightAI\app` | `.bat` files over SSH (backups `*.bak-<time>`, log `deploy-log.txt`) | **Owner** |

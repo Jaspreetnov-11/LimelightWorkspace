@@ -94,7 +94,7 @@
 
 | Item | Who |
 |---|---|
-| Copy `limelight-workspace\Limelight Workspace (start all).vbs` into the Startup folder (Win+R, `shell:startup`) so a restart of JASPREET brings every app back | Owner |
+| Remove `Ollama.lnk` from JASPREET's Startup folder once the AI engine (8830) has run well for a few days (`start-all.vbs` is already there and worked at sign-in on 1 Nov) | Owner |
 | Cloudflare: Caching -> Configuration -> Browser Cache TTL -> "Respect Existing Headers" (now 4 hours, it overrides the server's "always check" for files without a version stamp, e.g. `sw.js`) | Owner |
 | JASPREET is still the only PC serving limelightcorp.net: a real standby would need Lighthouse on NAYA B with Data kept in sync and a second tunnel connector | Owner + code |
 | Test the Office "Leave without saving?" pop-up after real edits, and the installable app with Install on a real phone | Owner |

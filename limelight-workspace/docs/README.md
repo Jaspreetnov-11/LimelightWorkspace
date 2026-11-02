@@ -52,12 +52,13 @@ How a request is handled: `server.mjs` checks https, the login and then asks eac
 |---|---|
 | Start with a window | Double-click `Start Lighthouse.bat`. If it is already running, it just opens http://localhost:3350 |
 | Start by hand | `node server.mjs` (this PC only), `node server.mjs --lan` (office network too), add `--open` to open the browser |
-| Start hidden (normal way) | `Lighthouse Server (no window).vbs`. It runs `node server.mjs --lan` and writes `server.log`. Copy it into `shell:startup` to start at sign-in |
+| Start everything hidden (normal way) | `Limelight Workspace (start all).vbs` → `start-all.ps1`. Starts, hidden, every app on JASPREET that is not already answering: the AI engine (:8830), the workspace (:3350, `--lan`, log `server.log`), Office (:3300), Design (:3330) and the local Limelight AI fallback (:8800). An app that already answers is left alone, so it is safe to run any time. A copy sits in `shell:startup`, so a restart or power cut brings limelightcorp.net back by itself. Log: `start-all.log` |
+| Start only the workspace hidden | `Lighthouse Server (no window).vbs`. It runs `node server.mjs --lan` and writes `server.log` |
 | Check it is up | Open http://127.0.0.1:3350/api/health |
 | Stop | Stop the `node` process that listens on port 3350 (PowerShell: `Get-NetTCPConnection -LocalPort 3350 -State Listen \| % { Stop-Process -Id $_.OwningProcess }`). This also stops the app proxies 3341-3345, which run in the same process |
-| Restart | Stop it, then run the `.vbs` again |
+| Restart | Stop it, then run either `.vbs` again |
 
-Other apps start on their own: Office `E:\Limelight Ai\limelight-office\Limelight Office (no window).vbs`, Design `E:\Limelight Ai\limelight-studio\Limelight Studio (no window).vbs` (the workspace's Start button can run both). Edit and Limelight AI run on NAYA A and NAYA B. See [servers.md](servers.md).
+Office and Design have their own `.vbs` too (`limelight-office\Limelight Office (no window).vbs`, `limelight-studio\Limelight Studio (no window).vbs`; the workspace's Start button runs them). The Cloudflare tunnel starts from its own Startup entry (`tools\Limelight AI Tunnel.vbs`). Edit and Limelight AI run on NAYA A and NAYA B. See [servers.md](servers.md).
 
 ## Where data and secrets live (names only)
 
